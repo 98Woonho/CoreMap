@@ -35,6 +35,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </th:block>
 
+<th:block th:fragment="common">
+    <div id="loading">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADS0lEQVR4nO2Zv2sUURDHn4jGgAqCGDTYKkaxsFXQpIiNsdAillYKqfxVKUTRf0CNGgha+BOt/QViI7YRwu28N7Nv3hk9RUExaGFAMa7MHYG73NvLXe5ub0/uA9vNztvvzo99b1apDh06dKiVLGV2MsJLh/DDodYO4ahqN5iDzYzw3ZGOSq5FxLDW2xmD/dlMpkelAUZ9oUxE/gLw2Vtr1zLCsyLbX4xwWrUah3DTJ0Si5LNnhBse27+MwT7VShzCca8Qghc+eyb4FGN/WbWSycnJFYz6delD6RlnzI5UCclmMj1SlNZCXyUxDuFYIc3gfBiGvXG2DvU1X2pZY/Y2TQSjPuNI/y5a8CkirqnHp9zPCE+Ki90SnFTNwhEMyJsqb6v6WiP8h2GwzZpg0LmpDaqZONJX/bmsP6t2ggmueL8PCB9VO8EY9HtTi/RYs9cOw7DXYjAkz5DL5brrdsgEp6QYi9LqMQCsVk0CAFYywTgjzBVlwFcmPVy3cylGKUopTtVkmGA8ZpcwJ81HtQNhGPaWRKK8Nl+pdiBrggOxIgpp/VO1A4xBfyUhDuHLkhxPT0+vUgmSy+W6pbDjIwK3anL4FnErE9h8viI8jKJouUoIJj3srRPUH94Zs7FWZ/cWdIyDKkEcwYAUNiPMSjpJJGoWkQYhDSNrzBYmIAkxk36QZGo1haSL/b8giqJlsreSfRyTvs8El5LYSTQUIlovxe3ZlvyRCY1ql0j4RLiiy5IZachi1touObNXOocv2XchneK/5oWtyTd5hroXc6ifz8+pEHFTQxTM+yY9tpgQRzrKEuypfzGZ586H2QSDlWzfZzLr8nMu1BMO4Y4jGK00fXEId6sRYjEYql8ImRMiRiYfcvCJtQvNkfw8y3eWQLjuu5dRX6xKiI1/GQ0lL8J/LC7evT6S4i6+T1qsdCdXUQi8SUSEpJMvEt5cx+Bw9UNwnT+DsDG7Wjr7rWUebMmMSHdaGInERBSE6InqheiZOD/W2i5HwW7ZpMq/E5U0DuF21UIQZlVacQSj1QvRUyqtWAt9FacfpULOqTTDnr9Q5e1Xu2YO9xqCfOzkO1FJhMwCVNvsZE1wSFqstFIpbKkJRn029ZHo0KGDSj3/AAcfDPHBPCvgAAAAAElFTkSuQmCC" class="icon">
+        <span class="text">잠시만 기다려 주세요...</span>
+    </div>
+</th:block>
+
 <header id="header" class="content-container-wrapper" th:fragment="header">
     <ul class="content-container menu">
         <li class="item logo">

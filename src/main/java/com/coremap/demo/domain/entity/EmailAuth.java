@@ -1,11 +1,13 @@
 package com.coremap.demo.domain.entity;
 
+import com.coremap.demo.domain.dto.EmailAuthDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -13,6 +15,7 @@ import java.util.Date;
 @Data
 @Builder
 @Entity
+@IdClass(EmailAuthId.class)
 @Table(name="email_auths")
 public class EmailAuth {
     @Id
@@ -30,5 +33,17 @@ public class EmailAuth {
     private Date expiresAt;
     @Column(nullable = false, name = "verified_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isVerified;
+
+
+    public static EmailAuthDto emailAuthEntityToDto(EmailAuth emailAuth) {
+        return EmailAuthDto.builder()
+                .email(emailAuth.getEmail())
+                .code(emailAuth.getCode())
+                .salt(emailAuth.getSalt())
+                .createdAt(emailAuth.getCreatedAt())
+                .expiresAt(emailAuth.getExpiresAt())
+                .isVerified(emailAuth.isVerified())
+                .build();
+    }
 }
 

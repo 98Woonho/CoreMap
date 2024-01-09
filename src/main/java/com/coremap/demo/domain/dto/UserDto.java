@@ -1,5 +1,6 @@
 package com.coremap.demo.domain.dto;
 
+import com.coremap.demo.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +32,25 @@ public class UserDto {
     //OAUTH2
     private String provider;
     private String providerId;
+    
+    public static User userDtoToEntity(UserDto userDto) {
+        return User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .nickname(userDto.getNickname())
+                .name(userDto.getName())
+                .contactCompanyCode(userDto.getContactCompanyCode())
+                .contactFirst(userDto.getContactFirst())
+                .contactSecond(userDto.getContactSecond())
+                .contactThird(userDto.getContactThird())
+                .addressPostal(userDto.getAddressPostal())
+                .addressPrimary(userDto.getAddressPrimary())
+                .addressSecondary(userDto.getAddressSecondary())
+                .role(userDto.getRole())
+                .provider(userDto.getProvider())
+                .providerId(userDto.getProviderId())
+                .isSuspended(userDto.isSuspended())
+                .registeredAt(userDto.getRegisteredAt())
+                .build();
+    }
 }

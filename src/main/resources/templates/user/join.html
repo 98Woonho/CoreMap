@@ -12,12 +12,14 @@
     <!-- Axios JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js" integrity="sha512-b94Z6431JyXY14iSXwgzeZurHHRNkLt9d6bAHt7BZT38eqV+GyngIi/tVye4jBKPYQ2lBdRs0glww4fmpuLRwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
     <script defer th:src="@{/user/resources/scripts/join.js}"></script>
     <title>회원가입</title>
 </head>
 <body>
 
-<th:block th:replace="~{fragments.html :: header}"/>
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
 
 <div id="addressFind">
     <img alt="X"
@@ -26,7 +28,7 @@
     <div class="modal"></div>
 </div>
 
-<form action="/user/join1" method="post" id="mainForm" class="content-container-wrapper"
+<form action="/user/join" method="post" id="mainForm" class="content-container-wrapper"
       th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}, emailAuthRegex = ${T(com.coremap.demo.regexes.EmailAuthRegex)}">
     <input hidden type="hidden" id="joinEmailSalt">
     <div class="content-container">
@@ -97,7 +99,7 @@
     </div>
 </form>
 
-<th:block th:replace="~{fragments.html :: footer}"/>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
 
 </body>
 </html>

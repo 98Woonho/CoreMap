@@ -6,6 +6,7 @@ import com.coremap.demo.domain.dto.UserDto;
 import com.coremap.demo.domain.entity.EmailAuth;
 import com.coremap.demo.domain.service.UserService;
 import com.coremap.demo.results.SendJoinEmailResult;
+import com.coremap.demo.results.VerifyJoinEmailResult;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,7 +77,7 @@ public class UserController {
     }
 
     @GetMapping("/certification")
-    public String certification(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String getCertification(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserController.log.info("GET /user/certification");
 
         if(request.getCookies() !=null) {
@@ -107,11 +108,20 @@ public class UserController {
 
     @PostMapping(value= "sendMail")
     @ResponseBody
-    public String sendmailFunc(EmailAuthDto emailAuthDto) throws MessagingException {
+    public String postSendMail(EmailAuthDto emailAuthDto) throws MessagingException {
         SendJoinEmailResult result = this.userService.sendJoinEmail(emailAuthDto);
         JSONObject responseObject = new JSONObject();
         responseObject.put("result", result.name().toLowerCase());
         responseObject.put("salt", emailAuthDto.getSalt());
+        return responseObject.toString();
+    }
+
+    @PatchMapping(value="sendMail")
+    @ResponseBody
+    public String patchSendMail(EmailAuthDto emailAuthDto) {
+        VerifyJoinEmailResult result = this.userService.verifyJoinEmail(emailAuthDto);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
         return responseObject.toString();
     }
 }
