@@ -1,0 +1,97 @@
+@charset "UTF-8";
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css");
+
+*{
+    box-sizing : border-box;
+    margin : 5px;
+}
+
+a:link, a:visited {
+    color: #3498db;
+    text-decoration: none;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #eaecee;
+    color: #17202a;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    margin: unset;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+body > .content-container-wrapper {
+
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+body > .content-container-wrapper > .content-container {
+    width: 1250px;
+    margin: 0 auto;
+
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font: inherit;
+    margin-block: unset;
+    margin-inline: unset;
+}
+
+input, select, textarea {
+    background-color: inherit;
+    border: none;
+    color: inherit;
+    font: inherit;
+    margin: unset;
+    outline: none;
+    padding: unset;
+    resize: none;
+}
+
+ol, ul {
+    list-style-type: none;
+    margin-block: unset;
+    margin-inline: unset;
+    padding-inline: unset;
+}
+
+#header {
+    background-color: #202127;
+    height: 3.725rem;
+}
+
+#header > .menu {
+    height: inherit;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#header > .menu > .logo {
+    color: #eaecee;
+    font-weight: 500;
+    font-size: 1.75rem;
+}
+
+#main {
+    flex: 1;
+}
+
+#footer {
+    background-color: #d5d8dc;
+}

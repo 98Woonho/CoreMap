@@ -1,0 +1,16 @@
+body > .content-container-wrapper > .content-container > .background-image1 {
+    width: 100%;
+    height: 100%;
+}
+
+#main > .first {
+    position: relative;
+}
+
+#main > .content-container > .explanation-container {
+    color: #eaecee;
+    position: absolute;
+    z-index: 1;
+}
+
+

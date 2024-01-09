@@ -1,0 +1,79 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.7'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.coremap'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '21'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	//Web MVC
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	//Thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	//Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	//SpringSecurity
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	//SpringSecuirty+Thymeleaf
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+	//DBCONN BASIC
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	//ORM_MYBATIS
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+
+	//ORM_JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	//OAUTH2-Client
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	//JWT_TOKEN
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+	//MAIL
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//DEVTOOLS
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	//VALIDATOR
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//LANG3
+	implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

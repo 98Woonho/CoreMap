@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+.join-container {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.join-container > .label {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#addressFind {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0.25rem);
+    background-color: #17202aa0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    transition-duration: 250ms;
+    transition-property: opacity;
+    transition-timing-function: ease;
+    z-index: 9;
+}
+
+#addressFind.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#addressFind > .close {
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    cursor: pointer;
+    position: absolute;
+}
+
+#addressFind > .modal {
+    top: calc(50% + 1rem);
+    left: 50%;
+    width: 25rem;
+    height: 30rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem 0.0625rem #17202a50;
+    overflow: hidden;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition-duration: 250ms;
+    transition-property: top;
+    transition-timing-function: ease;
+}
+
+#addressFind.visible > .modal {
+    top: 50%;
+}
