@@ -27,6 +27,7 @@ public class UserDto {
     private String addressSecondary;
     private String role;
     private boolean isSuspended;
+    private boolean isAdmin;
     private Date registeredAt;
 
     //OAUTH2
