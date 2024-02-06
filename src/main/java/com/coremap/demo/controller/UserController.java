@@ -55,15 +55,19 @@ public class UserController {
     @ResponseBody
     public String postSendMail(EmailAuthDto emailAuthDto) throws MessagingException {
         String result = this.userService.sendJoinEmail(emailAuthDto);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result);
+        if (result.equals("SUCCESS")) {
+            responseObject.put("salt", emailAuthDto.getSalt());
+        }
 
-        return result;
+        return responseObject.toString();
     }
 
     @PatchMapping(value="sendMail")
     @ResponseBody
     public String patchSendMail(EmailAuthDto emailAuthDto) {
-        String result = this.userService.verifyJoinEmail(emailAuthDto);
 
-        return result;
+        return this.userService.verifyJoinEmail(emailAuthDto);
     }
 }

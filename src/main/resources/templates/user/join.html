@@ -39,7 +39,7 @@
             <span class="text">이메일</span>
             <span class="horizontal">
                 <input type="email" class="big common-field" maxlength="50" name="email"
-                           placeholder="이메일(user@sample.com)" th:data-regex="${userRegex.EMAIL.expression}">
+                           placeholder="이메일 (user@sample.com)" th:data-regex="${userRegex.EMAIL.expression}">
                 <input type="button" name="emailSend" value="인증번호 발송" class="common-button">
             </span>
             <span class="horizontal">
@@ -51,7 +51,7 @@
         </label>
         <label class="label password">
             <span class="text">비밀번호</span>
-            <input class="common-field" maxlength="50" name="password" placeholder="비밀번호" type="password"
+            <input class="common-field" maxlength="50" name="password" placeholder="비밀번호 (영문, 숫자, 특수문자를 포함한 8~15자)" type="password"
                    th:data-regex="${userRegex.PASSWORD.expression}">
         </label>
         <label class="label passwordCheck">

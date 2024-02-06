@@ -201,12 +201,12 @@ button {
     border: 0.0625rem solid #262626;
 }
 
-.common-field:disabled {
-    background-color: #2A292E;
-    border: 0.0625rem solid #17202a;
-}
-
 .common-field:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #202127 inset;
     -webkit-text-fill-color: #eaecee;
+}
+
+.common-field:disabled {
+    background-color: #2A292E;
+    border: 0.0625rem solid #17202a;
 }

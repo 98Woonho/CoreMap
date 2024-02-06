@@ -5,7 +5,7 @@ public enum UserRegex implements Regex {
     // public static final UserRegex EMAIL = new UserRegex("...");
     // 그래서 UserRegex.EMAIL.matches() 이런식으로 사용 가능함.
     EMAIL("^(?=.{4,50}$)([\\da-z_\\-.]{4,})@([\\da-z][\\da-z\\-]*[\\da-z]\\.)?([\\da-z][\\da-z\\-]*[\\da-z])\\.([a-z]{2,15}\\.)?([a-z]{2,3})$"),
-    PASSWORD("^([\\da-zA-Z`~!@#$%^&*()\\-_=+\\[{\\]}\\\\|;:'\",<.>/?]{4,50})$"),
+    PASSWORD("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$"),
     NICKNAME("^([\\da-zA-Z가-힣]{2,10})$"),
     NAME("^([가-힣]{2,5})$"),
     CONTACT_FIRST("^(010)$"),

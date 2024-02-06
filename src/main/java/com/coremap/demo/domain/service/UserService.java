@@ -86,6 +86,7 @@ public class UserService {
         mimemessageHelper.setTo(emailAuthDto.getEmail());
         mimemessageHelper.setSubject("[Coremap] 회원가입 인증번호");
         mimemessageHelper.setText(textHtml, true);
+        this.mailSender.send(message);
 
         EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
 
