@@ -4,14 +4,14 @@ package com.coremap.demo.domain.service;
 import com.coremap.demo.config.auth.jwt.JwtTokenProvider;
 import com.coremap.demo.domain.dto.EmailAuthDto;
 import com.coremap.demo.domain.dto.UserDto;
+import com.coremap.demo.domain.entity.ContactCompany;
 import com.coremap.demo.domain.entity.EmailAuth;
 import com.coremap.demo.domain.entity.User;
+import com.coremap.demo.domain.repository.ContactCompanyRepository;
 import com.coremap.demo.domain.repository.EmailAuthRepository;
 import com.coremap.demo.domain.repository.UserRepository;
 import com.coremap.demo.properties.EmailAuthProperties;
 import com.coremap.demo.regexes.EmailAuthRegex;
-import com.coremap.demo.results.SendJoinEmailResult;
-import com.coremap.demo.results.VerifyJoinEmailResult;
 import com.coremap.demo.utils.CryptoUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
@@ -27,17 +27,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
     @Autowired
     private EmailAuthRepository emailAuthRepository;
+
+    @Autowired
+    private ContactCompanyRepository contactCompanyRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -46,81 +49,22 @@ public class UserService {
     private SpringTemplateEngine templateEngine;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
     private UserRepository userRepository;
 
-    @Transactional(rollbackFor = Exception.class)
-    public boolean memberJoin(UserDto dto, Model model, HttpServletRequest request) throws Exception {
-
-        //비지니스 Validation Check
-
-        //password vs repassword 일치여부
-        if (!dto.getPassword().equals(dto.getPasswordCheck())) {
-            model.addAttribute("password", "패스워드 입력이 상이합니다 다시 입력하세요");
-            return false;
-        }
-
-        //동일 계정이 있는지 여부 확인
-        if (userRepository.existsById(dto.getUsername())) {
-            model.addAttribute("username", "동일한 계정명이 존재합니다.");
-            return false;
-        }
-
-        //이메일인증이 되었는지 확인(JWT EmailAuth쿠키 true확인)
-        Cookie[] cookies = request.getCookies();
-        String jwtAccessToken = Arrays.stream(cookies).filter(co -> co.getName().equals("EmailAuth")).findFirst()
-                .map(co -> co.getValue())
-                .orElse(null);
-
-        //---
-        // JWT토큰의 만료여부 확인
-        //---
-        if (!jwtTokenProvider.validateToken(jwtAccessToken)) {
-            model.addAttribute("username", "이메일 인증을 진행해 주세요.");
-            return false;
-        } else {
-            //EmailAuth Claim Value값 꺼내서 true 확인
-            Claims claims = jwtTokenProvider.parseClaims(jwtAccessToken);
-            Boolean isEmailAuth = (Boolean) claims.get(EmailAuthProperties.EMAIL_JWT_COOKIE_NAME);
-            String id = (String) claims.get("id");
-            if (isEmailAuth == null && isEmailAuth != true) {
-                //이메일인증실패!!
-                model.addAttribute("username", "해당 계정의 이메일 인증이 되어있지 않습니다.");
-                return false;
-            }
-            if (!id.equals(dto.getUsername())) {
-                System.out.println("!!!!!!!!!!!!!!");
-                model.addAttribute("username", "해당 이메일 재인증이 필요합니다.");
-                return false;
-            }
-
-        }
-
-        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-        //Dto->Entity
-        User user = new User();
-        user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword());
-        user.setRole("ROLE_USER");
-        user.setAddressPostal(dto.getAddressPostal());
-        user.setAddressPrimary(dto.getAddressPrimary());
-        user.setAddressSecondary(dto.getAddressSecondary());
-        user.setNickname(dto.getNickname());
-        user.setPassword(dto.getPassword());
-
-        //Db Saved...
-        userRepository.save(user);
-
-        return userRepository.existsById(user.getUsername());
+    public List<ContactCompany> getAllContactCompanyList() {
+        return contactCompanyRepository.findAll();
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public SendJoinEmailResult sendJoinEmail(EmailAuthDto emailAuthDto) throws MessagingException {
+    public String sendJoinEmail(EmailAuthDto emailAuthDto) throws MessagingException {
+        List<User> getAllUserList = userRepository.findAll();
+
+        for(User user : getAllUserList) {
+            if(Objects.equals(user.getUsername(), emailAuthDto.getEmail())) {
+                return "FAILURE_DUPLICATE_EMAIL";
+            }
+        }
+
         String code = RandomStringUtils.randomNumeric(6);
         emailAuthDto.setCode(code);
         emailAuthDto.setCreatedAt(new Date()); // 이메일이 보내졌을 때의 시간
@@ -147,39 +91,34 @@ public class UserService {
 
         emailAuthRepository.save(emailAuth);
 
-        if (emailAuthRepository.existsByEmailAndCodeAndSalt(emailAuth.getEmail(), emailAuth.getCode(), emailAuth.getSalt())) {
-            this.mailSender.send(message);
-            return SendJoinEmailResult.SUCCESS;
-        } else {
-            return SendJoinEmailResult.FAILURE;
-        }
+        return "SUCCESS";
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public VerifyJoinEmailResult verifyJoinEmail(EmailAuthDto emailAuthDto) {
+    public String verifyJoinEmail(EmailAuthDto emailAuthDto) {
         if (!EmailAuthRegex.EMAIL.matches(emailAuthDto.getEmail()) ||
                 !EmailAuthRegex.CODE.matches(emailAuthDto.getCode()) ||
                 !EmailAuthRegex.SALT.matches(emailAuthDto.getSalt())) {
-            return VerifyJoinEmailResult.FAILURE;
+            return "FAILURE";
         }
 
         emailAuthDto = EmailAuth.emailAuthEntityToDto(emailAuthRepository.findByEmailAndCodeAndSalt(emailAuthDto.getEmail(), emailAuthDto.getCode(), emailAuthDto.getSalt()));
 
 
         if (emailAuthDto == null) {
-            return VerifyJoinEmailResult.FAILURE_INVALID_CODE;
+            return "FAILURE_INVALID_CODE";
         }
 
         if (new Date().compareTo(emailAuthDto.getExpiresAt()) > 0) {
-            return VerifyJoinEmailResult.FAILURE_EXPIRED;
+            return "FAILURE_EXPIRED";
         }
 
         emailAuthDto.setVerified(true);
 
         EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
 
-        return emailAuthRepository.updateEmailAuth(emailAuth) > 0
-                ? VerifyJoinEmailResult.SUCCESS
-                : VerifyJoinEmailResult.FAILURE;
+        emailAuthRepository.save(emailAuth);
+
+        return "SUCCESS";
     }
 }

@@ -1,0 +1,39 @@
+.main-section-1 {
+    width: 100vw;
+    background-image: url('../images/main1.jpg');
+    position: relative;
+    height: 677px;
+}
+
+.main-section-1::before {
+    content: '';
+    background: linear-gradient(to right, black, transparent);
+    position: absolute;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.main-section-1 > .content-container {
+    color: #eaecee;
+    position: absolute;
+    z-index: 5;
+}
+
+.swiper {
+    width: 900px;
+    height: 500px;
+    position: relative;
+}
+
+.swiper .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+iframe {
+    width: 800px;
+    height: 100%;
+}

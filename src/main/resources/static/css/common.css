@@ -26,14 +26,14 @@ body {
     justify-content: flex-start;
 }
 
-body > .content-container-wrapper {
+.content-container-wrapper {
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
-body > .content-container-wrapper > .content-container {
+.content-container {
     max-width: 1250px;
     width: 100%;
 }
@@ -87,7 +87,7 @@ button {
     align-items: center;
 }
 
-#header > .menu > .logo {
+#header .logo {
     color: #eaecee;
     font-weight: 500;
     font-size: 1.75rem;
@@ -154,15 +154,59 @@ button {
     }
 }
 
-.common-input::placeholder {
-    background-color: #202127;
-    color: #eaecee;
-}
-
 .common-button {
     color: #eaecee;
+    background-color: #202127;
+    border: 0.0625rem solid #202127;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    padding: 0.5rem 0.625rem;
 }
 
-.text {
+.common-button:active {
+    background-color: #202127;
+}
+
+.common-button:hover {
+    border: 0.0625rem solid #262626;
+}
+
+.common-button:focus {
+    border: 0.0625rem solid #262626;
+}
+
+.common-button:disabled {
+    background-color: #2A292E;
+    border: 0.0625rem solid #17202a;
+    cursor: default;
+}
+
+.common-field::placeholder {
+    color: #d5d8dc;
+}
+
+.common-field {
+    background-color: #202127;
     color: #eaecee;
+    border: 0.0625rem solid #202127;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.common-field:hover {
+    border: 0.0625rem solid #262626;
+}
+
+.common-field:focus {
+    border: 0.0625rem solid #262626;
+}
+
+.common-field:disabled {
+    background-color: #2A292E;
+    border: 0.0625rem solid #17202a;
+}
+
+.common-field:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #202127 inset;
+    -webkit-text-fill-color: #eaecee;
 }

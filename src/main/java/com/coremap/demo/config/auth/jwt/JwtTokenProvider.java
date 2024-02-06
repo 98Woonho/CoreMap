@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     //Key 저장
     private final Key key;
 
-    String url = "jdbc:mysql://localhost:3306/testdb";
+    String url = "jdbc:mysql://localhost:3306/coremap_db";
     String username = "root";
     String password = "1234";
     Connection conn;

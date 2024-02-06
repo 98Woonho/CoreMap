@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @Slf4j
-@RequestMapping(value="/home")
 public class HomeController {
-    @GetMapping(value="/homepage")
-    public void getHomepage() {
-        log.info("getHomepage()...");
+    @GetMapping(value="/")
+    public String getHomepage() {
+        return "index";
     }
 }

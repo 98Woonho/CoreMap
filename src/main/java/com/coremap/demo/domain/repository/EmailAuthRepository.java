@@ -19,13 +19,13 @@ public interface EmailAuthRepository extends JpaRepository<EmailAuth, EmailAuthI
                                            @Param(value="salt") String salt);
 
 
-    @Modifying
-    @Query("UPDATE EmailAuth e " +
-            "SET e.isVerified = :#{#emailAuth.isVerified}, " +
-            "e.createdAt = :#{#emailAuth.createdAt}, " +
-            "e.expiresAt = :#{#emailAuth.expiresAt} " +
-            "WHERE BINARY (e.email) = :#{#emailAuth.email} " +
-            "AND BINARY (e.code) = :#{#emailAuth.code} " +
-            "AND BINARY (e.salt) = :#{#emailAuth.salt}")
-    int updateEmailAuth(EmailAuth emailAuth);
+//    @Modifying
+//    @Query("UPDATE EmailAuth e " +
+//            "SET e.isVerified = :#{#emailAuth.isVerified}, " +
+//            "e.createdAt = :#{#emailAuth.createdAt}, " +
+//            "e.expiresAt = :#{#emailAuth.expiresAt} " +
+//            "WHERE BINARY (e.email) = :#{#emailAuth.email} " +
+//            "AND BINARY (e.code) = :#{#emailAuth.code} " +
+//            "AND BINARY (e.salt) = :#{#emailAuth.salt}")
+//    int updateEmailAuth(EmailAuth emailAuth);
 }

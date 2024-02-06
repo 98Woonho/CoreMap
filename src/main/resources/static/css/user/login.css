@@ -4,7 +4,11 @@
     background-color: #2A292E;
 }
 
-#main > .content-container {
+.text {
+    color: #eaecee;
+}
+
+.content-container {
     padding: 2rem 0;
 
     display: flex;
@@ -14,7 +18,7 @@
     justify-content: flex-start;
 }
 
-#main > .content-container > .title-container > .title {
+.title {
     text-align: center;
     color: #ffffff;
     font-size: 2.5rem;
@@ -31,7 +35,7 @@
     justify-content: flex-start;
 }
 
-#loginForm > .label {
+#loginForm .label {
     align-items: stretch;
     display: flex;
     flex-direction: column;
@@ -39,12 +43,16 @@
     justify-content: flex-start;
 }
 
-#loginForm > .label > .text {
-    color: #eaecee;
-    font-size: 1.125rem;
+#loginForm .row-label {
+    display: flex;
+    flex-direction: row;
 }
 
-#loginForm > .menu {
+#loginForm .remember {
+    margin-right: 0.5rem;
+}
+
+#loginForm .menu {
     margin-top: 0.5rem;
 
     align-items: stretch;
@@ -54,6 +62,6 @@
     justify-content: flex-start;
 }
 
-#loginForm > .menu > .item > .link {
+#loginForm .link {
     color: #3498db;
 }
