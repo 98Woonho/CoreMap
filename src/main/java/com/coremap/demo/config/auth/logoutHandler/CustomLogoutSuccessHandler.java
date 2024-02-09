@@ -22,7 +22,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     private String kakaoClientId;
 
 
-    private final String REDIRECT_URI="http://localhost:8080/login";
+    private final String REDIRECT_URI="http://localhost:8080/";
 
 
     @Autowired

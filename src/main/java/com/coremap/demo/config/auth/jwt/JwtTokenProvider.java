@@ -73,16 +73,28 @@ public class JwtTokenProvider {
         UserDto userDto = principalDetails.getUserDto();
 
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 60 * 5 * 1000);    // 60*5 초후 만료
+        Date accessTokenExpiresIn = new Date(now + 86400000);    // 60*5 초후 만료
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim("username", authentication.getName())             //정보저장
-                .claim("auth", authorities)                             //정보저장
-                .claim("principal", authentication.getPrincipal())      //정보저장
-                .claim("credentials", authentication.getCredentials())  //정보저장
-                .claim("details", authentication.getDetails())          //정보저장
-                .claim("provider", userDto.getProvider())               //정보저장
-                .claim("accessToken", principalDetails.getAccessToken())//정보저장
+                .claim("username", authentication.getName())
+                .claim("password", userDto.getPassword())
+                .claim("nickname", userDto.getNickname())
+                .claim("name", userDto.getName())
+                .claim("contactCompanyCode", userDto.getContactCompanyCode())
+                .claim("contactFirst", userDto.getContactFirst())
+                .claim("contactSecond", userDto.getContactSecond())
+                .claim("contactThird", userDto.getContactThird())
+                .claim("addressPostal", userDto.getAddressPostal())
+                .claim("addressPrimary", userDto.getAddressPrimary())
+                .claim("addressSecondary", userDto.getAddressSecondary())
+                .claim("role", userDto.getRole())
+                .claim("suspended", userDto.isSuspended())
+                .claim("auth", authorities)
+                .claim("principal", authentication.getPrincipal())
+                .claim("credentials", authentication.getCredentials())
+                .claim("details", authentication.getDetails())
+                .claim("provider", userDto.getProvider())
+                .claim("accessToken", principalDetails.getAccessToken())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -102,36 +114,6 @@ public class JwtTokenProvider {
                 .refreshToken(refreshToken)
                 .build();
     }
-
-    public TokenInfo generateToken(String Claimkey, String id, boolean isAuth) {
-        long now = (new Date()).getTime();
-
-        // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 60 * 5 * 1000);    // 60*5 초후 만료
-        String accessToken = Jwts.builder()
-                .setSubject(Claimkey + "JWT TOKEN")
-                .claim(Claimkey, isAuth)             //정보저장
-                .claim("id", id)
-                .setExpiration(accessTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 86400000))    //1일: 24 * 60 * 60 * 1000 = 86400000
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
-        System.out.println("[JwtTokenProvider] generateToken() accessToken : " + accessToken);
-        System.out.println("[JwtTokenProvider] generateToken() refreshToken : " + refreshToken);
-
-        return TokenInfo.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
-
 
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
@@ -150,22 +132,42 @@ public class JwtTokenProvider {
         String username = claims.getSubject(); // username
 
         //JWT Added
-        System.out.println("[JWTTOKENPROVIDER] principalDetails  : " + claims.get("principal"));
 
-        String provider = (String) claims.get("provider");
         String password = (String) claims.get("password");
+        String nickname = (String) claims.get("nickname");
+        String name = (String) claims.get("name");
+        String contactCompanyCode = (String) claims.get("contactCompanyCode");
+        String contactFirst = (String) claims.get("contactFirst");
+        String contactSecond = (String) claims.get("contactSecond");
+        String contactThird = (String) claims.get("contactThird");
+        String addressPostal = (String) claims.get("addressPostal");
+        String addressPrimary = (String) claims.get("addressPrimary");
+        String addressSecondary = (String) claims.get("addressSecondary");
+        String role = (String) claims.get("role");
+        boolean isSuspended = (boolean) claims.get("suspended");
+        String provider = (String) claims.get("provider");
         String auth = (String) claims.get("auth");
         String oauthAccessToken = (String) claims.get("accessToken");
         UserDto userDto = new UserDto();
-        userDto.setProvider(provider);
         userDto.setUsername(username);
         userDto.setPassword(password);
+        userDto.setNickname(nickname);
+        userDto.setName(name);
+        userDto.setContactCompanyCode(contactCompanyCode);
+        userDto.setContactFirst(contactFirst);
+        userDto.setContactSecond(contactSecond);
+        userDto.setContactThird(contactThird);
+        userDto.setAddressPostal(addressPostal);
+        userDto.setAddressPrimary(addressPrimary);
+        userDto.setAddressSecondary(addressSecondary);
+        userDto.setRole(role);
+        userDto.setSuspended(isSuspended);
+        userDto.setProvider(provider);
         userDto.setRole(auth);
 
         PrincipalDetails principalDetails = new PrincipalDetails();
         principalDetails.setUserDto(userDto);
         principalDetails.setAccessToken(oauthAccessToken);   //Oauth AccessToken
-        System.out.println("[JWTTOKENPROVIDER] getAuthentication() principalDetails  : " + principalDetails);
 
 
         //JWT + NO REMEMBERME

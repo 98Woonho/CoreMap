@@ -1,7 +1,6 @@
 package com.coremap.demo.domain.service;
 
 
-import com.coremap.demo.config.auth.jwt.JwtTokenProvider;
 import com.coremap.demo.domain.dto.EmailAuthDto;
 import com.coremap.demo.domain.dto.UserDto;
 import com.coremap.demo.domain.entity.ContactCompany;
@@ -10,14 +9,11 @@ import com.coremap.demo.domain.entity.User;
 import com.coremap.demo.domain.repository.ContactCompanyRepository;
 import com.coremap.demo.domain.repository.EmailAuthRepository;
 import com.coremap.demo.domain.repository.UserRepository;
-import com.coremap.demo.properties.EmailAuthProperties;
 import com.coremap.demo.regexes.EmailAuthRegex;
+import com.coremap.demo.regexes.UserRegex;
 import com.coremap.demo.utils.CryptoUtil;
-import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
@@ -49,6 +44,10 @@ public class UserService {
     private SpringTemplateEngine templateEngine;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    @Autowired
     private UserRepository userRepository;
 
     public List<ContactCompany> getAllContactCompanyList() {
@@ -57,12 +56,15 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public String sendJoinEmail(EmailAuthDto emailAuthDto) throws MessagingException {
-        List<User> getAllUserList = userRepository.findAll();
-
-        for(User user : getAllUserList) {
-            if(Objects.equals(user.getUsername(), emailAuthDto.getEmail())) {
-                return "FAILURE_DUPLICATE_EMAIL";
-            }
+//        List<User> getAllUserList = userRepository.findAll();
+//
+//        for(User user : getAllUserList) {
+//            if(Objects.equals(user.getUsername(), emailAuthDto.getEmail())) {
+//                return "FAILURE_DUPLICATE_EMAIL";
+//            }
+//        }
+        if(userRepository.existsById(emailAuthDto.getEmail())) {
+            return "FAILURE_DUPLICATE_EMAIL";
         }
 
         String code = RandomStringUtils.randomNumeric(6);
@@ -119,6 +121,43 @@ public class UserService {
         EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
 
         emailAuthRepository.save(emailAuth);
+
+        return "SUCCESS";
+    }
+
+    public String confirmDuplication(String nickname) {
+        List<User> userList = userRepository.findAll();
+
+        for (User user : userList) {
+            if(Objects.equals(user.getNickname(), nickname)) {
+                return "FAILURE_DUPLICATED_NICKNAME";
+            }
+        }
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String join(UserDto userDto) {
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setNickname(userDto.getNickname());
+        user.setName(userDto.getName());
+        user.setContactCompanyCode(userDto.getContactCompanyCode());
+        user.setContactFirst(userDto.getContactFirst());
+        user.setContactSecond(userDto.getContactSecond());
+        user.setContactThird(userDto.getContactThird());
+        user.setAddressPostal(userDto.getAddressPostal());
+        user.setAddressPrimary(userDto.getAddressPrimary());
+        user.setAddressSecondary(userDto.getAddressSecondary());
+        user.setRole("ROLE_USER");
+        user.setSuspended(false);
+        user.setRegisteredAt(new Date());
+
+        userRepository.save(user);
 
         return "SUCCESS";
     }

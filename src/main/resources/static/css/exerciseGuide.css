@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+#main {
+    background-color: #2A292E;
+}
+
+.title {
+    margin-top: 5rem;
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+.exercise-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 7.5rem;
+}
+
+.exercise-section {
+    margin-right: 13rem;
+}
+
+.sub-title {
+    margin-bottom: 0.5rem;
+    color: white;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+ul {
+    margin-bottom: 5rem;
+}
+
+li {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}

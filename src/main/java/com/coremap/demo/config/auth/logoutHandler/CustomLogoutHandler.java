@@ -90,9 +90,6 @@ public class CustomLogoutHandler implements LogoutHandler {
 
 
         }else if(provider!=null&&provider.equals("naver")){
-
-
-
             //AccessToken 추출
             String accessToken =  principalDetails.getAccessToken();
             String url ="https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id="+naverClientId+"&client_secret="+naverClientSecret+"&access_token="+accessToken+"&service_provider=NAVER";

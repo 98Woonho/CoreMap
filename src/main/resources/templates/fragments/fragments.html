@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -40,8 +40,21 @@
             <a href="/" class="link">CoreMap</a>
         </li>
         <div class="spring"></div>
-        <li class="item login">
-            <a href="/user/login" class="link">로그인</a>
+        <li class="item menu">
+            <a href="/exercise/guide">ExerciseGuide</a>
+        </li>
+        <li class="item menu">
+            <a href="/">자유게시판</a>
+        </li>
+        <li class="item user">
+            <a href="/user/login" class="link" sec:authorize="isAnonymous()">로그인</a>
+        </li>
+        <li class="item user">
+            <a href="/logout" class="link" sec:authorize="isAuthenticated()">로그아웃</a>
+        </li>
+        <li class="item user">
+            <a class="link" href="/user/join" sec:authorize="isAnonymous()">회원가입
+            </a>
         </li>
     </ul>
 </header>

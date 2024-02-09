@@ -51,17 +51,20 @@
         </label>
         <label class="label password">
             <span class="text">비밀번호</span>
-            <input class="common-field" maxlength="50" name="password" placeholder="비밀번호 (영문, 숫자, 특수문자를 포함한 8~15자)" type="password"
+            <input class="common-field" maxlength="15" name="password" placeholder="비밀번호 (영문, 숫자, 특수문자를 포함한 8~15자)" type="password"
                    th:data-regex="${userRegex.PASSWORD.expression}">
         </label>
         <label class="label passwordCheck">
-            <input class="common-field" maxlength="50" name="passwordCheck" placeholder="비밀번호 재입력"
+            <input class="common-field" maxlength="15" name="passwordCheck" placeholder="비밀번호 재입력"
                    type="password" th:data-regex="${userRegex.PASSWORD.expression}">
         </label>
         <label class="label nickname">
             <span class="text">닉네임</span>
-            <input class="common-field" maxlength="10" name="nickname" placeholder="닉네임" type="text"
-                   th:data-regex="${userRegex.NICKNAME.expression}">
+            <span class="horizontal">
+                <input class="big common-field" maxlength="10" name="nickname" placeholder="닉네임" type="text"
+                       th:data-regex="${userRegex.NICKNAME.expression}">
+                <input type="button" name="confirmDuplication" value="중복확인" class="common-button">
+            </span>
         </label>
         <label class="label name">
             <span class="text">이름</span>

@@ -17,39 +17,37 @@ import java.util.Date;
 @Table(name="user")
 public class User {
     @Id
-    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(50)")
     private String username;
-    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
+    @Column(columnDefinition = "VARCHAR(128)")
     private String password;
-    @Column(nullable = false, columnDefinition = "VARCHAR(10)", unique = true)
+    @Column(columnDefinition = "VARCHAR(10)")
     private String nickname;
-    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    @Column(columnDefinition = "VARCHAR(10)")
     private String name;
-    @Column(nullable = false, columnDefinition = "VARCHAR(5)")
+    @Column(columnDefinition = "VARCHAR(5)")
     private String contactCompanyCode;
-    @Column(nullable = false, columnDefinition = "VARCHAR(4)")
+    @Column(columnDefinition = "VARCHAR(4)")
     private String contactFirst;
-    @Column(nullable = false, columnDefinition = "VARCHAR(4)", unique = true)
+    @Column(columnDefinition = "VARCHAR(4)")
     private String contactSecond;
-    @Column(nullable = false, columnDefinition = "VARCHAR(4)", unique = true)
+    @Column(columnDefinition = "VARCHAR(4)")
     private String contactThird;
-    @Column(nullable = false, columnDefinition = "VARCHAR(5)")
+    @Column(columnDefinition = "VARCHAR(5)")
     private String addressPostal;
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String addressPrimary;
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String addressSecondary;
-    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
+    @Column(columnDefinition = "VARCHAR(20)")
     private String role;
-    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
+    @Column(columnDefinition = "VARCHAR(20)")
     private String provider;
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String providerId;
-    @Column(nullable = false, name = "suspended_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "suspended_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isSuspended;
-    @Column(nullable = false, name = "admin_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isAdmin;
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private Date registeredAt;
 
     public static UserDto entityToDto(User user){
