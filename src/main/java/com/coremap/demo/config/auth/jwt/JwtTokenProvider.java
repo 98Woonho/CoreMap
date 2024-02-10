@@ -129,7 +129,7 @@ public class JwtTokenProvider {
                         .map(auth -> new SimpleGrantedAuthority(auth))
                         .collect(Collectors.toList());
 
-        String username = claims.getSubject(); // username
+        String username = claims.getSubject();
 
         //JWT Added
 

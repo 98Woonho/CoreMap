@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>코어맵 운동 가이드</title>
+
+    <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
+
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/board/free.css">
+
+    <script defer src="/js/board/free.js"></script>
+
+</head>
+<body>
+
+<th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+
+
+<main id="main" class="content-container-wrapper">
+</main>
+
+<th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+
+</body>
+</html>

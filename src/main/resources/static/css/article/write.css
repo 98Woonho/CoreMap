@@ -1,0 +1,46 @@
+@charset "UTF-8";
+
+#main {
+    background-color: #2A292E;
+}
+
+#main .content-container {
+    margin-top: 5rem;
+    max-width: 800px;
+}
+
+.write-form {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: flex-start;
+
+    margin-top: 3rem;
+}
+
+.label {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: flex-start;
+
+    margin-top: 1.5rem;
+}
+
+.label .text {
+    font-size: 1.125rem;
+}
+
+.file-btn {
+    background-color: #E9E9ED;
+    border: 0.0625rem solid #A5A5B1;
+    border-radius: 5px;
+}
+
+.files {
+    border: 0.0625rem solid #566573;
+    border-radius: 5px;
+    padding: 0.5rem;
+}

@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.ck-editor__editable {
+    height: 400px;
+}
+
+.ck-editor__editable p {
+    margin: 0
+}
+
+.ck-content {
+    background-color: #2A292E !important;
+}
+
+p {
+    color: white;
+}
+
+.ck-placeholder::before {
+    content: attr(data-placeholder) !important;
+    color: white !important;
+}

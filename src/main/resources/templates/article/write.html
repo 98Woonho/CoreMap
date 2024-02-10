@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
+
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/article/write.css">
+    <link rel="stylesheet" href="/css/article/ckeditor.css">
+
+    <!-- ckeditor.js -->
+    <script src="/js/article/ckeditor/ckeditor.js"></script>
+    <script src="/js/article/ckeditor/translations/ko.js"></script>
+
+    <script defer src="/js/article/write.js"></script>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+
+<main id="main" class="content-container-wrapper">
+    <div class="content-container">
+        <h1 class="title">
+            게시글 작성
+        </h1>
+        <form class="write-form" id="writeForm">
+            <label class="label">
+                <span class="text title">제목</span>
+                <input type="text" class="common-field title" name="title">
+            </label>
+            <label class="label">
+                <span class="text">내용</span>
+                <textarea maxlength="10000" placeholder="내용을 입력해 주세요." name="content"
+                          rows="15"></textarea>
+            </label>
+            <div class="label file-wrapper">
+                <span class="text">첨부파일</span>
+                <div class="files">
+                    <button class="file-btn" name="fileAdd" title="첨부파일 추가">파일추가</button>
+                    <ul class="list" rel="fileList"></ul>
+                </div>
+            </div>
+            <div class="button-container">
+                <a href="/board/free" class="link common-button">돌아가기</a>
+                <span class="spring"></span>
+                <input type="submit" value="작성하기" class="common-button">
+            </div>
+        </form>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+
+</body>
+</html>
