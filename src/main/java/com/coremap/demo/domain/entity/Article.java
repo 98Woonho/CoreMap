@@ -13,19 +13,21 @@ import java.util.Date;
 @Data
 @Builder
 @Entity
-@Table(name="file")
-public class File {
+@Table(name="article")
+public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String type;
-    private int size;
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] data;
-    private Long articleId;
+
     @ManyToOne
     @JoinColumn(name="user_username", foreignKey = @ForeignKey(name="fk_file_user_username", foreignKeyDefinition = "FOREIGN KEY(user_username) REFERENCES user(username) ON DELETE CASCADE ON UPDATE CASCADE"))
     private User user;
-    private Date createdAt;
+
+    private String title;
+    private String content;
+    private int view;
+    private Date writtenAt;
+    private Date modifiedAt;
+    private boolean isDeleted;
+    private Long indexInBoard;
 }

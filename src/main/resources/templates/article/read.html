@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
+
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/article/read.css">
+
+    <script defer src="/js/article/read.js"></script>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+
+<main id="main" class="content-container-wrapper" th:if="${article != null && !article.isDeleted()}">
+    <div class="content-container">
+        <h1 class="title">
+            자유 게시판
+        </h1>
+        <table class="table" id="articleTable" th:data-index="${article.id}">
+            <thead>
+            <tr>
+                <th>제목</th>
+                <td th:text="${article.title}"></td>
+            </tr>
+            <tr>
+                <th>작성자</th>
+                <td th:text="${article.user.nickname}"></td>
+                <th>조회수</th>
+                <td th:text="${article.view}"></td>
+            </tr>
+            <tr>
+                <th>작성 일시</th>
+                <td th:text="${article.writtenAt}"></td>
+                <th th:if="${article.modifiedAt != null}">수정 일시</th>
+                <td th:if="${article.modifiedAt != null}" th:text="${article.modifiedAt}"></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="4" th:utext="${article.content}"></td>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr>
+                <th>첨부 파일</th>
+                <td class="file-empty" colspan="3" th:if="${fileList == null || fileList.size() == 0}">첨부 파일이 없습니다.</td>
+                <td class="file-wrapper" colspan="3" th:if="${fileList != null && fileList.size() > 0}">
+                    <ul class="list">
+                        <li class="item" th:each="file : ${fileList}">
+                            <a href="#" class="link" th:href="@{/article/file?index=${file.id}}">
+                                <img src="/images/article/read.file.icon.png" alt="" class="icon">
+                                <span class="name" th:text="${file.getName()}"></span>
+                            </a>
+                            <span class="size">(<th:block
+                                    th:text="${T(java.lang.Math).floor(file.size) / 1024.00 * 100 / 100}"></th:block>KB)</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="bottom-button-container"
+                         th:with="searchCriterion = ${#request.getParameter('criterion')}, searchKeyword = ${#request.getParameter('keyword')}">
+                        <!-- #request.getParameter('a') : 주소창에서 a라는 속성의 값을 가져옴 -->
+                        <a href="#" class="common-button"
+                           th:href="@{/board/list (code=${board.getCode()}, page=${page})}"
+                           th:if="${searchCriterion == null || searchKeyword == null}">목록</a>
+                        <a href="#" class="common-button"
+                           th:href="@{/board/list (code=${board.getCode()}, page=${page}, criterion = ${searchCriterion}, keyword = ${searchKeyword})}"
+                           th:if="${searchCriterion != null && searchKeyword != null}">목록</a>
+                        <span class="spring"></span>
+                        <a class="common-button" rel="modify" th:if="${isAuth}"
+                           th:href="@{/article/modify(index=${article.getIndex()})}">수정</a>
+                        <div class="common-button" rel="delete" th:if="${isAuth}">삭제</div>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+
+</body>
+</html>

@@ -53,3 +53,48 @@ writeForm['file'].onchange = function () {
     fileList.scrollLeft = fileList.scrollWidth; // 파일이 추가 되면 스크롤을 오른쪽 끝으로 알아서 당겨줌.
     writeForm['file'].value = '';
 }
+
+writeForm.onsubmit = function(e) {
+    e.preventDefault();
+
+    if (writeForm['title'].value === '') {
+        alert('제목을 입력해 주세요.');
+        return;
+    }
+
+    if (writeForm['content'].value === '') {
+        alert('내용을 입력해 주세요.');
+        return;
+    }
+
+    const formData = new FormData();
+
+    const images = writeForm.querySelectorAll('.image');
+    images.forEach(image => {
+        const img = image.querySelector('img');
+        const imgString = img.outerHTML;
+
+        const match = imgString.match(/\/article\/image\?id=(\d+)/);
+        const imgId = match ? match[1] : null;
+
+        formData.append('imgId', parseInt(imgId));
+    })
+
+    const fileList = writeForm.querySelector('.file-list');
+    const fileItems = fileList.querySelectorAll('.item');
+
+    for (const fileItem of fileItems) {
+        formData.append('fileId', parseInt(fileItem.dataset.id));
+    }
+    formData.append('title', writeForm['title'].value);
+    formData.append('content', writeForm.editor.getData());
+
+    axios.post('/article/write', formData)
+        .then(res => {
+            alert('게시글 작성이 완료 되었습니다.');
+            location.href = '/article/read?id=' + res.data.id;
+        })
+        .catch(err => {
+            alert('알 수 없는 이유로 게시글 작성에 실패하였습니다. 잠시 후 다시 시도해 주세요.');
+        })
+}

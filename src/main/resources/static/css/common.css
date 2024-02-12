@@ -40,6 +40,23 @@ body {
 
 h1, h2, h3, h4, h5, h6, .text {
     color: white;
+}
+
+.text {
+    margin-block: unset;
+    margin-inline: unset;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 2.25rem;
+    margin-block: unset;
+    margin-inline: unset;
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 1.75rem;
     margin-block: unset;
     margin-inline: unset;
 }

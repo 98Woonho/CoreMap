@@ -10,16 +10,11 @@
 }
 
 img {
-    height: 600px;
+    height: 500px;
 }
 
 h2 {
-    font-size: 1.75rem;
-}
-
-.title {
-    font-weight: 600;
-    font-size: 2.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .center {
@@ -46,7 +41,7 @@ h2 {
 }
 
 .img-container {
-    margin-top: 5rem;
+    margin: 5rem 0;
 }
 
 .line {

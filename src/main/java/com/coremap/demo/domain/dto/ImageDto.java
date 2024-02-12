@@ -19,6 +19,7 @@ public class ImageDto {
     private String type;
     private int size;
     private byte[] data;
+    private Long articleIndex;
     private String username;
     private Date createdAt;
 

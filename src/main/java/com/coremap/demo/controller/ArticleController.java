@@ -1,7 +1,9 @@
 package com.coremap.demo.controller;
 
+import com.coremap.demo.domain.dto.ArticleDto;
 import com.coremap.demo.domain.dto.FileDto;
 import com.coremap.demo.domain.dto.ImageDto;
+import com.coremap.demo.domain.entity.Article;
 import com.coremap.demo.domain.entity.File;
 import com.coremap.demo.domain.entity.Image;
 import com.coremap.demo.domain.service.ArticleService;
@@ -13,10 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -28,6 +32,27 @@ public class ArticleController {
 
     @GetMapping("write")
     public void getWrite() {
+    }
+
+    @PostMapping("write")
+    @ResponseBody
+    public String postWrite(@RequestParam(value = "fileId", required = false) int[] fileIdArray,
+                            @RequestParam(value =  "imgId", required = false) int[] imgIdArray,
+                            ArticleDto articleDto) {
+        if (imgIdArray == null) {
+            imgIdArray = new int[0];
+        }
+
+        if (fileIdArray == null) {
+            fileIdArray = new int[0];
+        }
+
+        Long articleId = this.articleService.write(articleDto, fileIdArray, imgIdArray);
+
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("id", articleId);
+
+        return responseObject.toString();
     }
 
     @GetMapping("image")
@@ -67,5 +92,18 @@ public class ArticleController {
         responseObject.put("id", file.getId());
 
         return responseObject.toString();
+    }
+
+    @GetMapping("read")
+    public void getRead(@RequestParam(value = "id") Long id,
+                        @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                        Model model) {
+        Article article = this.articleService.getArticle(id);
+
+        List<File> fileList = this.articleService.getFileList(id);
+
+        model.addAttribute("article", article);
+        model.addAttribute("fileList", fileList);
+        model.addAttribute("page", page);
     }
 }
