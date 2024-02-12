@@ -13,9 +13,13 @@ img {
     height: 600px;
 }
 
+h2 {
+    font-size: 1.75rem;
+}
+
 .title {
-    font-weight: 700;
-    font-size: 2.75rem;
+    font-weight: 600;
+    font-size: 2.25rem;
 }
 
 .center {
@@ -29,7 +33,7 @@ img {
 }
 
 .exercise-section {
-    margin-right: 13rem;
+    width: 33vw;
 }
 
 .exercise-section ul {
@@ -37,7 +41,7 @@ img {
 }
 
 .exercise-section li {
-    font-size: 1.25rem;
+    font-size: 1rem;
     margin-top: 0.75rem;
 }
 
@@ -66,5 +70,10 @@ img {
 }
 
 .exercise-info-container h3 {
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
+}
+
+.exercise-info-container .text {
+    font-size: 1rem;
 }

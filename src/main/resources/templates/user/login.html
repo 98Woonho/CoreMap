@@ -17,17 +17,17 @@
 
 <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
 
-<main class="content-container-wrapper" id="main" th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}">
+<main class="content-container-wrapper" id="main">
     <div class="content-container">
         <h1 class="title">로그인</h1>
         <form action="/user/login" method="post" class="login-form" id="loginForm">
             <label class="label">
                 <span class="text">이메일</span>
-                <input type="email" maxlength="50" placeholder="이메일(user@sample.com)" name="username" th:data-regex="${userRegex.EMAIL.expression}" class="common-field">
+                <input type="email" maxlength="50" placeholder="이메일(user@sample.com)" name="username" class="common-field">
             </label>
             <label class="label">
                 <span class="text">비밀번호</span>
-                <input type="password" maxlength="50" placeholder="비밀번호" name="password" th:data-regex="${userRegex.PASSWORD.expression}" class="common-field">
+                <input type="password" maxlength="50" placeholder="비밀번호" name="password" class="common-field">
             </label>
             <span th:if="${error}" class="exception" th:text="${exception}"></span>
             <input type="submit" value="로그인" class="common-button">

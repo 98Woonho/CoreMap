@@ -21,7 +21,9 @@ addressFind.querySelector('[rel="close"]').onclick = function () {
 }
 
 
-mainForm['emailSend'].onclick = function () {
+mainForm['emailSend'].onclick = function (e) {
+    e.preventDefault();
+
     if (mainForm['email'].value === '') {
         alert('이메일을 입력해 주세요.');
         return;
@@ -51,6 +53,7 @@ mainForm['emailSend'].onclick = function () {
             }
         })
         .catch(err => {
+            loading.hide();
             alert('요청을 전송하는 도중에 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
         });
 }
@@ -131,20 +134,6 @@ mainForm['confirmDuplication'].onclick = function(e) {
 
 mainForm.onsubmit = function(e) {
     e.preventDefault();
-
-    const formData = new FormData();
-
-    formData.append('username', mainForm['email'].value);
-    formData.append('password', mainForm['password'].value);
-    formData.append('nickname', mainForm['nickname'].value);
-    formData.append('name', mainForm['name'].value);
-    formData.append('contactCompanyCode', mainForm['contactCompany'].value);
-    formData.append('contactFirst', mainForm['contactFirst'].value);
-    formData.append('contactSecond', mainForm['contactSecond'].value);
-    formData.append('contactThird', mainForm['contactThird'].value);
-    formData.append('addressPostal', mainForm['addressPostal'].value);
-    formData.append('addressPrimary', mainForm['addressPrimary'].value);
-    formData.append('addressSecondary', mainForm['addressSecondary'].value);
 
     if(mainForm['email'].value === "") {
         alert("이메일을 입력해 주세요.");
@@ -266,6 +255,20 @@ mainForm.onsubmit = function(e) {
         alert('올바른 상세 주소를 입력해 주세요.');
         return;
     }
+
+    const formData = new FormData();
+
+    formData.append('username', mainForm['email'].value);
+    formData.append('password', mainForm['password'].value);
+    formData.append('nickname', mainForm['nickname'].value);
+    formData.append('name', mainForm['name'].value);
+    formData.append('contactCompanyCode', mainForm['contactCompany'].value);
+    formData.append('contactFirst', mainForm['contactFirst'].value);
+    formData.append('contactSecond', mainForm['contactSecond'].value);
+    formData.append('contactThird', mainForm['contactThird'].value);
+    formData.append('addressPostal', mainForm['addressPostal'].value);
+    formData.append('addressPrimary', mainForm['addressPrimary'].value);
+    formData.append('addressSecondary', mainForm['addressSecondary'].value);
 
     axios.post('/user/join', formData)
         .then(res => {

@@ -17,33 +17,21 @@ import java.util.Date;
 @Table(name="user")
 public class User {
     @Id
-    @Column(columnDefinition = "VARCHAR(50)")
     private String username;
-    @Column(columnDefinition = "VARCHAR(128)")
     private String password;
-    @Column(columnDefinition = "VARCHAR(10)")
     private String nickname;
-    @Column(columnDefinition = "VARCHAR(10)")
     private String name;
-    @Column(columnDefinition = "VARCHAR(5)")
-    private String contactCompanyCode;
-    @Column(columnDefinition = "VARCHAR(4)")
+    @ManyToOne
+    @JoinColumn(name="contact_company_code", foreignKey = @ForeignKey(name="fk_user_contact_company_code", foreignKeyDefinition = "FOREIGN KEY(contact_company_code) REFERENCES contact_company(code) ON DELETE CASCADE ON UPDATE CASCADE"))
+    private ContactCompany contactCompany;
     private String contactFirst;
-    @Column(columnDefinition = "VARCHAR(4)")
     private String contactSecond;
-    @Column(columnDefinition = "VARCHAR(4)")
     private String contactThird;
-    @Column(columnDefinition = "VARCHAR(5)")
     private String addressPostal;
-    @Column(columnDefinition = "VARCHAR(100)")
     private String addressPrimary;
-    @Column(columnDefinition = "VARCHAR(100)")
     private String addressSecondary;
-    @Column(columnDefinition = "VARCHAR(20)")
     private String role;
-    @Column(columnDefinition = "VARCHAR(20)")
     private String provider;
-    @Column(columnDefinition = "VARCHAR(100)")
     private String providerId;
     @Column(name = "suspended_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isSuspended;
@@ -56,7 +44,7 @@ public class User {
                 .password(user.getPassword())
                 .nickname(user.getNickname())
                 .name(user.getName())
-                .contactCompanyCode(user.getContactCompanyCode())
+                .contactCompanyCode(user.getContactCompany().getCode())
                 .contactFirst(user.getContactFirst())
                 .contactSecond(user.getContactSecond())
                 .contactThird(user.getContactThird())

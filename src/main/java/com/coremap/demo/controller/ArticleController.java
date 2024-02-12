@@ -1,6 +1,8 @@
 package com.coremap.demo.controller;
 
-import com.coremap.demo.config.auth.PrincipalDetails;
+import com.coremap.demo.domain.dto.FileDto;
+import com.coremap.demo.domain.dto.ImageDto;
+import com.coremap.demo.domain.entity.File;
 import com.coremap.demo.domain.entity.Image;
 import com.coremap.demo.domain.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,27 +12,25 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Controller
 @Slf4j
 @RequestMapping("article")
-public class articleController {
+public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
 
     @GetMapping("write")
-    public void getWrite() {}
+    public void getWrite() {
+    }
 
-    @RequestMapping(value = "image",
-            method = RequestMethod.GET)
+    @GetMapping("image")
     public ResponseEntity<byte[]> getImage(@RequestParam(value = "id") Long id) {
         ResponseEntity<byte[]> response;
         Image image = this.articleService.getImage(id);
@@ -46,25 +46,26 @@ public class articleController {
         return response;
     }
 
-    @RequestMapping(value = "image",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("image")
     @ResponseBody
-    public String postImage(@RequestParam(value = "upload") MultipartFile file,
-                            Authentication authentication) throws IOException {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String username = principalDetails.getUserDto().getUsername();
-        Image image = new Image(file);
-        String result = this.articleService.uploadImage(image, username);
+    public String postImage(@RequestParam(value = "upload") MultipartFile file) throws IOException {
+        ImageDto imageDto = new ImageDto(file);
+        Image image = this.articleService.uploadImage(imageDto);
 
         JSONObject responseObject = new JSONObject();
-        if (Objects.equals(result, "SUCCESS")) {
-            responseObject.put("url", "/article/image?id=" + image.getId());
-        } else {
-            JSONObject messageObject = new JSONObject();
-            messageObject.put("message", "이미지를 업로드하지 못하였습니다.");
-            responseObject.put("error", messageObject);
-        }
+        responseObject.put("url", "/article/image?id=" + image.getId());
+
+        return responseObject.toString();
+    }
+
+    @PostMapping("file")
+    @ResponseBody
+    public String postFile(@RequestParam(value = "file") MultipartFile mulitpartFile) throws IOException {
+        FileDto fileDto = new FileDto(mulitpartFile);
+        File file = this.articleService.uploadFile(fileDto);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("id", file.getId());
+
         return responseObject.toString();
     }
 }

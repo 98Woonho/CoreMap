@@ -33,10 +33,9 @@ public class SecurityConfig {
     @Autowired
     private HikariDataSource dataSource;
 
-
-    //JWT ADDED..
     @Autowired
     private UserRepository userRepository;
+    
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Slf4j
 @RequestMapping("board")
-public class boardController {
+public class BoardController {
 
     @GetMapping("free")
     public void getFree() {

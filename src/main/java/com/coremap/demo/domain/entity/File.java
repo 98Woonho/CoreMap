@@ -1,6 +1,5 @@
 package com.coremap.demo.domain.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +13,8 @@ import java.util.Date;
 @Data
 @Builder
 @Entity
-@Table(name="image")
-public class Image {
+@Table(name="file")
+public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,6 +23,7 @@ public class Image {
     private int size;
     @Column(columnDefinition = "LONGBLOB")
     private byte[] data;
+    private int articleIndex;
     @ManyToOne
     @JoinColumn(name="user_username", foreignKey = @ForeignKey(name="fk_file_user_username", foreignKeyDefinition = "FOREIGN KEY(user_username) REFERENCES user(username) ON DELETE CASCADE ON UPDATE CASCADE"))
     private User user;

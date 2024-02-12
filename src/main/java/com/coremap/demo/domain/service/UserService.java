@@ -140,13 +140,14 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public String join(UserDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        ContactCompany contactCompany = contactCompanyRepository.findById(userDto.getContactCompanyCode()).get();
 
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
         user.setNickname(userDto.getNickname());
         user.setName(userDto.getName());
-        user.setContactCompanyCode(userDto.getContactCompanyCode());
+        user.setContactCompany(contactCompany);
         user.setContactFirst(userDto.getContactFirst());
         user.setContactSecond(userDto.getContactSecond());
         user.setContactThird(userDto.getContactThird());

@@ -15,7 +15,6 @@
 
     <!-- ckeditor.js -->
     <script src="/js/article/ckeditor/ckeditor.js"></script>
-    <script src="/js/article/ckeditor/translations/ko.js"></script>
 
     <script defer src="/js/article/write.js"></script>
 </head>
@@ -31,18 +30,19 @@
         <form class="write-form" id="writeForm">
             <label class="label">
                 <span class="text title">제목</span>
-                <input type="text" class="common-field title" name="title">
+                <input autofocus type="text" class="common-field" placeholder="제목을 입력 해주세요" name="title">
             </label>
             <label class="label">
                 <span class="text">내용</span>
-                <textarea maxlength="10000" placeholder="내용을 입력해 주세요." name="content"
+                <textarea maxlength="10000" placeholder="내용을 입력해 주세요" name="content"
                           rows="15"></textarea>
             </label>
             <div class="label file-wrapper">
+                <input hidden name="file" type="file">
                 <span class="text">첨부파일</span>
                 <div class="files">
                     <button class="file-btn" name="fileAdd" title="첨부파일 추가">파일추가</button>
-                    <ul class="list" rel="fileList"></ul>
+                    <ul class="file-list"></ul>
                 </div>
             </div>
             <div class="button-container">
