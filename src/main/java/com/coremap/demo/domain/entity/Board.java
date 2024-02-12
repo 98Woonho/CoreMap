@@ -18,6 +18,6 @@ public class Board {
     @Id
     private String code;
     private String text;
-    private int order;
+    private int priority;
     private boolean isAdminWrite;
 }

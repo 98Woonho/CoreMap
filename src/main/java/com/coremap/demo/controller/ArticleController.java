@@ -4,6 +4,7 @@ import com.coremap.demo.domain.dto.ArticleDto;
 import com.coremap.demo.domain.dto.FileDto;
 import com.coremap.demo.domain.dto.ImageDto;
 import com.coremap.demo.domain.entity.Article;
+import com.coremap.demo.domain.entity.Board;
 import com.coremap.demo.domain.entity.File;
 import com.coremap.demo.domain.entity.Image;
 import com.coremap.demo.domain.service.ArticleService;
@@ -14,12 +15,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -31,7 +35,10 @@ public class ArticleController {
 
 
     @GetMapping("write")
-    public void getWrite() {
+    public void getWrite(@RequestAttribute(value = "boards") Board[] boards,
+                         @RequestParam(value = "code", required = false, defaultValue = "") String code,
+                         Model model) {
+
     }
 
     @PostMapping("write")
@@ -97,13 +104,20 @@ public class ArticleController {
     @GetMapping("read")
     public void getRead(@RequestParam(value = "id") Long id,
                         @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                        @RequestAttribute(value = "boards") Board[] boards,
                         Model model) {
         Article article = this.articleService.getArticle(id);
 
-        List<File> fileList = this.articleService.getFileList(id);
-
+        if (article != null && !article.isDeleted()) {
+            Board board = Arrays.stream(boards)
+                    .filter(x -> x.getCode().equals(article.getBoard().getCode()))
+                    .findFirst()
+                    .orElse(null);
+            List<File> fileList = this.articleService.getFileList(id);
+            model.addAttribute("fileList", fileList);
+            model.addAttribute("board", board);
+            model.addAttribute("page", page);
+        }
         model.addAttribute("article", article);
-        model.addAttribute("fileList", fileList);
-        model.addAttribute("page", page);
     }
 }

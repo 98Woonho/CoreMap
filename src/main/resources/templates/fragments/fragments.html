@@ -35,12 +35,14 @@
         <li class="item logo">
             <a href="/" class="link">CoreMap</a>
         </li>
+        <!-- boards의 경로 지정 -->
+        <!-- /*@thymesVar id="boards" type="com.coremap.demo.domain.entity.Board[]"*/-->
+        <li class="item board" th:each="board : ${boards}">
+            <a th:href="@{/board/list?code=${board.code}}" class="link" th:text="${board.text}"></a>
+        </li>
         <div class="spring"></div>
         <li class="item menu">
             <a href="/exerciseGuide">ExerciseGuide</a>
-        </li>
-        <li class="item menu">
-            <a href="/board/free">자유게시판</a>
         </li>
         <li class="item user">
             <a href="/user/login" class="link" sec:authorize="isAnonymous()">로그인</a>

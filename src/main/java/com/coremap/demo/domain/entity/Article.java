@@ -20,9 +20,12 @@ public class Article {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_username", foreignKey = @ForeignKey(name="fk_file_user_username", foreignKeyDefinition = "FOREIGN KEY(user_username) REFERENCES user(username) ON DELETE CASCADE ON UPDATE CASCADE"))
+    @JoinColumn(name="user_username", foreignKey = @ForeignKey(name="fk_article_user_username", foreignKeyDefinition = "FOREIGN KEY(user_username) REFERENCES user(username) ON DELETE CASCADE ON UPDATE CASCADE"))
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name="board_code", foreignKey = @ForeignKey(name="fk_article_board_code", foreignKeyDefinition = "FOREIGN KEY(board_code) REFERENCES board(code) ON DELETE CASCADE ON UPDATE CASCADE"))
+    private Board board;
     private String title;
     private String content;
     private int view;

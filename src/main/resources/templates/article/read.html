@@ -20,10 +20,8 @@
 
 <main id="main" class="content-container-wrapper" th:if="${article != null && !article.isDeleted()}">
     <div class="content-container">
-        <h1 class="title">
-            자유 게시판
-        </h1>
-        <table class="table" id="articleTable" th:data-index="${article.id}">
+        <h1 class="title" th:text="${board.text}"></h1>
+        <table class="table" id="articleTable" th:data-index="${article.id}" th:data-board-code="${board.code}">
             <thead>
             <tr>
                 <th>제목</th>
