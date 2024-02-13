@@ -35,16 +35,19 @@ public class ArticleController {
 
 
     @GetMapping("write")
-    public void getWrite(@RequestAttribute(value = "boards") Board[] boards,
-                         @RequestParam(value = "code", required = false, defaultValue = "") String code,
+    public void getWrite(@RequestParam(value = "code", required = false, defaultValue = "") String code,
                          Model model) {
+        Board[] boards = articleService.getBoards();
 
+        Board board = Arrays.stream(boards).filter(x -> x.getCode().equals(code)).findFirst().orElse(null);
+
+        model.addAttribute("board", board);
     }
 
     @PostMapping("write")
     @ResponseBody
     public String postWrite(@RequestParam(value = "fileId", required = false) int[] fileIdArray,
-                            @RequestParam(value =  "imgId", required = false) int[] imgIdArray,
+                            @RequestParam(value = "imgId", required = false) int[] imgIdArray,
                             ArticleDto articleDto) {
         if (imgIdArray == null) {
             imgIdArray = new int[0];
@@ -54,10 +57,10 @@ public class ArticleController {
             fileIdArray = new int[0];
         }
 
-        Long articleId = this.articleService.write(articleDto, fileIdArray, imgIdArray);
+        Long articleIndexInBoard = this.articleService.write(articleDto, fileIdArray, imgIdArray);
 
         JSONObject responseObject = new JSONObject();
-        responseObject.put("id", articleId);
+        responseObject.put("index", articleIndexInBoard);
 
         return responseObject.toString();
     }
@@ -102,22 +105,75 @@ public class ArticleController {
     }
 
     @GetMapping("read")
-    public void getRead(@RequestParam(value = "id") Long id,
+    public void getRead(@RequestParam(value = "index") Long index,
                         @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                        @RequestAttribute(value = "boards") Board[] boards,
+                        @RequestParam(value = "criterion", required = false) String criterion,
+                        @RequestParam(value = "keyword", required = false) String keyword,
+                        @RequestParam(value = "code") String code,
                         Model model) {
-        Article article = this.articleService.getArticle(id);
+        Board[] boards = this.articleService.getBoards();
 
-        if (article != null && !article.isDeleted()) {
+        Article article = this.articleService.getArticle(index, code);
+
+        Board board = Arrays.stream(boards)
+                .filter(x -> x.getCode().equals(code))
+                .findFirst()
+                .orElse(null);
+        List<File> fileList = this.articleService.getFileList(article.getId());
+
+        model.addAttribute("fileList", fileList);
+        model.addAttribute("board", board);
+        model.addAttribute("page", page);
+        model.addAttribute("criterion", criterion);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("article", article);
+
+    }
+
+    @GetMapping("modify")
+    public void getModify(@RequestParam(value = "index") Long index,
+                          @RequestParam(value = "code") String code,
+                          Model model) {
+        Board[] boards = this.articleService.getBoards();
+        Article article = this.articleService.getArticle(index, code);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String role = authentication.getAuthorities().toString();
+
+        if (!article.getUser().getUsername().equals(username) && !role.equals("ROLE_ADMIN")) {
+            article = null;
+        } else {
             Board board = Arrays.stream(boards)
-                    .filter(x -> x.getCode().equals(article.getBoard().getCode()))
+                    .filter(x -> x.getCode().equals(code))
                     .findFirst()
                     .orElse(null);
-            List<File> fileList = this.articleService.getFileList(id);
-            model.addAttribute("fileList", fileList);
+
+            List<File> fileList = this.articleService.getFileList(article.getId());
             model.addAttribute("board", board);
-            model.addAttribute("page", page);
+            model.addAttribute("fileList", fileList);
         }
         model.addAttribute("article", article);
+    }
+
+    @PostMapping("modify")
+    @ResponseBody
+    public String postModify(@RequestParam(value = "fileId", required = false) int[] fileIdArray,
+                             @RequestParam(value = "imgId", required = false) int[] imgIdArray,
+                             ArticleDto articleDto) {
+        if (imgIdArray == null) {
+            imgIdArray = new int[0];
+        }
+
+        if (fileIdArray == null) {
+            fileIdArray = new int[0];
+        }
+
+        String result = this.articleService.modify(articleDto, fileIdArray, imgIdArray);
+
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result);
+
+        return responseObject.toString();
     }
 }

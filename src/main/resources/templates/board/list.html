@@ -21,6 +21,7 @@
 
 <main id="main" class="content-container-wrapper">
     <div class="content-container">
+
         <div class="title-container">
             <h1 class="title" th:text="${board.text}"></h1>
         </div>
@@ -39,14 +40,14 @@
                 <td colspan="5">작성된 게시글이 없습니다.</td>
             </tr>
             <tr th:each="article : ${articleList}">
-                <td th:text="${article.id}"></td>
+                <td th:text="${article.indexInBoard}"></td>
                 <td>
                     <a class="link"
-                       th:href="@{/article/read (index=${article.id}, page=${page.requestPage})}"
+                       th:href="@{/article/read (index=${article.indexInBoard}, page=${page.requestPage}, code=${board.code})}"
                        th:text="${article.title}"
                        th:if="${searching == false}"></a>
                     <a class="link"
-                       th:href="@{/article/read (index=${article.id}, page=${page.requestPage} ,criterion = ${search.criterion}, keyword = ${search.keyword})}"
+                       th:href="@{/article/read (index=${article.indexInBoard}, page=${page.requestPage} ,criterion = ${search.criterion}, keyword = ${search.keyword})}"
                        th:text="${article.title}"
                        th:if="${searching == true}"></a>
                 </td>
@@ -108,8 +109,8 @@
                         <div class="spring"></div>
                         <a class="common-button"
                            th:href="@{/article/write (code = ${board.code})}"
-
-                           th:if="${#authentication.Principal.userDto.username != null && !board.isAdminWrite}">글쓰기</a>
+                           sec:authorize="isAuthenticated()"
+                           th:if="${!board.isAdminWrite}">글쓰기</a>
                     </div>
                 </td>
             </tr>

@@ -27,6 +27,7 @@ public class Article {
     @JoinColumn(name="board_code", foreignKey = @ForeignKey(name="fk_article_board_code", foreignKeyDefinition = "FOREIGN KEY(board_code) REFERENCES board(code) ON DELETE CASCADE ON UPDATE CASCADE"))
     private Board board;
     private String title;
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     private int view;
     private Date writtenAt;

@@ -5,11 +5,16 @@
 }
 
 .content-container {
-    margin-top: 5rem;
-    max-width: 800px;
+    padding: 2rem 0;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: flex-start;
 }
 
-.write-form {
+#modifyForm {
     align-items: stretch;
     display: flex;
     flex-direction: column;
@@ -72,4 +77,8 @@
     flex-direction: row;
     gap: 0.5rem;
     justify-content: flex-start;
+}
+
+.ck-editor__editable_inline {
+    min-height: 20rem;
 }

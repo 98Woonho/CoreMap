@@ -3,6 +3,7 @@ package com.coremap.demo.domain.service;
 import com.coremap.demo.domain.entity.Article;
 import com.coremap.demo.domain.entity.Board;
 import com.coremap.demo.domain.repository.ArticleRepository;
+import com.coremap.demo.domain.repository.BoardRepository;
 import com.coremap.demo.domain.vo.PageVo;
 import com.coremap.demo.domain.vo.SearchVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import java.util.List;
 public class BoardService {
     @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private BoardRepository boardRepository;
 
     public List<Article> getArticles(Board board, PageVo page) {
         Pageable pageable = PageRequest.of(page.queryOffset, page.countPerPage);
@@ -42,5 +46,10 @@ public class BoardService {
         List<Article> articleList = articleRepository.findByBoardCodeAndContentContaining(board.getCode(), search.getKeyword());
 
         return articleList.size();
+    }
+
+    public Board[] getBoards() {
+        List<Board> boardList = boardRepository.findAll();
+        return boardList.toArray(new Board[0]);
     }
 }

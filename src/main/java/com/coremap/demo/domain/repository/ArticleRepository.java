@@ -16,10 +16,15 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             "AND (:keyword IS NULL OR " +
             "(:criterion ='content' AND a.content LIKE %:keyword%) " +
             "OR (:criterion = 'title' AND a.title LIKE %:keyword%) " +
-            "OR (:criterion = 'nickname' AND a.user.nickname LIKE %:keyword%))")
+            "OR (:criterion = 'nickname' AND a.user.nickname LIKE %:keyword%))" +
+            "ORDER BY a.id DESC")
     Page<Article> findByBoardAndPage(String code, Pageable pageable, String keyword, String criterion);
 
     List<Article> findByBoardCode(String boardCode);
 
     List<Article> findByBoardCodeAndContentContaining(String boardCode, String keyword);
+
+    Article findTopByBoardCodeOrderByIndexInBoardDesc(String boardCode);
+
+    Article findByIndexInBoardAndBoardCode(Long indexInBoard, String boardCode);
 }

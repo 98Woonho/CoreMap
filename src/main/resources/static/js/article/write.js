@@ -32,7 +32,7 @@ writeForm['file'].onchange = function () {
                 <span class="name" title="${file['name']}">${file['name']}</span>
                 <button class="delete-btn">삭제</button>
             </li>`, 'text/html').querySelector('.item');
-    const deleteEl = item.querySelector('.delete-btn');
+    const deleteBtn = item.querySelector('.delete-btn');
 
     const formData = new FormData();
     formData.append('file', file);
@@ -45,7 +45,7 @@ writeForm['file'].onchange = function () {
             alert("알 수 없는 이유로 파일 첨부에 실패 하였습니다. 잠시 후 다시 시도해 주세요.");
         });
 
-    deleteEl.onclick = function () {
+    deleteBtn.onclick = function () {
         item.remove();
     }
 
@@ -88,11 +88,12 @@ writeForm.onsubmit = function(e) {
     }
     formData.append('title', writeForm['title'].value);
     formData.append('content', writeForm.editor.getData());
+    formData.append('boardCode', writeForm['code'].value);
 
     axios.post('/article/write', formData)
         .then(res => {
             alert('게시글 작성이 완료 되었습니다.');
-            location.href = '/article/read?id=' + res.data.id;
+            location.href = '/article/read?index=' + res.data.index + "&code=" + writeForm['code'].value;
         })
         .catch(err => {
             alert('알 수 없는 이유로 게시글 작성에 실패하였습니다. 잠시 후 다시 시도해 주세요.');

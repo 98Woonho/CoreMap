@@ -20,4 +20,6 @@ public class ArticleDto {
     private Date writtenAt;
     private Date modifiedAt;
     private boolean isDeleted;
+    private String boardCode;
+    private Long indexInBoard;
 }

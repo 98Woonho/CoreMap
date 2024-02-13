@@ -3,20 +3,15 @@ package com.coremap.demo.domain.service;
 import com.coremap.demo.domain.dto.ArticleDto;
 import com.coremap.demo.domain.dto.FileDto;
 import com.coremap.demo.domain.dto.ImageDto;
-import com.coremap.demo.domain.entity.Article;
-import com.coremap.demo.domain.entity.File;
-import com.coremap.demo.domain.entity.Image;
-import com.coremap.demo.domain.entity.User;
-import com.coremap.demo.domain.repository.ArticleRepository;
-import com.coremap.demo.domain.repository.FileRepository;
-import com.coremap.demo.domain.repository.ImageRepository;
-import com.coremap.demo.domain.repository.UserRepository;
+import com.coremap.demo.domain.entity.*;
+import com.coremap.demo.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,12 +29,24 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private BoardRepository boardRepository;
+
+    public Article getArticle(Long indexInBoard, String boardCode) {
+        return articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
+    }
+
     public Article getArticle(Long id) {
         return articleRepository.findById(id).get();
     }
 
     public List<File> getFileList(Long id) {
         return fileRepository.findByArticleId(id);
+    }
+
+    public Board[] getBoards() {
+        List<Board> boardList = boardRepository.findAll();
+        return boardList.toArray(new Board[0]);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -91,7 +98,18 @@ public class ArticleService {
 
         User user = userRepository.findById(username).get();
 
+        Board board = boardRepository.findById(articleDto.getBoardCode()).get();
+
         Article article = new Article();
+
+        if(articleRepository.findTopByBoardCodeOrderByIndexInBoardDesc(articleDto.getBoardCode()) != null) {
+            Article latestArticle = articleRepository.findTopByBoardCodeOrderByIndexInBoardDesc(articleDto.getBoardCode());
+
+            Long latestIndexInBoard = latestArticle.getIndexInBoard();
+            article.setIndexInBoard(latestIndexInBoard + 1);
+        } else {
+            article.setIndexInBoard(1L);
+        }
 
         article.setUser(user);
         article.setView(0);
@@ -100,6 +118,7 @@ public class ArticleService {
         article.setDeleted(false);
         article.setTitle(articleDto.getTitle());
         article.setContent(articleDto.getContent());
+        article.setBoard(board);
 
         articleRepository.save(article);
 
@@ -125,6 +144,59 @@ public class ArticleService {
             imageRepository.save(image);
         }
 
-        return article.getId();
+        return article.getIndexInBoard();
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public String modify(ArticleDto articleDto, int[] fileIdArray, int[] imgIdArray) {
+        List<File> originalFiles = fileRepository.findByArticleId(articleDto.getId());
+
+        List<Image> originalImages = imageRepository.findByArticleId(articleDto.getId());
+
+        for (File originalFile : originalFiles) {
+            // 수정 할려는 게시글의 파일 인덱스 배열(fileIndexes)에서 원래 게시글의 파일목록 중 하나의 인덱스를 비교 했는데 아무것도 없을 때 == 파일을 삭제 했을 때
+            if (Arrays.stream(fileIdArray).noneMatch(x -> x == originalFile.getId())) {
+                fileRepository.deleteById(originalFile.getId());
+            }
+        }
+
+        for (Image originalImage : originalImages) {
+            if (Arrays.stream(imgIdArray).noneMatch(x -> x == originalImage.getId())) {
+                imageRepository.deleteById(originalImage.getId());
+            }
+        }
+
+        Article article = articleRepository.findById(articleDto.getId()).get();
+
+        article.setTitle(articleDto.getTitle());
+        article.setContent(articleDto.getContent());
+        article.setModifiedAt(new Date());
+
+        articleRepository.save(article);
+
+        for (int fileId : fileIdArray) {
+            File file = fileRepository.findById((long) fileId).get();
+
+            if (file == null) {
+                continue;
+            }
+
+            file.setArticleId(article.getId());
+            fileRepository.save(file);
+        }
+
+        for (int imgId : imgIdArray) {
+            Image image = imageRepository.findById((long) imgId).get();
+
+            if (image == null) {
+                continue;
+            }
+
+            image.setArticleId(article.getId());
+            imageRepository.save(image);
+        }
+
+        return "SUCCESS";
     }
 }

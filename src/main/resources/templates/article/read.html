@@ -20,24 +20,25 @@
 
 <main id="main" class="content-container-wrapper" th:if="${article != null && !article.isDeleted()}">
     <div class="content-container">
+        <input hidden name="code" type="hidden" th:value="${board.code}">
         <h1 class="title" th:text="${board.text}"></h1>
-        <table class="table" id="articleTable" th:data-index="${article.id}" th:data-board-code="${board.code}">
+        <table class="table" id="articleTable" th:data-id="${article.id}" th:data-board-code="${board.code}">
             <thead>
             <tr>
                 <th>제목</th>
-                <td th:text="${article.title}"></td>
+                <td class="full" colspan="3" th:text="${article.title}"></td>
             </tr>
             <tr>
                 <th>작성자</th>
-                <td th:text="${article.user.nickname}"></td>
+                <td class="half" th:text="${article.user.nickname}"></td>
                 <th>조회수</th>
-                <td th:text="${article.view}"></td>
+                <td class="half" th:text="${article.view}"></td>
             </tr>
             <tr>
                 <th>작성 일시</th>
-                <td th:text="${article.writtenAt}"></td>
+                <td class="half" th:text="${article.writtenAt}"></td>
                 <th th:if="${article.modifiedAt != null}">수정 일시</th>
-                <td th:if="${article.modifiedAt != null}" th:text="${article.modifiedAt}"></td>
+                <td class="half" th:if="${article.modifiedAt != null}" th:text="${article.modifiedAt}"></td>
             </tr>
             </thead>
             <tbody>
@@ -50,11 +51,11 @@
                 <th>첨부 파일</th>
                 <td class="file-empty" colspan="3" th:if="${fileList == null || fileList.size() == 0}">첨부 파일이 없습니다.</td>
                 <td class="file-wrapper" colspan="3" th:if="${fileList != null && fileList.size() > 0}">
-                    <ul class="list">
+                    <ul class="file-list">
                         <li class="item" th:each="file : ${fileList}">
-                            <a href="#" class="link" th:href="@{/article/file?index=${file.id}}">
+                            <a href="#" class="link" th:href="@{/article/file?id=${file.id}}">
                                 <img src="/images/article/read.file.icon.png" alt="" class="icon">
-                                <span class="name" th:text="${file.getName()}"></span>
+                                <span class="name" th:text="${file.name}"></span>
                             </a>
                             <span class="size">(<th:block
                                     th:text="${T(java.lang.Math).floor(file.size) / 1024.00 * 100 / 100}"></th:block>KB)</span>
@@ -66,23 +67,93 @@
             <tfoot>
             <tr>
                 <td colspan="4">
-                    <div class="bottom-button-container"
-                         th:with="searchCriterion = ${#request.getParameter('criterion')}, searchKeyword = ${#request.getParameter('keyword')}">
+                    <div class="bottom-button-container">
                         <!-- #request.getParameter('a') : 주소창에서 a라는 속성의 값을 가져옴 -->
                         <a href="#" class="common-button"
-                           th:href="@{/board/list (code=${board.getCode()}, page=${page})}"
-                           th:if="${searchCriterion == null || searchKeyword == null}">목록</a>
+                           th:href="@{/board/list (code=${board.code}, page=${page})}"
+                           th:if="${criterion == null || keyword == null}">목록</a>
                         <a href="#" class="common-button"
-                           th:href="@{/board/list (code=${board.getCode()}, page=${page}, criterion = ${searchCriterion}, keyword = ${searchKeyword})}"
-                           th:if="${searchCriterion != null && searchKeyword != null}">목록</a>
+                           th:href="@{/board/list (code=${board.code}, page=${page}, criterion = ${criterion}, keyword = ${keyword})}"
+                           th:if="${criterion != null && keyword != null}">목록</a>
                         <span class="spring"></span>
-                        <a class="common-button" rel="modify" th:if="${isAuth}"
-                           th:href="@{/article/modify(index=${article.getIndex()})}">수정</a>
-                        <div class="common-button" rel="delete" th:if="${isAuth}">삭제</div>
+                        <a class="common-button" rel="modify" sec:authorize="isAuthenticated()" th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}"
+                           th:href="@{/article/modify(index=${article.indexInBoard}, code=${board.code})}">수정</a>
+                        <div class="common-button delete-btn" sec:authorize="isAuthenticated()" th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}">삭제</div>
                     </div>
                 </td>
             </tr>
             </tfoot>
+        </table>
+        <form id="commentForm" class="comment-form"
+              th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+            <input hidden name="articleIndex" type="hidden" th:value="${article.id}">
+            <label class="label">
+                <span class="text">
+                    <span class="left">댓글 (<span rel="count">11</span>)</span>
+                    <span class="right" rel="refresh">다시 불러오기</span>
+                </span>
+                <span class="horizontal">
+                    <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                              class="common-field big" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                    <input type="submit" value="댓글 쓰기" class="common-button">
+                </span>
+            </label>
+        </form>
+        <table class="comment-table" id="commentTable">
+            <thead class="loading">
+            <tr>
+                <td>댓글을 불러오고 있습니다...</td>
+            </tr>
+            </thead>
+            <thead class="error">
+            <tr>
+                <td>댓글을 불러오지 못하였습니다. 잠시 후 다시 불러오기를 클릭해 주세요.</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div class="comment">
+                        <div class="head">
+                            <span class="nickname" rel="nickname">닉네임123</span>
+                            <span class="written-at" rel="writtenAt">2023-11-24 17:24:55</span>
+                            <span class="spring"></span>
+                            <span class="action" rel="modify">수정</span>
+                            <span class="action" rel="delete">삭제</span>
+                            <span class="action" rel="modifyCancel">수정 취소</span>
+                        </div>
+                        <div class="body">
+                            <span class="content">댓글 내용</span>
+                            <form rel="modifyForm" class="modify-form">
+                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                                          class="common-field"></textarea>
+                                <input type="submit" value="댓글 수정" class="common-button">
+                            </form>
+                        </div>
+                        <div class="foot">
+                            <span class="vote" rel="vote" data-vote="up">
+                                <img alt="👍" class="icon" src="/images/article/comment.vote.up.png">
+                                <span class="value">173</span>
+                            </span>
+                            <span class="vote" rel="vote" data-vote="down">
+                                <img alt="👎" class="icon" src="/images/article/comment.vote.down.png">
+                                <span class="value">27</span>
+                            </span>
+                            <span class="spring"></span>
+                            <span class="action" rel="reply">답글 달기</span>
+                            <span class="action" rel="replyCancel">답글 달기 취소</span>
+                        </div>
+                        <form class="reply-form" rel="replyForm">
+                            <label class="label">
+                                <textarea class="common-field" maxlength="1000" name="content"
+                                          placeholder="답글을 입력해 주세요."></textarea>
+                            </label>
+                            <input class="common-button" type="submit" value="답글 달기">
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
         </table>
     </div>
 </main>
