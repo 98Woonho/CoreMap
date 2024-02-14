@@ -1,7 +1,16 @@
 @charset "UTF-8";
 
+.action {
+    cursor: pointer;
+}
+
 #main {
     background-color: #2A292E;
+}
+
+figure img {
+    max-width: 1000px;
+    width: 100%;
 }
 
 .content-container {
@@ -205,6 +214,8 @@
     display: table-header-group;
 }
 
+
+
 .comment {
     font-size: 0.9rem;
 
@@ -215,6 +226,7 @@
 }
 
 .comment.sub {
+    margin-top: 0.5rem;
     margin-left: 3rem;
 }
 
@@ -252,16 +264,16 @@
     text-decoration: underline;
 }
 
-.head .action[rel="modifyCancel"] {
+.head .modifyCancel {
     display: none;
 }
 
-.head.modifying .action[rel="modify"],
-.head.modifying .action[rel="delete"] {
+.comment.modifying .head .modify,
+.comment.modifying .head .delete {
     display: none;
 }
 
-.head.modifying .action[rel="modifyCancel"] {
+.comment.modifying .head .modifyCancel {
     display: inline-block;
 }
 
@@ -343,50 +355,43 @@
     padding: 0.125rem 0.25rem;
 }
 
-.foot .vote[data-vote="up"].selected .value,
-.foot .vote[data-vote="up"]:hover .value {
+.foot .vote-up.selected .value,
+.foot .vote-up:hover .value {
     background-color: #2ecc71;
 }
 
-.foot .vote[data-vote="down"].selected .value,
-.foot .vote[data-vote="down"]:hover .value {
+.foot .vote-down.selected .value,
+.foot .vote-down:hover .value {
     background-color: #e74c3c;
 }
 
-.foot .action {
-    color: #3498db;
-    cursor: pointer;
-}
-
-.foot .action:hover {
-    text-decoration: underline;
-}
-
-.foot .action[rel="reply"] {
+.comment.sub .foot .reply {
     display: none;
 }
 
-.foot .action[rel="reply"] {
+.comment.modifying .foot .reply {
     display: none;
 }
 
-.foot .action[rel="replyCancel"] {
+.comment.replying .foot .reply {
     display: none;
 }
 
-.foot .action[rel="replyCancel"] {
+.foot .replyCancel {
+    display: none;
+}
+
+.comment.replying .foot .replyCancel {
     display: inline-block;
 }
 
 .reply-form {
     height: 0;
-    background-color: #ffffff;
     border-radius: 0.375rem;
     box-sizing: border-box;
     margin-top: 0;
     margin-left: 3rem;
     overflow: hidden;
-    padding: 0 0.75rem;
     transition-duration: 250ms;
     transition-property: height, margin-top, padding-top, padding-bottom;
     transition-timing-function: ease;
@@ -400,7 +405,6 @@
 
 .comment.replying > .reply-form {
     height: 5rem;
-    margin-top: 0.375rem;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
 }

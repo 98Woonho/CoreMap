@@ -1,8 +1,6 @@
 package com.coremap.demo.domain.service;
 
-import com.coremap.demo.domain.dto.ArticleDto;
-import com.coremap.demo.domain.dto.FileDto;
-import com.coremap.demo.domain.dto.ImageDto;
+import com.coremap.demo.domain.dto.*;
 import com.coremap.demo.domain.entity.*;
 import com.coremap.demo.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,18 @@ public class ArticleService {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private SubCommentRepository subCommentRepository;
+
+    @Autowired
+    private CommentLikeRepository commentLikeRepository;
+
+    @Autowired
+    private SubCommentLikeRepository subCommentLikeRepository;
+
     public Article getArticle(Long indexInBoard, String boardCode) {
         return articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
     }
@@ -47,6 +57,22 @@ public class ArticleService {
     public Board[] getBoards() {
         List<Board> boardList = boardRepository.findAll();
         return boardList.toArray(new Board[0]);
+    }
+
+    public List<Comment> getCommentList(Long id) {
+        return commentRepository.findByArticleId(id);
+    }
+
+    public List<SubComment> getSubCommentList(Long id) {
+        return subCommentRepository.findByCommentArticleId(id);
+    }
+
+    public List<CommentLike> getCommentLikeList(Long id) {
+        return commentLikeRepository.findByCommentArticleId(id);
+    }
+
+    public List<SubCommentLike> getSubCommentLikeList(Long id) {
+        return subCommentLikeRepository.findBySubCommentCommentArticleId(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -122,6 +148,8 @@ public class ArticleService {
 
         articleRepository.save(article);
 
+        Article writedArticle = articleRepository.findById(article.getId()).get();
+
         for (int fileId : fileIdArray) {
             File file = fileRepository.findById((long) fileId).get();
 
@@ -129,7 +157,7 @@ public class ArticleService {
                 continue;
             }
 
-            file.setArticleId(article.getId());
+            file.setArticle(writedArticle);
             fileRepository.save(file);
         }
 
@@ -140,7 +168,7 @@ public class ArticleService {
                 continue;
             }
 
-            image.setArticleId(article.getId());
+            image.setArticle(writedArticle);
             imageRepository.save(image);
         }
 
@@ -175,6 +203,8 @@ public class ArticleService {
 
         articleRepository.save(article);
 
+        Article newArticle = articleRepository.findById(article.getId()).get();
+
         for (int fileId : fileIdArray) {
             File file = fileRepository.findById((long) fileId).get();
 
@@ -182,7 +212,7 @@ public class ArticleService {
                 continue;
             }
 
-            file.setArticleId(article.getId());
+            file.setArticle(newArticle);
             fileRepository.save(file);
         }
 
@@ -193,9 +223,75 @@ public class ArticleService {
                 continue;
             }
 
-            image.setArticleId(article.getId());
+            image.setArticle(newArticle);
             imageRepository.save(image);
         }
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String delete(Long id) {
+        articleRepository.deleteById(id);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String writeComment(CommentDto commentDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        Article article = articleRepository.findById(commentDto.getArticleId()).get();
+
+        Comment comment = new Comment();
+        comment.setContent(commentDto.getContent());
+        comment.setArticle(article);
+        comment.setUser(user);
+        comment.setWrittenAt(new Date());
+
+        commentRepository.save(comment);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String writeSubComment(SubCommentDto subCommentDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        Comment comment = commentRepository.findById(subCommentDto.getCommentId()).get();
+
+        SubComment subComment = new SubComment();
+        subComment.setContent(subCommentDto.getContent());
+        subComment.setComment(comment);
+        subComment.setUser(user);
+        subComment.setWrittenAt(new Date());
+
+        subCommentRepository.save(subComment);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String commentLike(CommentLikeDto commentLikeDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        Comment comment = commentRepository.findById(commentLikeDto.getCommentId()).get();
+
+        CommentLike commentLike = new CommentLike();
+        commentLike.setComment(comment);
+        commentLike.setUser(user);
+        commentLike.setLike(true);
+
+        commentLikeRepository.save(commentLike);
 
         return "SUCCESS";
     }

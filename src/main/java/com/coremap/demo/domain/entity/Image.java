@@ -24,7 +24,11 @@ public class Image {
     private int size;
     @Column(columnDefinition = "LONGBLOB")
     private byte[] data;
-    private Long articleId;
+
+    @ManyToOne
+    @JoinColumn(name="article_id", foreignKey = @ForeignKey(name="fk_image_article_id", foreignKeyDefinition = "FOREIGN KEY(article_id) REFERENCES article(id) ON DELETE CASCADE ON UPDATE CASCADE"))
+    private Article article;
+
     @ManyToOne
     @JoinColumn(name="user_username", foreignKey = @ForeignKey(name="fk_image_user_username", foreignKeyDefinition = "FOREIGN KEY(user_username) REFERENCES user(username) ON DELETE CASCADE ON UPDATE CASCADE"))
     private User user;

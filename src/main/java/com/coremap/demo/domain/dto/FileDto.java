@@ -19,6 +19,7 @@ public class FileDto {
     private String type;
     private int size;
     private byte[] data;
+    private Long articleId;
     private Long articleIndex;
     private String username;
     private Date createdAt;

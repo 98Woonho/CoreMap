@@ -1,5 +1,6 @@
 package com.coremap.demo.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -19,5 +20,6 @@ public class Board {
     private String code;
     private String text;
     private int priority;
+    @Column(columnDefinition = "BOOLEAN DEFAULT false")
     private boolean isAdminWrite;
 }

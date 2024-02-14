@@ -1,12 +1,7 @@
 package com.coremap.demo.controller;
 
-import com.coremap.demo.domain.dto.ArticleDto;
-import com.coremap.demo.domain.dto.FileDto;
-import com.coremap.demo.domain.dto.ImageDto;
-import com.coremap.demo.domain.entity.Article;
-import com.coremap.demo.domain.entity.Board;
-import com.coremap.demo.domain.entity.File;
-import com.coremap.demo.domain.entity.Image;
+import com.coremap.demo.domain.dto.*;
+import com.coremap.demo.domain.entity.*;
 import com.coremap.demo.domain.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -23,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -115,6 +111,14 @@ public class ArticleController {
 
         Article article = this.articleService.getArticle(index, code);
 
+        List<Comment> commentList = articleService.getCommentList(article.getId());
+
+        List<SubComment> subCommentList = articleService.getSubCommentList(article.getId());
+
+        List<CommentLike> commentLikeList = articleService.getCommentLikeList(article.getId());
+
+        List<SubCommentLike> subCommentLikeList = articleService.getSubCommentLikeList(article.getId());
+
         Board board = Arrays.stream(boards)
                 .filter(x -> x.getCode().equals(code))
                 .findFirst()
@@ -127,7 +131,9 @@ public class ArticleController {
         model.addAttribute("criterion", criterion);
         model.addAttribute("keyword", keyword);
         model.addAttribute("article", article);
-
+        model.addAttribute("commentList", commentList);
+        model.addAttribute("subCommentList", subCommentList);
+        model.addAttribute("commentLikeList", commentLikeList);
     }
 
     @GetMapping("modify")
@@ -169,11 +175,31 @@ public class ArticleController {
             fileIdArray = new int[0];
         }
 
-        String result = this.articleService.modify(articleDto, fileIdArray, imgIdArray);
+        return articleService.modify(articleDto, fileIdArray, imgIdArray);
+    }
 
-        JSONObject responseObject = new JSONObject();
-        responseObject.put("result", result);
+    @DeleteMapping("delete")
+    @ResponseBody
+    public String deleteArticle(@RequestParam(value = "id") Long id ,
+                                Model model) {
+        return articleService.delete(id);
+    }
 
-        return responseObject.toString();
+    @PostMapping("comment")
+    @ResponseBody
+    public String postComment(CommentDto commentDto) {
+        return articleService.writeComment(commentDto);
+    }
+
+    @PostMapping("subComment")
+    @ResponseBody
+    public String postSubComment(SubCommentDto subCommentDto) {
+        return articleService.writeSubComment(subCommentDto);
+    }
+
+    @PostMapping("commentLike")
+    @ResponseBody
+    public String postCommentLike(CommentLikeDto commentLikeDto) {
+        return articleService.commentLike(commentLikeDto);
     }
 }

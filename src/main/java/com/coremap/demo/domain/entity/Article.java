@@ -32,6 +32,7 @@ public class Article {
     private int view;
     private Date writtenAt;
     private Date modifiedAt;
+    @Column(columnDefinition = "BOOLEAN DEFAULT false")
     private boolean isDeleted;
     private Long indexInBoard;
 }

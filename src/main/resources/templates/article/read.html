@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="article-status" th:content="${article != null && !article.isDeleted()}">
+    <meta name="user-status" th:content="${#authentication.getPrincipal() != 'anonymousUser'}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
@@ -20,9 +22,8 @@
 
 <main id="main" class="content-container-wrapper" th:if="${article != null && !article.isDeleted()}">
     <div class="content-container">
-        <input hidden name="code" type="hidden" th:value="${board.code}">
         <h1 class="title" th:text="${board.text}"></h1>
-        <table class="table" id="articleTable" th:data-id="${article.id}" th:data-board-code="${board.code}">
+        <table class="table" id="articleTable" th:data-id="${article.id}" th:data-code="${board.code}">
             <thead>
             <tr>
                 <th>제목</th>
@@ -76,9 +77,13 @@
                            th:href="@{/board/list (code=${board.code}, page=${page}, criterion = ${criterion}, keyword = ${keyword})}"
                            th:if="${criterion != null && keyword != null}">목록</a>
                         <span class="spring"></span>
-                        <a class="common-button" rel="modify" sec:authorize="isAuthenticated()" th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}"
+                        <a class="common-button" rel="modify" sec:authorize="isAuthenticated()"
+                           th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}"
                            th:href="@{/article/modify(index=${article.indexInBoard}, code=${board.code})}">수정</a>
-                        <div class="common-button delete-btn" sec:authorize="isAuthenticated()" th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}">삭제</div>
+                        <div class="common-button delete-btn" sec:authorize="isAuthenticated()"
+                             th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}">
+                            삭제
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -86,11 +91,9 @@
         </table>
         <form id="commentForm" class="comment-form"
               th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
-            <input hidden name="articleIndex" type="hidden" th:value="${article.id}">
             <label class="label">
                 <span class="text">
-                    <span class="left">댓글 (<span rel="count">11</span>)</span>
-                    <span class="right" rel="refresh">다시 불러오기</span>
+                    <span class="left">댓글 (<span class="count" th:text="${commentList.size() + subCommentList.size()}"></span>)</span>
                 </span>
                 <span class="horizontal">
                     <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
@@ -111,39 +114,39 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>
-                    <div class="comment">
+            <tr th:each="comment : ${commentList}">
+                <td th:each="commentLike : ${commentLikeList}" th:if="${comment.id == commentLike.comment.id && commentLike.user.username == #authentication.Principal.userDto.username}" th:data-id="${commentLike.comment.id}">
+                    <div class="comment" th:data-id="${comment.id}">
                         <div class="head">
-                            <span class="nickname" rel="nickname">닉네임123</span>
-                            <span class="written-at" rel="writtenAt">2023-11-24 17:24:55</span>
+                            <span class="nickname" th:text="${comment.user.nickname}"></span>
+                            <span class="written-at" th:text="${comment.writtenAt}"></span>
                             <span class="spring"></span>
-                            <span class="action" rel="modify">수정</span>
-                            <span class="action" rel="delete">삭제</span>
-                            <span class="action" rel="modifyCancel">수정 취소</span>
+                            <span class="action modify">수정</span>
+                            <span class="action delete">삭제</span>
+                            <span class="action modifyCancel">수정 취소</span>
                         </div>
                         <div class="body">
-                            <span class="content">댓글 내용</span>
-                            <form rel="modifyForm" class="modify-form">
+                            <span class="content" th:text="${comment.content}"></span>
+                            <form id="modifyForm" class="modify-form">
                                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
                                           class="common-field"></textarea>
                                 <input type="submit" value="댓글 수정" class="common-button">
                             </form>
                         </div>
                         <div class="foot">
-                            <span class="vote" rel="vote" data-vote="up">
-                                <img alt="👍" class="icon" src="/images/article/comment.vote.up.png">
-                                <span class="value">173</span>
+                            <span th:mine="${commentLike.user.username == #authentication.Principal.userDto.username && commentLike.isLike == true} ? 'true' : 'false'" class="vote vote-up">
+                                <img class="icon" src="/images/comment/vote.up.png">
+                                <span class="value">12</span>
                             </span>
-                            <span class="vote" rel="vote" data-vote="down">
-                                <img alt="👎" class="icon" src="/images/article/comment.vote.down.png">
+                            <span class="vote vote-down">
+                                <img class="icon" src="/images/comment/vote.down.png">
                                 <span class="value">27</span>
                             </span>
                             <span class="spring"></span>
-                            <span class="action" rel="reply">답글 달기</span>
-                            <span class="action" rel="replyCancel">답글 달기 취소</span>
+                            <span class="action reply">답글 달기</span>
+                            <span class="action replyCancel">답글 달기 취소</span>
                         </div>
-                        <form class="reply-form" rel="replyForm">
+                        <form id="replyForm" class="reply-form">
                             <label class="label">
                                 <textarea class="common-field" maxlength="1000" name="content"
                                           placeholder="답글을 입력해 주세요."></textarea>
@@ -151,11 +154,42 @@
                             <input class="common-button" type="submit" value="답글 달기">
                         </form>
                     </div>
+                    <th:block th:each="subComment : ${subCommentList}" th:if="${comment.id == subComment.comment.id}">
+                        <div class="comment sub" th:data-id="${subComment.id}">
+                            <div class="head">
+                                <span class="nickname" th:text="${comment.user.nickname}"></span>
+                                <span class="written-at" th:text="${subComment.writtenAt}"></span>
+                                <span class="spring"></span>
+                                <span class="action modify">수정</span>
+                                <span class="action delete">삭제</span>
+                                <span class="action modifyCancel">수정 취소</span>
+                            </div>
+                            <div class="body">
+                                <span class="content" th:text="${subComment.content}"></span>
+                            </div>
+                            <div class="foot">
+                                <span class="vote vote-up">
+                                    <img alt="👍" class="icon" src="/images/comment/vote.up.png">
+                                    <span class="value">173</span>
+                                </span>
+                                <span class="vote vote-down">
+                                    <img alt="👎" class="icon" src="/images/comment/vote.down.png">
+                                    <span class="value">27</span>
+                                </span>
+                            </div>
+                        </div>
+                    </th:block>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
+
+    <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}">
+        <input hidden class="current-nickname" type="hidden"
+               th:value="${#authentication.Principal.userDto.nickname}">
+    </th:block>
+    <input hidden class="comment-like-list" type="hidden" th:value="${commentLikeList}">
 </main>
 
 <th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
