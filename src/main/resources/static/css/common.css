@@ -171,7 +171,7 @@ button {
     }
 }
 
-.common-button {
+.common-btn {
     color: #eaecee;
     background-color: #202127;
     border: 0.0625rem solid #202127;
@@ -180,19 +180,19 @@ button {
     padding: 0.5rem 0.625rem;
 }
 
-.common-button:active {
+.common-btn:active {
     background-color: #202127;
 }
 
-.common-button:hover {
+.common-btn:hover {
     border: 0.0625rem solid #262626;
 }
 
-.common-button:focus {
+.common-btn:focus {
     border: 0.0625rem solid #262626;
 }
 
-.common-button:disabled {
+.common-btn:disabled {
     background-color: #2A292E;
     border: 0.0625rem solid #17202a;
     cursor: default;

@@ -9,4 +9,8 @@ import java.util.List;
 
 public interface SubCommentLikeRepository extends JpaRepository<SubCommentLike, SubCommentLikeId> {
     List<SubCommentLike> findBySubCommentCommentArticleId(Long id);
+
+    SubCommentLike findBySubCommentIdAndUserUsername(Long id, String username);
+
+    List<SubCommentLike> findBySubCommentIdAndIsLikeIs(Long id, boolean isLike);
 }

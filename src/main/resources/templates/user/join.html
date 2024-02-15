@@ -40,13 +40,13 @@
             <span class="horizontal">
                 <input type="email" class="big common-field" maxlength="50" name="email"
                            placeholder="이메일 (user@sample.com)" th:data-regex="${userRegex.EMAIL.expression}">
-                <input type="button" name="emailSend" value="인증번호 발송" class="common-button">
+                <input type="button" name="emailSend" value="인증번호 발송" class="common-btn">
             </span>
             <span class="horizontal">
                 <input disabled type="number" maxlength="6" minlength="6" name="emailCode"
                            placeholder="이메일 인증번호(숫자 6자)" class="big common-field"
                            th:data-regex="${emailAuthRegex.CODE.expression}">
-                <input disabled type="button" name="emailVerify" value="인증번호 확인" class="common-button">
+                <input disabled type="button" name="emailVerify" value="인증번호 확인" class="common-btn">
             </span>
         </label>
         <label class="label password">
@@ -63,7 +63,7 @@
             <span class="horizontal">
                 <input class="big common-field" maxlength="10" name="nickname" placeholder="닉네임" type="text"
                        th:data-regex="${userRegex.NICKNAME.expression}">
-                <input type="button" name="confirmDuplication" value="중복확인" class="common-button">
+                <input type="button" name="confirmDuplication" value="중복확인" class="common-btn">
             </span>
         </label>
         <label class="label name">
@@ -94,7 +94,7 @@
             <span class="horizontal">
                     <input type="text" maxlength="5" name="addressPostal" placeholder="우편번호"
                            class="common-field big" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
-                    <input type="button" name="addressFind" class="common-button" value="주소 찾기">
+                    <input type="button" name="addressFind" class="common-btn" value="주소 찾기">
                 </span>
             <input readonly type="text" maxlength="100" name="addressPrimary"
                    placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)" class="common-field"
@@ -103,7 +103,7 @@
                    class="common-field" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
         </label>
 
-        <input type="submit" value="회원가입" class="common-button join-btn">
+        <input type="submit" value="회원가입" class="common-btn join-btn">
     </div>
 </form>
 

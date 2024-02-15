@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommentLikeDto {
-    private Long commentId;
+public class SubCommentLikeDto {
+    private Long subCommentId;
     private String username;
     private String isLike;
 }

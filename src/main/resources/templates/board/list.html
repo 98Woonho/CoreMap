@@ -107,7 +107,7 @@
                                th:if="${page.pageTo < page.maxPage}">&gt;&gt;</a>
                         </th:block>
                         <div class="spring"></div>
-                        <a class="common-button"
+                        <a class="common-btn"
                            th:href="@{/article/write (code = ${board.code})}"
                            sec:authorize="isAuthenticated()"
                            th:if="${!board.isAdminWrite}">글쓰기</a>
@@ -138,8 +138,8 @@
                 <input class="common-field" maxlength="50" name="keyword" placeholder="검색어를 입력해 주세요." type="text"
                        th:value="${searching == true ? search.keyword : ''}">
             </label>
-            <input type="submit" value="검색" class="common-button">
-            <a class="common-button" th:if="${searching == true}" th:href="@{/board/list (code = ${board.code})}">검색
+            <input type="submit" value="검색" class="common-btn">
+            <a class="common-btn" th:if="${searching == true}" th:href="@{/board/list (code = ${board.code})}">검색
                 초기화</a>
         </form>
     </div>

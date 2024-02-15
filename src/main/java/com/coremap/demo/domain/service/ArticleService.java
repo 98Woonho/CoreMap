@@ -71,6 +71,30 @@ public class ArticleService {
         return commentLikeRepository.findByCommentArticleId(id);
     }
 
+    public int getLikeCount(Long id, boolean isLike) {
+        List<CommentLike> likeList = commentLikeRepository.findByCommentIdAndIsLikeIs(id, isLike);
+
+        return likeList.size();
+    }
+
+    public int getSubCommentLikeCount(Long id, boolean isLike) {
+        List<SubCommentLike> likeList = subCommentLikeRepository.findBySubCommentIdAndIsLikeIs(id, isLike);
+
+        return likeList.size();
+    }
+
+    public int getDislikeCount(Long id, boolean isLike) {
+        List<CommentLike> likeList = commentLikeRepository.findByCommentIdAndIsLikeIs(id, isLike);
+
+        return likeList.size();
+    }
+
+    public int getSubCommentDislikeCount(Long id, boolean isLike) {
+        List<SubCommentLike> likeList = subCommentLikeRepository.findBySubCommentIdAndIsLikeIs(id, isLike);
+
+        return likeList.size();
+    }
+
     public List<SubCommentLike> getSubCommentLikeList(Long id) {
         return subCommentLikeRepository.findBySubCommentCommentArticleId(id);
     }
@@ -254,6 +278,12 @@ public class ArticleService {
 
         commentRepository.save(comment);
 
+        CommentLike commentLike = new CommentLike();
+        commentLike.setUser(user);
+        commentLike.setComment(comment);
+        
+        commentLikeRepository.save(commentLike);
+
         return "SUCCESS";
     }
 
@@ -274,6 +304,12 @@ public class ArticleService {
 
         subCommentRepository.save(subComment);
 
+        SubCommentLike subCommentLike = new SubCommentLike();
+        subCommentLike.setUser(user);
+        subCommentLike.setSubComment(subComment);
+
+        subCommentLikeRepository.save(subCommentLike);
+
         return "SUCCESS";
     }
 
@@ -289,9 +325,101 @@ public class ArticleService {
         CommentLike commentLike = new CommentLike();
         commentLike.setComment(comment);
         commentLike.setUser(user);
-        commentLike.setLike(true);
+
+        commentLike.setIsLike(commentLikeDto.getIsLike().equals("true"));
 
         commentLikeRepository.save(commentLike);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String updateCommentLike(CommentLikeDto commentLikeDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        Comment comment = commentRepository.findById(commentLikeDto.getCommentId()).get();
+
+        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(comment.getId(), user.getUsername());
+
+        commentLike.setIsLike(commentLikeDto.getIsLike().equals("true"));
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String deleteCommentLike(CommentLikeDto commentLikeDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        Comment comment = commentRepository.findById(commentLikeDto.getCommentId()).get();
+
+        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(comment.getId(), user.getUsername());
+
+        commentLike.setIsLike(null);
+
+        commentLikeRepository.save(commentLike);
+
+        return "SUCCESS";
+    }
+
+
+
+    
+    @Transactional(rollbackFor = Exception.class)
+    public String subCommentLike(SubCommentLikeDto subCommentLikeDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        SubComment subComment = subCommentRepository.findById(subCommentLikeDto.getSubCommentId()).get();
+
+        SubCommentLike subCommentLike = new SubCommentLike();
+        subCommentLike.setSubComment(subComment);
+        subCommentLike.setUser(user);
+
+        subCommentLike.setIsLike(subCommentLikeDto.getIsLike().equals("true"));
+
+        subCommentLikeRepository.save(subCommentLike);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String updateSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        SubComment subComment = subCommentRepository.findById(subCommentLikeDto.getSubCommentId()).get();
+
+        SubCommentLike subCommentLike = subCommentLikeRepository.findBySubCommentIdAndUserUsername(subComment.getId(), user.getUsername());
+
+        subCommentLike.setIsLike(subCommentLikeDto.getIsLike().equals("true"));
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String deleteSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        SubComment subComment = subCommentRepository.findById(subCommentLikeDto.getSubCommentId()).get();
+
+        SubCommentLike subCommentLike = subCommentLikeRepository. findBySubCommentIdAndUserUsername(subComment.getId(), user.getUsername());
+
+        subCommentLike.setIsLike(null);
+
+        subCommentLikeRepository.save(subCommentLike);
 
         return "SUCCESS";
     }

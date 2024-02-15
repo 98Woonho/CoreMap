@@ -19,8 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @Slf4j
@@ -117,7 +116,51 @@ public class ArticleController {
 
         List<CommentLike> commentLikeList = articleService.getCommentLikeList(article.getId());
 
+        List<Map<String, Object>> commentLikeCountList = new ArrayList<>();
+        List<Long> existingCommentIdList = new ArrayList<>();
+
+        for(CommentLike commentLike : commentLikeList) {
+            Long commentId = commentLike.getComment().getId();
+
+            if (existingCommentIdList.contains(commentId)) {
+                continue;
+            }
+
+            int likeCount = articleService.getLikeCount(commentLike.getComment().getId(), true);
+            int dislikeCount = articleService.getDislikeCount(commentLike.getComment().getId(), false);
+
+            Map<String, Object> commentLikeCount = new HashMap<>();
+
+            commentLikeCount.put("commentId", commentLike.getComment().getId());
+            commentLikeCount.put("likeCount", likeCount);
+            commentLikeCount.put("dislikeCount", dislikeCount);
+            commentLikeCountList.add(commentLikeCount);
+            existingCommentIdList.add(commentId);
+        }
+
         List<SubCommentLike> subCommentLikeList = articleService.getSubCommentLikeList(article.getId());
+
+        List<Map<String, Object>> subCommentLikeCountList = new ArrayList<>();
+        List<Long> existingSubCommentIdList = new ArrayList<>();
+
+        for(SubCommentLike subCommentLike : subCommentLikeList) {
+            Long subCommentId = subCommentLike.getSubComment().getId();
+
+            if (existingSubCommentIdList.contains(subCommentId)) {
+                continue;
+            }
+
+            int likeCount = articleService.getSubCommentLikeCount(subCommentLike.getSubComment().getId(), true);
+            int dislikeCount = articleService.getSubCommentDislikeCount(subCommentLike.getSubComment().getId(), false);
+
+            Map<String, Object> subCommentLikeCount = new HashMap<>();
+
+            subCommentLikeCount.put("subCommentId", subCommentLike.getSubComment().getId());
+            subCommentLikeCount.put("likeCount", likeCount);
+            subCommentLikeCount.put("dislikeCount", dislikeCount);
+            subCommentLikeCountList.add(subCommentLikeCount);
+            existingSubCommentIdList.add(subCommentId);
+        }
 
         Board board = Arrays.stream(boards)
                 .filter(x -> x.getCode().equals(code))
@@ -134,6 +177,9 @@ public class ArticleController {
         model.addAttribute("commentList", commentList);
         model.addAttribute("subCommentList", subCommentList);
         model.addAttribute("commentLikeList", commentLikeList);
+        model.addAttribute("commentLikeCountList", commentLikeCountList);
+        model.addAttribute("subCommentLikeList", subCommentLikeList);
+        model.addAttribute("subCommentLikeCountList", subCommentLikeCountList);
     }
 
     @GetMapping("modify")
@@ -201,5 +247,35 @@ public class ArticleController {
     @ResponseBody
     public String postCommentLike(CommentLikeDto commentLikeDto) {
         return articleService.commentLike(commentLikeDto);
+    }
+
+    @PatchMapping("commentLike")
+    @ResponseBody
+    public String patchCommentLike(CommentLikeDto commentLikeDto) {
+        return articleService.updateCommentLike(commentLikeDto);
+    }
+
+    @DeleteMapping("commentLike")
+    @ResponseBody
+    public String deleteCommentLike(CommentLikeDto commentLikeDto) {
+        return articleService.deleteCommentLike(commentLikeDto);
+    }
+
+    @PostMapping("subCommentLike")
+    @ResponseBody
+    public String postSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
+        return articleService.subCommentLike(subCommentLikeDto);
+    }
+
+    @PatchMapping("subCommentLike")
+    @ResponseBody
+    public String patchSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
+        return articleService.updateSubCommentLike(subCommentLikeDto);
+    }
+
+    @DeleteMapping("subCommentLike")
+    @ResponseBody
+    public String deleteSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
+        return articleService.deleteSubCommentLike(subCommentLikeDto);
     }
 }

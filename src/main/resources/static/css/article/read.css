@@ -140,6 +140,10 @@ figure img {
     justify-content: flex-start;
 }
 
+.write-comment-btn:hover {
+    background-color: #212329;
+}
+
 .label {
     align-items: stretch;
     display: flex;
@@ -231,10 +235,9 @@ figure img {
 }
 
 .comment .head {
-    background-color: #abb2b9;
+    background-color: #17202a;
     border-radius: 0.375rem;
     color: #ffffff;
-    margin-bottom: 0.375rem;
     padding: 0.375rem 0.75rem;
 
     align-items: center;
@@ -264,7 +267,7 @@ figure img {
     text-decoration: underline;
 }
 
-.head .modifyCancel {
+.head .modify-cancel {
     display: none;
 }
 
@@ -273,11 +276,11 @@ figure img {
     display: none;
 }
 
-.comment.modifying .head .modifyCancel {
+.comment.modifying .head .modify-cancel {
     display: inline-block;
 }
 
-.comment .body {
+.body {
     background-color: #202127;
     color: #eaecee;
     border-bottom: 0.0625rem solid #2A292E;
@@ -291,7 +294,12 @@ figure img {
     justify-content: flex-start;
 }
 
-.body.modifying .content {
+.comment.modifying .body {
+    background-color: unset;
+    padding: unset;
+}
+
+.comment.modifying .body .content {
     display: none;
 }
 
@@ -304,12 +312,21 @@ figure img {
     justify-content: flex-start;
 }
 
-.body.modifying .modify-form {
+.comment.modifying .body .modify-form {
     display: flex;
 }
 
-.body .modify-form .common-field {
+.modify-form textarea {
     flex: 1;
+}
+
+.modify-form .modify-comment-btn:hover {
+    background-color: #212329;
+}
+
+.modify-form textarea:hover,
+.modify-form textarea:focus {
+    border: 0.0625rem solid #566573;
 }
 
 .comment.deleted .body {
@@ -348,7 +365,6 @@ figure img {
 }
 
 .foot .vote .value {
-    background-color: #abb2b9;
     border-radius: 0.125rem;
     color: #ffffff;
     font-size: 0.8rem;
@@ -377,11 +393,11 @@ figure img {
     display: none;
 }
 
-.foot .replyCancel {
+.foot .reply-cancel {
     display: none;
 }
 
-.comment.replying .foot .replyCancel {
+.comment.replying .foot .reply-cancel {
     display: inline-block;
 }
 
@@ -418,7 +434,7 @@ figure img {
     justify-content: flex-start;
 }
 
-.reply-form .label .common-field {
+.reply-form .common-field {
     flex: 1;
 }
 
