@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -17,7 +19,7 @@ public class ArticleDto {
     private String title;
     private String content;
     private int view;
-    private Date writtenAt;
+    private LocalDateTime writtenAt;
     private Date modifiedAt;
     private boolean isDeleted;
     private String boardCode;

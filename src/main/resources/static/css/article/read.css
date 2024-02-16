@@ -140,10 +140,6 @@ figure img {
     justify-content: flex-start;
 }
 
-.write-comment-btn:hover {
-    background-color: #212329;
-}
-
 .label {
     align-items: stretch;
     display: flex;
@@ -255,7 +251,8 @@ figure img {
     font-weight: 400;
 }
 
-.head .written-at {
+.head .written-at,
+.head .modified {
     color: #d5d8dc;
 }
 
@@ -318,10 +315,6 @@ figure img {
 
 .modify-form textarea {
     flex: 1;
-}
-
-.modify-form .modify-comment-btn:hover {
-    background-color: #212329;
 }
 
 .modify-form textarea:hover,

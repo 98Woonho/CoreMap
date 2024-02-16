@@ -237,10 +237,22 @@ public class ArticleController {
         return articleService.writeComment(commentDto);
     }
 
+    @PatchMapping("comment")
+    @ResponseBody
+    public String patchComment(CommentDto commentDto) {
+        return articleService.updateComment(commentDto);
+    }
+
     @PostMapping("subComment")
     @ResponseBody
     public String postSubComment(SubCommentDto subCommentDto) {
         return articleService.writeSubComment(subCommentDto);
+    }
+
+    @PatchMapping("subComment")
+    @ResponseBody
+    public String patchSubComment(SubCommentDto subCommentDto) {
+        return articleService.updateSubComment(subCommentDto);
     }
 
     @PostMapping("commentLike")

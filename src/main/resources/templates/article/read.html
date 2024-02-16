@@ -129,6 +129,8 @@
                         <div class="head">
                             <span class="nickname" th:text="${comment.user.nickname}"></span>
                             <span class="written-at" th:text="${comment.writtenAt}"></span>
+                            <span class="modified" th:if="${comment.modifiedAt != null}">(수정됨)</span>
+                            <span th:if="${article.user.username == comment.user.username}">- 작성자</span>
                             <span class="spring"></span>
                             <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}">
                                 <span th:if="${#authentication.Principal.userDto.username == comment.user.username}" class="action modify">수정</span>
@@ -138,9 +140,9 @@
                         </div>
                         <div class="body">
                             <span class="content" th:text="${comment.content}"></span>
-                            <form id="modifyForm" class="modify-form">
+                            <form id="modifyForm" class="modify-form" th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
                                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
-                                          class="common-field"></textarea>
+                                          class="common-field" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                                 <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
                             </form>
                         </div>
@@ -158,10 +160,10 @@
                             <span class="action reply">답글 달기</span>
                             <span class="action reply-cancel">답글 달기 취소</span>
                         </div>
-                        <form id="replyForm" class="reply-form">
+                        <form id="replyForm" class="reply-form" th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
                             <label class="label">
                                 <textarea class="common-field" maxlength="1000" name="content"
-                                          placeholder="답글을 입력해 주세요."></textarea>
+                                          placeholder="답글을 입력해 주세요." th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                             </label>
                             <input class="common-btn" type="submit" value="답글 달기">
                         </form>
@@ -180,6 +182,8 @@
                             <div class="head">
                                 <span class="nickname" th:text="${subComment.user.nickname}"></span>
                                 <span class="written-at" th:text="${subComment.writtenAt}"></span>
+                                <span class="modified" th:if="${subComment.modifiedAt != null}">(수정됨)</span>
+                                <span th:if="${article.user.username == subComment.user.username}">- 작성자</span>
                                 <span class="spring"></span>
                                 <span class="action modify">수정</span>
                                 <span class="action delete">삭제</span>
@@ -187,6 +191,11 @@
                             </div>
                             <div class="body">
                                 <span class="content" th:text="${subComment.content}"></span>
+                                <form id="subCommentModifyForm" class="modify-form sub-comment-modify-form" th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                                          class="common-field" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                                    <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
+                                </form>
                             </div>
                             <div class="foot" th:each="subCommentLikeCount : ${subCommentLikeCountList}"
                                  th:if="${subComment.id == subCommentLikeCount.subCommentId}">

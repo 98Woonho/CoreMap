@@ -37,7 +37,7 @@ h2 {
 
 .exercise-section li {
     font-size: 1rem;
-    margin-top: 0.75rem;
+    margin-top: 1.25rem;
 }
 
 .img-container {
@@ -70,5 +70,6 @@ h2 {
 }
 
 .exercise-info-container .text {
+    margin-top: 0.5rem;
     font-size: 1rem;
 }

@@ -38,25 +38,25 @@ public class User {
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private Date registeredAt;
 
-    public static UserDto entityToDto(User user){
-        UserDto dto = UserDto.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .nickname(user.getNickname())
-                .name(user.getName())
-                .contactCompanyCode(user.getContactCompany().getCode())
-                .contactFirst(user.getContactFirst())
-                .contactSecond(user.getContactSecond())
-                .contactThird(user.getContactThird())
-                .addressPostal(user.getAddressPostal())
-                .addressPrimary(user.getAddressPrimary())
-                .addressSecondary(user.getAddressSecondary())
-                .role(user.getRole())
-                .provider(user.getProvider())
-                .providerId(user.getProviderId())
-                .isSuspended(user.isSuspended())
-                .registeredAt(user.getRegisteredAt())
-                .build();
-        return dto;
-    }
+//    public static UserDto entityToDto(User user){
+//        UserDto dto = UserDto.builder()
+//                .username(user.getUsername())
+//                .password(user.getPassword())
+//                .nickname(user.getNickname())
+//                .name(user.getName())
+//                .contactCompanyCode(user.getContactCompany().getCode())
+//                .contactFirst(user.getContactFirst())
+//                .contactSecond(user.getContactSecond())
+//                .contactThird(user.getContactThird())
+//                .addressPostal(user.getAddressPostal())
+//                .addressPrimary(user.getAddressPrimary())
+//                .addressSecondary(user.getAddressSecondary())
+//                .role(user.getRole())
+//                .provider(user.getProvider())
+//                .providerId(user.getProviderId())
+//                .isSuspended(user.isSuspended())
+//                .registeredAt(user.getRegisteredAt())
+//                .build();
+//        return dto;
+//    }
 }

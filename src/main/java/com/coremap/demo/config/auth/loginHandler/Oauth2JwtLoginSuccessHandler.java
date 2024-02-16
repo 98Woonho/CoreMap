@@ -43,24 +43,16 @@ public class Oauth2JwtLoginSuccessHandler implements AuthenticationSuccessHandle
         collection.forEach( (role)->{
             System.out.println("[CustomLoginSuccessHandler] onAuthenticationSuccess() role : " + role);
             String role_str =  role.getAuthority();
-
             try {
                 if (role_str.equals("ROLE_USER")) {
-                    response.sendRedirect("/user");
-                } else if (role_str.equals("ROLE_MEMBER")) {
-                    response.sendRedirect("/member");
+                    response.sendRedirect("/");
                 } else if (role_str.equals("ROLE_ADMIN")) {
-                    response.sendRedirect("/admin");
+                    response.sendRedirect("/");
                 }
             }catch(Exception e){
                 e.printStackTrace();
             }
-
         });
-
-
-
     }
-
 }
 

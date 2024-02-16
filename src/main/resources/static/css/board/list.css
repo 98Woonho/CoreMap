@@ -101,12 +101,13 @@ tfoot .page-button-container {
 .page-button-container a.common-button {
     top: 0;
     right: 0;
+    color: inherit;
     position: absolute; /* 이거 준 이유는 글쓰기 버튼에 의해서 왼쪽으로 살짝 밀려나게 되기 때문에 absolute를 줌 */
     text-decoration: none;
 }
 
 .page-button-container .button {
-    background-color: #ffffff;
+    background-color: #202127;
     padding: 0.625rem 0.875rem;
     text-decoration: none;
 }

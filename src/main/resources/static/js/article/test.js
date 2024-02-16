@@ -285,38 +285,6 @@ subComments.forEach(subComment => {
             e.preventDefault();
             subComment.classList.remove('modifying');
         }
-
-        subCommentModifyForm.onsubmit = function(e) {
-            e.preventDefault();
-
-            if (subCommentModifyForm['content'].value === '') {
-                alert('댓글을 입력해 주세요.');
-                return false;
-            }
-
-            if (!new RegExp(subCommentModifyForm['content'].dataset.regex).test(subCommentModifyForm['content'].value.trim())) {
-                alert('1000자 이내로 입력해 주세요.');
-                return false;
-            }
-
-            if (subCommentModifyForm.querySelector('textarea').value === subComment.querySelector('.content').innerText) {
-                alert('기존 댓글과 동일합니다.');
-                return false;
-            }
-
-            const formData = new FormData();
-
-            formData.append("content", subCommentModifyForm['content'].value.trim());
-            formData.append("id", subComment.dataset.id);
-
-            axios.patch('/article/subComment', formData)
-                .then(res => {
-                    location.reload();
-                })
-                .catch(err => {
-                    alert('알 수 없는 이유로 답글을 수정하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                })
-        }
     }
 
     const deleteComment = subComment.querySelector('.delete');

@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,14 +24,14 @@ public class BoardService {
     private BoardRepository boardRepository;
 
     public List<Article> getArticles(Board board, PageVo page) {
-        Pageable pageable = PageRequest.of(page.queryOffset, page.countPerPage);
+        Pageable pageable = PageRequest.of(page.requestPage - 1, page.countPerPage);
         Page<Article> articlePage = articleRepository.findByBoardAndPage(board.getCode(), pageable, null, null);
 
         return articlePage.getContent();
     }
 
     public List<Article> getArticles(Board board, PageVo page, SearchVo search) {
-        Pageable pageable = PageRequest.of(page.queryOffset, page.countPerPage);
+        Pageable pageable = PageRequest.of(page.requestPage - 1, page.countPerPage);
         Page<Article> articlePage =  articleRepository.findByBoardAndPage(board.getCode(), pageable, search.getKeyword(), search.getCriterion());
 
         return articlePage.getContent();
@@ -43,7 +44,19 @@ public class BoardService {
     }
 
     public int getArticleCount(Board board, SearchVo search) {
-        List<Article> articleList = articleRepository.findByBoardCodeAndContentContaining(board.getCode(), search.getKeyword());
+        List<Article> articleList = new ArrayList<>();
+
+        if(search.getCriterion().equals("title")) {
+            articleList = articleRepository.findByBoardCodeAndTitleContaining(board.getCode(), search.getKeyword());
+        }
+
+        if(search.getCriterion().equals("content")) {
+            articleList = articleRepository.findByBoardCodeAndContentContaining(board.getCode(), search.getKeyword());
+        }
+
+        if(search.getCriterion().equals("nickname")) {
+            articleList = articleRepository.findByBoardCodeAndUserNicknameContaining(board.getCode(), search.getKeyword());
+        }
 
         return articleList.size();
     }

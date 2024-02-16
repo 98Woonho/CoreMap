@@ -47,7 +47,7 @@
                        th:text="${article.title}"
                        th:if="${searching == false}"></a>
                     <a class="link"
-                       th:href="@{/article/read (index=${article.indexInBoard}, page=${page.requestPage} ,criterion = ${search.criterion}, keyword = ${search.keyword})}"
+                       th:href="@{/article/read (index=${article.indexInBoard}, page=${page.requestPage} ,criterion = ${search.criterion}, keyword = ${search.keyword}, code=${board.code})}"
                        th:text="${article.title}"
                        th:if="${searching == true}"></a>
                 </td>

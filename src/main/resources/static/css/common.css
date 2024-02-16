@@ -185,7 +185,7 @@ button {
 }
 
 .common-btn:hover {
-    border: 0.0625rem solid #262626;
+    background-color: #212329;
 }
 
 .common-btn:focus {

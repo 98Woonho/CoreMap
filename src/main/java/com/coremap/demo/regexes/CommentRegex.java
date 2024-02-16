@@ -1,7 +1,7 @@
 package com.coremap.demo.regexes;
 
 public enum CommentRegex implements Regex {
-    CONTENT("^(?=.{1,1000}$)(\\S)(.*)(\\S)$");
+    CONTENT("^(?=.{1,1000}$)(.*)(.*)$");
 
     public final String expression;
 

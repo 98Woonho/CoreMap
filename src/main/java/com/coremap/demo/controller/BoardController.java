@@ -45,7 +45,6 @@ public class BoardController {
             List<Article> articleList = searching
                     ? this.boardService.getArticles(board, pageVo, search)
                     : this.boardService.getArticles(board, pageVo);
-
             model.addAttribute("articleList", articleList);
             model.addAttribute("page", pageVo);
             model.addAttribute("searching", searching);

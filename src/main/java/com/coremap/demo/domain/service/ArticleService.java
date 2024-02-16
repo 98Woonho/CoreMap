@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +45,16 @@ public class ArticleService {
     private SubCommentLikeRepository subCommentLikeRepository;
 
     public Article getArticle(Long indexInBoard, String boardCode) {
-        return articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
+        Article article = articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
+
+        int view = article.getView();
+        view += 1;
+
+        article.setView(view);
+
+        articleRepository.save(article);
+
+        return article;
     }
 
     public Article getArticle(Long id) {
@@ -288,6 +299,18 @@ public class ArticleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public String updateComment(CommentDto commentDto) {
+        Comment comment = commentRepository.findById(commentDto.getId()).get();
+
+        comment.setContent(commentDto.getContent());
+        comment.setModifiedAt(new Date());
+
+        commentRepository.save(comment);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public String writeSubComment(SubCommentDto subCommentDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -309,6 +332,18 @@ public class ArticleService {
         subCommentLike.setSubComment(subComment);
 
         subCommentLikeRepository.save(subCommentLike);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String updateSubComment(SubCommentDto subCommentDto) {
+        SubComment subComment = subCommentRepository.findById(subCommentDto.getId()).get();
+
+        subComment.setContent(subCommentDto.getContent());
+        subComment.setModifiedAt(new Date());
+
+        subCommentRepository.save(subComment);
 
         return "SUCCESS";
     }

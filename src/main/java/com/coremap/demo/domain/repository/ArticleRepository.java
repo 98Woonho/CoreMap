@@ -22,7 +22,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findByBoardCode(String boardCode);
 
+    List<Article> findByBoardCodeAndTitleContaining(String boardCode, String keyword);
+
     List<Article> findByBoardCodeAndContentContaining(String boardCode, String keyword);
+
+    List<Article> findByBoardCodeAndUserNicknameContaining(String boardCode, String keyword);
 
     Article findTopByBoardCodeOrderByIndexInBoardDesc(String boardCode);
 
