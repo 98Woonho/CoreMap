@@ -21,7 +21,6 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoClientId;
 
-
     private final String REDIRECT_URI="http://localhost:8080/";
 
 
