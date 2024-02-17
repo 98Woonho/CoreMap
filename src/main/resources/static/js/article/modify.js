@@ -42,7 +42,7 @@ modifyForm['fileAdd'].onclick = function(e) {
 modifyForm['file'].onchange = function () {
     const file = modifyForm['file'].files[0];
     if (!file) {
-        return;
+        return false;
     }
 
     const fileList = modifyForm.querySelector('.file-list');
@@ -79,12 +79,12 @@ modifyForm.onsubmit = function(e) {
 
     if (modifyForm['title'].value === '') {
         alert('제목을 입력해 주세요.');
-        return;
+        return false;
     }
 
     if (modifyForm['content'].value === '') {
         alert('내용을 입력해 주세요.');
-        return;
+        return false;
     }
 
     const formData = new FormData();

@@ -54,17 +54,16 @@ public class UserService {
         return contactCompanyRepository.findAll();
     }
 
+    public List<User> getUserList(String name, String contact) {
+        return userRepository.findByNameAndContact(name, contact);
+    }
+
     @Transactional(rollbackFor = Exception.class)
-    public String sendJoinEmail(EmailAuthDto emailAuthDto) throws MessagingException {
-//        List<User> getAllUserList = userRepository.findAll();
-//
-//        for(User user : getAllUserList) {
-//            if(Objects.equals(user.getUsername(), emailAuthDto.getEmail())) {
-//                return "FAILURE_DUPLICATE_EMAIL";
-//            }
-//        }
-        if(userRepository.existsById(emailAuthDto.getEmail())) {
-            return "FAILURE_DUPLICATE_EMAIL";
+    public String sendJoinEmail(EmailAuthDto emailAuthDto, boolean resetPassword) throws MessagingException {
+        if(!resetPassword) {
+            if(userRepository.existsById(emailAuthDto.getEmail())) {
+                return "FAILURE_DUPLICATE_EMAIL";
+            }
         }
 
         String code = RandomStringUtils.randomNumeric(6);
@@ -125,16 +124,26 @@ public class UserService {
         return "SUCCESS";
     }
 
-    public String confirmDuplication(String nickname) {
+    public String confirmDuplicateNickname(String nickname) {
         List<User> userList = userRepository.findAll();
 
         for (User user : userList) {
-            if(Objects.equals(user.getNickname(), nickname)) {
+            if(user.getNickname().equals(nickname)) {
                 return "FAILURE_DUPLICATED_NICKNAME";
             }
         }
-
         return "SUCCESS";
+    }
+
+    public String confirmEmptyUser(String username) {
+        List<User> userList = userRepository.findAll();
+
+        for (User user : userList) {
+            if(user.getUsername().equals(username)) {
+                return "SUCCESS";
+            }
+        }
+        return "FAILURE_EMPTY_USERNAME";
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -148,15 +157,25 @@ public class UserService {
         user.setNickname(userDto.getNickname());
         user.setName(userDto.getName());
         user.setContactCompany(contactCompany);
-        user.setContactFirst(userDto.getContactFirst());
-        user.setContactSecond(userDto.getContactSecond());
-        user.setContactThird(userDto.getContactThird());
+        user.setContact(userDto.getContact());
         user.setAddressPostal(userDto.getAddressPostal());
         user.setAddressPrimary(userDto.getAddressPrimary());
         user.setAddressSecondary(userDto.getAddressSecondary());
         user.setRole("ROLE_USER");
         user.setSuspended(false);
         user.setRegisteredAt(new Date());
+
+        userRepository.save(user);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String resetPassword(UserDto userDto) {
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User user = userRepository.findById(userDto.getUsername()).get();
+
+        user.setPassword(userDto.getPassword());
 
         userRepository.save(user);
 

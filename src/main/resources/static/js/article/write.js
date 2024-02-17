@@ -23,7 +23,7 @@ writeForm['fileAdd'].onclick = function(e) {
 writeForm['file'].onchange = function () {
     const file = writeForm['file'].files[0];
     if (!file) {
-        return;
+        return false;
     }
 
     const fileList = writeForm.querySelector('.file-list');
@@ -59,12 +59,12 @@ writeForm.onsubmit = function(e) {
 
     if (writeForm['title'].value === '') {
         alert('제목을 입력해 주세요.');
-        return;
+        return false;
     }
 
     if (writeForm['content'].value === '') {
         alert('내용을 입력해 주세요.');
-        return;
+        return false;
     }
 
     const formData = new FormData();

@@ -20,6 +20,5 @@ public class Board {
     private String code;
     private String text;
     private int priority;
-    @Column(columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean isAdminWrite;
+    private Boolean isAdminWrite;
 }

@@ -48,9 +48,9 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = null;
         if (provider != null && provider.equals("kakao")) {
             String id = oAuth2User.getAttributes().get("id").toString();
-            KakaoUserInfo kakaUserInfo = new KakaoUserInfo(id, (Map<String, Object>) oAuth2User.getAttributes().get("properties"));
-            System.out.println("[PrincipalDetailsOAuth2Service] loadUser() kakaUserInfo : " + kakaUserInfo);
-            oAuth2UserInfo = kakaUserInfo;
+            KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(id, (Map<String, Object>) oAuth2User.getAttributes().get("properties"));
+            System.out.println("[PrincipalDetailsOAuth2Service] loadUser() kakaUserInfo : " + kakaoUserInfo);
+            oAuth2UserInfo = kakaoUserInfo;
         } else if (provider != null && provider.equals("naver")) {
             Map<String, Object> resp = (Map<String, Object>) oAuth2User.getAttributes().get("response");
             String id = (String) resp.get("id");
@@ -110,6 +110,4 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
         principalDetails.setUserDto(dto);
         return principalDetails;
     }
-
-
 }

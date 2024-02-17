@@ -23,7 +23,6 @@ public class Oauth2JwtLoginSuccessHandler implements AuthenticationSuccessHandle
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
         //--------------------------------------
         //JWT ADD
         //--------------------------------------
@@ -39,7 +38,6 @@ public class Oauth2JwtLoginSuccessHandler implements AuthenticationSuccessHandle
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Collection<? extends GrantedAuthority> collection =  authentication.getAuthorities();
         collection.forEach( (role)->{
-            System.out.println("[CustomLoginSuccessHandler] onAuthenticationSuccess() role : " + role);
             String role_str =  role.getAuthority();
             try {
                 if (role_str.equals("ROLE_USER") && principalDetails.getUserDto().getAddressPostal() == null) {

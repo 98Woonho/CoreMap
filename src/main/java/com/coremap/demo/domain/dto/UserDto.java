@@ -19,9 +19,7 @@ public class UserDto {
     private String nickname;
     private String name;
     private String contactCompanyCode;
-    private String contactFirst;
-    private String contactSecond;
-    private String contactThird;
+    private String contact;
     private String addressPostal;
     private String addressPrimary;
     private String addressSecondary;

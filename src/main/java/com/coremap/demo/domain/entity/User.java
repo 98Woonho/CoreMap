@@ -24,9 +24,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name="contact_company_code", foreignKey = @ForeignKey(name="fk_user_contact_company_code", foreignKeyDefinition = "FOREIGN KEY(contact_company_code) REFERENCES contact_company(code) ON DELETE CASCADE ON UPDATE CASCADE"))
     private ContactCompany contactCompany;
-    private String contactFirst;
-    private String contactSecond;
-    private String contactThird;
+    private String contact;
     private String addressPostal;
     private String addressPrimary;
     private String addressSecondary;

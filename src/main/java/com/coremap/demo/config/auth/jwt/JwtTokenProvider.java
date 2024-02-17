@@ -81,9 +81,7 @@ public class JwtTokenProvider {
                 .claim("nickname", userDto.getNickname())
                 .claim("name", userDto.getName())
                 .claim("contactCompanyCode", userDto.getContactCompanyCode())
-                .claim("contactFirst", userDto.getContactFirst())
-                .claim("contactSecond", userDto.getContactSecond())
-                .claim("contactThird", userDto.getContactThird())
+                .claim("contact", userDto.getContact())
                 .claim("addressPostal", userDto.getAddressPostal())
                 .claim("addressPrimary", userDto.getAddressPrimary())
                 .claim("addressSecondary", userDto.getAddressSecondary())
@@ -137,9 +135,7 @@ public class JwtTokenProvider {
         String nickname = (String) claims.get("nickname");
         String name = (String) claims.get("name");
         String contactCompanyCode = (String) claims.get("contactCompanyCode");
-        String contactFirst = (String) claims.get("contactFirst");
-        String contactSecond = (String) claims.get("contactSecond");
-        String contactThird = (String) claims.get("contactThird");
+        String contact = (String) claims.get("contact");
         String addressPostal = (String) claims.get("addressPostal");
         String addressPrimary = (String) claims.get("addressPrimary");
         String addressSecondary = (String) claims.get("addressSecondary");
@@ -154,9 +150,7 @@ public class JwtTokenProvider {
         userDto.setNickname(nickname);
         userDto.setName(name);
         userDto.setContactCompanyCode(contactCompanyCode);
-        userDto.setContactFirst(contactFirst);
-        userDto.setContactSecond(contactSecond);
-        userDto.setContactThird(contactThird);
+        userDto.setContact(contact);
         userDto.setAddressPostal(addressPostal);
         userDto.setAddressPrimary(addressPrimary);
         userDto.setAddressSecondary(addressSecondary);

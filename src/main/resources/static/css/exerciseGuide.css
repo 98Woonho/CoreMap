@@ -17,10 +17,6 @@ h2 {
     margin-bottom: 1.5rem;
 }
 
-.center {
-    text-align: center;
-}
-
 .exercise-container {
     display: flex;
     flex-direction: row;

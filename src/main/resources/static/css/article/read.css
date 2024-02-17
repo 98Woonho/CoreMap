@@ -10,7 +10,6 @@
 
 figure img {
     max-width: 1000px;
-    width: 100%;
 }
 
 .content-container {
@@ -166,14 +165,6 @@ figure img {
 
 .right:hover {
     text-decoration: underline;
-}
-
-.horizontal {
-    align-items: stretch;
-    display: flex;
-    flex-direction: row;
-    gap: 0.375rem;
-    justify-content: flex-start;
 }
 
 .big {

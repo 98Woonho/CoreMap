@@ -32,9 +32,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         dto.setNickname(userOptional.get().getNickname());
         dto.setName(userOptional.get().getName());
         dto.setContactCompanyCode(userOptional.get().getContactCompany().getCode());
-        dto.setContactFirst(userOptional.get().getContactFirst());
-        dto.setContactSecond(userOptional.get().getContactSecond());
-        dto.setContactThird(userOptional.get().getContactThird());
+        dto.setContact(userOptional.get().getContact());
         dto.setAddressPostal(userOptional.get().getAddressPostal());
         dto.setAddressPrimary(userOptional.get().getAddressPrimary());
         dto.setAddressSecondary(userOptional.get().getAddressSecondary());

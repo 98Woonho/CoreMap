@@ -3,6 +3,9 @@ package com.coremap.demo.controller;
 import com.coremap.demo.domain.dto.*;
 import com.coremap.demo.domain.entity.*;
 import com.coremap.demo.domain.service.ArticleService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,9 +109,9 @@ public class ArticleController {
                         @RequestParam(value = "keyword", required = false) String keyword,
                         @RequestParam(value = "code") String code,
                         Model model) {
-        Board[] boards = this.articleService.getBoards();
+        Board[] boards = articleService.getBoards();
 
-        Article article = this.articleService.getArticle(index, code);
+        Article article = articleService.getArticle(index, code);
 
         List<Comment> commentList = articleService.getCommentList(article.getId());
 

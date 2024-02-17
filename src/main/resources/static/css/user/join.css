@@ -1,7 +1,17 @@
 @charset "UTF-8";
 
-#mainForm {
+#main {
     background-color: #2A292E;
+}
+
+.title {
+    margin: 5rem 0;
+}
+
+#mainForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .join-container {
@@ -13,7 +23,7 @@
     border-radius: 10px;
     box-shadow: 0 0 0.1rem 0.0625rem #17202a50;
     padding: 1rem;
-    margin: 5rem 0;
+    margin-bottom: 5rem;
     width: 500px;
 }
 
@@ -30,20 +40,8 @@
     color: #eaecee;
 }
 
-.horizontal {
-    align-items: stretch;
-    display: flex;
-    flex-direction: row;
-    gap: 0.375rem;
-    justify-content: flex-start;
-}
-
 .big {
     flex: 1;
-}
-
-.contact input {
-    width: 5.5rem;
 }
 
 #addressFind {

@@ -47,6 +47,10 @@ h1, h2, h3, h4, h5, h6, .text {
     margin-inline: unset;
 }
 
+.center {
+    text-align: center;
+}
+
 h1 {
     font-weight: 600;
     font-size: 2.25rem;
@@ -170,6 +174,15 @@ button {
         transform: rotate(1turn);
     }
 }
+
+.horizontal {
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
 
 .common-btn {
     color: #eaecee;

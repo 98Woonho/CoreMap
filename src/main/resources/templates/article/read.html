@@ -170,7 +170,6 @@
                     </div>
                     <th:block th:each="subComment : ${subCommentList}" th:if="${comment.id == subComment.comment.id}">
                         <div class="comment sub" th:data-id="${subComment.id}">
-
                             <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}"
                                       th:each="subCommentLike : ${subCommentLikeList}">
                                 <th:block
