@@ -46,9 +46,12 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     private UserRepository userRepository;
+
+    public User getUser(String username) {
+        return userRepository.findById(username).get();
+    }
 
     public List<ContactCompany> getAllContactCompanyList() {
         return contactCompanyRepository.findAll();
@@ -98,26 +101,17 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public String verifyJoinEmail(EmailAuthDto emailAuthDto) {
-        if (!EmailAuthRegex.EMAIL.matches(emailAuthDto.getEmail()) ||
-                !EmailAuthRegex.CODE.matches(emailAuthDto.getCode()) ||
-                !EmailAuthRegex.SALT.matches(emailAuthDto.getSalt())) {
-            return "FAILURE";
-        }
+        EmailAuth emailAuth = emailAuthRepository.findByEmailAndCodeAndSalt(emailAuthDto.getEmail(), emailAuthDto.getCode(), emailAuthDto.getSalt());
 
-        emailAuthDto = EmailAuth.emailAuthEntityToDto(emailAuthRepository.findByEmailAndCodeAndSalt(emailAuthDto.getEmail(), emailAuthDto.getCode(), emailAuthDto.getSalt()));
-
-
-        if (emailAuthDto == null) {
+        if(emailAuth == null) {
             return "FAILURE_INVALID_CODE";
         }
 
-        if (new Date().compareTo(emailAuthDto.getExpiresAt()) > 0) {
+        if (new Date().compareTo(emailAuth.getExpiresAt()) > 0) {
             return "FAILURE_EXPIRED";
         }
 
-        emailAuthDto.setVerified(true);
-
-        EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
+        emailAuth.setVerified(true);
 
         emailAuthRepository.save(emailAuth);
 
@@ -172,9 +166,13 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public String resetPassword(UserDto userDto) {
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = userRepository.findById(userDto.getUsername()).get();
 
+        if(passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
+            return "FAILURE_SAME_PASSWORD";
+        }
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPassword(userDto.getPassword());
 
         userRepository.save(user);

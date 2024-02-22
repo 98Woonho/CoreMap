@@ -9,6 +9,8 @@ import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -106,5 +108,19 @@ public class UserController {
     @ResponseBody
     public String postResetPasswordStep2(UserDto userDto) {
         return userService.resetPassword(userDto);
+    }
+
+    @GetMapping("myPage")
+    public void getMyPage(@RequestParam(value = "function", required = false) String function, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userService.getUser(username);
+
+        List<ContactCompany> contactCompanyList = userService.getAllContactCompanyList();
+
+        model.addAttribute("contactCompanyList", contactCompanyList);
+        model.addAttribute("user", user);
+        model.addAttribute("function", function);
     }
 }

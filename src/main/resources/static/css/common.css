@@ -99,19 +99,14 @@ button {
     height: 3.725rem;
 }
 
-#header > .menu {
+#header .menu {
     height: inherit;
 
+    gap: 1.75rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-}
-
-#header .logo {
-    color: #eaecee;
-    font-weight: 500;
-    font-size: 1.75rem;
 }
 
 #main {
@@ -119,7 +114,66 @@ button {
 }
 
 #footer {
-    background-color: #d5d8dc;
+    background-color: #313237;
+    height: 7.5rem;
+}
+
+#footer > .content-container {
+    margin: auto 0;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#footer .content-container-left {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+}
+
+#footer .icon-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#footer .terms-policy-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    height: 100%;
+    margin-top: 0.35rem;
+}
+
+
+#footer .terms-policy-container .text {
+    white-space: nowrap;
+    color: #eaecee;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+#footer .terms-policy-container .link.privacy-policy {
+    border-right: 0.0625rem solid #eaecee;
+    box-sizing: border-box;
+    padding: 0 1.5rem;
+}
+
+#footer .terms-policy-container .link.terms {
+    margin-left: 1.5rem;
+}
+
+#footer .copyright {
+    color: #eaecee;
+    margin: unset;
+}
+
+#footer img {
+    height: 32px;
 }
 
 #loading {

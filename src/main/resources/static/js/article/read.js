@@ -32,6 +32,12 @@ comments.forEach(comment => {
     const replyCancel = comment.querySelector('.reply-cancel');
     reply.onclick = function (e) {
         e.preventDefault();
+
+        if (document.head.querySelector(':scope > meta[name="user-status"]').getAttribute('content') === 'false') {
+            alert('답글 작성은 로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+            return false;
+        }
+
         comment.classList.add('replying');
     }
 
@@ -46,22 +52,22 @@ comments.forEach(comment => {
 
     modifyForm.querySelector('textarea').value = comment.querySelector('.content').innerText;
 
-    if(modify) {
+    if (modify) {
         if (currentNickname.value !== comment.querySelector('.nickname').innerText) {
             modify.style.display = 'none';
         }
 
-        modify.onclick = function(e) {
+        modify.onclick = function (e) {
             e.preventDefault();
             comment.classList.add('modifying');
         }
 
-        modifyCancel.onclick = function(e) {
+        modifyCancel.onclick = function (e) {
             e.preventDefault();
             comment.classList.remove('modifying');
         }
 
-        modifyForm.onsubmit = function(e) {
+        modifyForm.onsubmit = function (e) {
             e.preventDefault();
 
             if (modifyForm['content'].value === '') {
@@ -129,20 +135,20 @@ comments.forEach(comment => {
 
     const voteUp = comment.querySelector('.vote-up');
     const voteDown = comment.querySelector('.vote-down');
-    if(comment.querySelector('.is-like') != null) {
+    if (comment.querySelector('.is-like') != null) {
         const isLike = comment.querySelector('.is-like').value;
 
-        if(isLike === 'true') {
+        if (isLike === 'true') {
             voteUp.classList.add('selected');
         }
 
-        if(isLike === 'false') {
+        if (isLike === 'false') {
             voteDown.classList.add('selected');
         }
     }
 
     voteUp.onclick = function (e) {
-        if(!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
+        if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
             const value = voteUp.querySelector('.value');
 
@@ -161,7 +167,7 @@ comments.forEach(comment => {
                 })
         }
 
-        if(voteDown.classList.contains('selected')) {
+        if (voteDown.classList.contains('selected')) {
             const upValue = voteUp.querySelector('.value');
             const downValue = voteDown.querySelector('.value');
 
@@ -184,7 +190,7 @@ comments.forEach(comment => {
                 })
         }
 
-        if(voteUp.classList.contains('selected')) {
+        if (voteUp.classList.contains('selected')) {
             e.preventDefault();
 
             const value = voteUp.querySelector('.value');
@@ -201,7 +207,7 @@ comments.forEach(comment => {
     }
 
     voteDown.onclick = function (e) {
-        if(!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
+        if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
             const value = voteDown.querySelector('.value');
 
@@ -220,7 +226,7 @@ comments.forEach(comment => {
                 })
         }
 
-        if(voteUp.classList.contains('selected')) {
+        if (voteUp.classList.contains('selected')) {
             e.preventDefault();
 
             const upValue = voteUp.querySelector('.value');
@@ -243,7 +249,7 @@ comments.forEach(comment => {
                 })
         }
 
-        if(voteDown.classList.contains('selected')) {
+        if (voteDown.classList.contains('selected')) {
             const value = voteDown.querySelector('.value');
 
             e.preventDefault();
@@ -261,7 +267,6 @@ comments.forEach(comment => {
 })
 
 
-
 const subComments = commentTable.querySelectorAll('.comment.sub');
 
 subComments.forEach(subComment => {
@@ -271,22 +276,22 @@ subComments.forEach(subComment => {
 
     subCommentModifyForm.querySelector('textarea').value = subComment.querySelector('.content').innerText;
 
-    if(modify) {
+    if (modify) {
         if (currentNickname.value !== subComment.querySelector('.nickname').innerText) {
             modify.style.display = 'none';
         }
 
-        modify.onclick = function(e) {
+        modify.onclick = function (e) {
             e.preventDefault();
             subComment.classList.add('modifying');
         }
 
-        modifyCancel.onclick = function(e) {
+        modifyCancel.onclick = function (e) {
             e.preventDefault();
             subComment.classList.remove('modifying');
         }
 
-        subCommentModifyForm.onsubmit = function(e) {
+        subCommentModifyForm.onsubmit = function (e) {
             e.preventDefault();
 
             if (subCommentModifyForm['content'].value === '') {
@@ -326,20 +331,20 @@ subComments.forEach(subComment => {
 
     const voteUp = subComment.querySelector('.vote-up');
     const voteDown = subComment.querySelector('.vote-down');
-    if(subComment.querySelector('.is-like') != null) {
+    if (subComment.querySelector('.is-like') != null) {
         const isLike = subComment.querySelector('.is-like').value;
 
-        if(isLike === 'true') {
+        if (isLike === 'true') {
             voteUp.classList.add('selected');
         }
 
-        if(isLike === 'false') {
+        if (isLike === 'false') {
             voteDown.classList.add('selected');
         }
     }
 
     voteUp.onclick = function (e) {
-        if(!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
+        if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
             const value = voteUp.querySelector('.value');
 
@@ -358,7 +363,7 @@ subComments.forEach(subComment => {
                 })
         }
 
-        if(voteDown.classList.contains('selected')) {
+        if (voteDown.classList.contains('selected')) {
             e.preventDefault();
             const upValue = voteUp.querySelector('.value');
             const downValue = voteDown.querySelector('.value');
@@ -380,7 +385,7 @@ subComments.forEach(subComment => {
                 })
         }
 
-        if(voteUp.classList.contains('selected')) {
+        if (voteUp.classList.contains('selected')) {
             e.preventDefault();
 
             const value = voteUp.querySelector('.value');
@@ -397,7 +402,7 @@ subComments.forEach(subComment => {
     }
 
     voteDown.onclick = function (e) {
-        if(!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
+        if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
             const value = voteDown.querySelector('.value');
 
@@ -416,7 +421,7 @@ subComments.forEach(subComment => {
                 })
         }
 
-        if(voteUp.classList.contains('selected')) {
+        if (voteUp.classList.contains('selected')) {
             e.preventDefault();
 
             const upValue = voteUp.querySelector('.value');
@@ -439,7 +444,7 @@ subComments.forEach(subComment => {
                 })
         }
 
-        if(voteDown.classList.contains('selected')) {
+        if (voteDown.classList.contains('selected')) {
             e.preventDefault();
 
             const value = voteDown.querySelector('.value');
@@ -458,15 +463,18 @@ subComments.forEach(subComment => {
 })
 
 
-
 commentForm.onsubmit = function (e) {
     e.preventDefault();
+
+    if (document.head.querySelector(':scope > meta[name="user-status"]').getAttribute('content') === 'false') {
+        alert('댓글 작성은 로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+        return false;
+    }
 
     if (commentForm['content'].value === '') {
         alert('댓글을 입력해 주세요.');
         return false;
     }
-
 
     if (!new RegExp(commentForm['content'].dataset.regex).test(commentForm['content'].value.trim())) {
         alert('1000자 이내로 입력해 주세요.');

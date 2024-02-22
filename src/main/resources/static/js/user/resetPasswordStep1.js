@@ -37,10 +37,8 @@ resetPasswordStep1Form['emailSend'].onclick = function (e) {
             loading.hide();
             if (res.data.result === 'SUCCESS') {
                 resetPasswordStep1Form['emailSalt'].value = res.data.salt;
-                resetPasswordStep1Form['email'].setAttribute('disabled', ''); // name="infoEmail"인 태그에 disabled 속성 추가. ''은 속성값인데 disabled는 속성값이 없으므로 공백.
-                resetPasswordStep1Form['emailSend'].setAttribute('disabled', ''); // name="infoEmailSend"인 태그에 disabled 속성 추가. ''은 속성값인데 disabled는 속성값이 없으므로 공백.
-                resetPasswordStep1Form['emailCode'].removeAttribute('disabled'); // name="infoEmailCode"인 태그에 disabled 속성 제거
-                resetPasswordStep1Form['emailVerify'].removeAttribute('disabled'); // name="infoEmailVerify"인 태그에 disabled 속성 제거
+                resetPasswordStep1Form['emailCode'].removeAttribute('disabled');
+                resetPasswordStep1Form['emailVerify'].removeAttribute;
                 alert('입력하신 이메일로 인증번호가 포함된 메일을 전송하였습니다. 해당 인증번호는 5분간만 유효하니 유의해 주세요.');
             }
         })
@@ -75,7 +73,6 @@ resetPasswordStep1Form['emailVerify'].onclick = function () {
             } else if (res.data === 'FAILURE_EXPIRED') {
                 alert('인증번호를 5분 내에 입력하지 않아 만료 되었습니다. 아래 확인 버튼을 눌러 이메일 인증을 재진행해 주세요.');
                 resetPasswordStep1Form['emailSalt'].value = '';
-                resetPasswordStep1Form['email'].removeAttribute('disabled');
                 resetPasswordStep1Form['email'].focus();
                 resetPasswordStep1Form['email'].select();
                 resetPasswordStep1Form['emailSend'].removeAttribute('disabled');

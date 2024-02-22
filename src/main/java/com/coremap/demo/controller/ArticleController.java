@@ -9,10 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -89,6 +87,32 @@ public class ArticleController {
         responseObject.put("url", "/article/image?id=" + image.getId());
 
         return responseObject.toString();
+    }
+
+    @GetMapping("file")
+    public ResponseEntity<byte[]> getFile(@RequestParam(value = "id") Long id) {
+        ResponseEntity<byte[]> response;
+        File file = this.articleService.getFile(id);
+        if (file == null) {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            /**
+             * [공부] ContentDisposition : 파일 다운로드를 할 때 사용되어 웹 서버가 전송한 파일이 브라우저에서 어떻게 처리되어야 하는지를 지정
+             * attachment() : 파일을 다운로드로 받음.
+             * inline() : 파일이 다운로드되지 않고 웹으로 표시 해줌.
+             * filename() : 다운로드 받은 파일 이름
+             */
+            ContentDisposition contentDisposition = ContentDisposition
+                    .attachment()
+                    .filename(file.getName(), StandardCharsets.UTF_8)
+                    .build();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(file.getType()));
+            headers.setContentLength(file.getSize());
+            headers.setContentDisposition(contentDisposition);
+            response = new ResponseEntity<>(file.getData(), headers, HttpStatus.OK);
+        }
+        return response;
     }
 
     @PostMapping("file")

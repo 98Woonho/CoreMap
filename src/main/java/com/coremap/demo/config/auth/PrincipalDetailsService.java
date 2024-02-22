@@ -20,7 +20,6 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 로그인 버튼을 누르면, post로 동작하게 되고 SpringSecurity에서 username을 넘겨주고 이 메서드가 실행이 됨.
-        System.out.println("[PrincipalDetailsService] loadUserByUsername() username :" + username);
         Optional<User> userOptional = userRepository.findById(username);
         if(userOptional.isEmpty())
             return null;

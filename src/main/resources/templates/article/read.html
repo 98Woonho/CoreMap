@@ -54,7 +54,7 @@
                 <td class="file-wrapper" colspan="3" th:if="${fileList != null && fileList.size() > 0}">
                     <ul class="file-list">
                         <li class="item" th:each="file : ${fileList}">
-                            <a href="#" class="link" th:href="@{/article/file?id=${file.id}}">
+                            <a class="link" th:href="@{/article/file (id=${file.id})}">
                                 <img src="/images/article/read.file.icon.png" alt="" class="icon">
                                 <span class="name" th:text="${file.name}"></span>
                             </a>
@@ -133,16 +133,19 @@
                             <span th:if="${article.user.username == comment.user.username}">- 작성자</span>
                             <span class="spring"></span>
                             <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}">
-                                <span th:if="${#authentication.Principal.userDto.username == comment.user.username}" class="action modify">수정</span>
+                                <span th:if="${#authentication.Principal.userDto.username == comment.user.username}"
+                                      class="action modify">수정</span>
                             </th:block>
                             <span class="action delete">삭제</span>
                             <span class="action modify-cancel">수정 취소</span>
                         </div>
                         <div class="body">
                             <span class="content" th:text="${comment.content}"></span>
-                            <form id="modifyForm" class="modify-form" th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+                            <form id="modifyForm" class="modify-form"
+                                  th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
                                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
-                                          class="common-field" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                                          class="common-field"
+                                          th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                                 <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
                             </form>
                         </div>
@@ -160,10 +163,12 @@
                             <span class="action reply">답글 달기</span>
                             <span class="action reply-cancel">답글 달기 취소</span>
                         </div>
-                        <form id="replyForm" class="reply-form" th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+                        <form id="replyForm" class="reply-form"
+                              th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
                             <label class="label">
                                 <textarea class="common-field" maxlength="1000" name="content"
-                                          placeholder="답글을 입력해 주세요." th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                                          placeholder="답글을 입력해 주세요."
+                                          th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                             </label>
                             <input class="common-btn" type="submit" value="답글 달기">
                         </form>
@@ -190,9 +195,11 @@
                             </div>
                             <div class="body">
                                 <span class="content" th:text="${subComment.content}"></span>
-                                <form id="subCommentModifyForm" class="modify-form sub-comment-modify-form" th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+                                <form id="subCommentModifyForm" class="modify-form sub-comment-modify-form"
+                                      th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
                                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
-                                          class="common-field" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                                          class="common-field"
+                                          th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                                     <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
                                 </form>
                             </div>
@@ -215,10 +222,8 @@
         </table>
     </div>
 
-    <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}">
-        <input hidden class="current-nickname" type="hidden"
-               th:value="${#authentication.Principal.userDto.nickname}">
-    </th:block>
+    <input hidden class="current-nickname" type="hidden"
+           th:value="${#authentication.getPrincipal() != 'anonymousUser' ? #authentication.Principal.userDto.nickname : ''}">
 </main>
 
 <th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>

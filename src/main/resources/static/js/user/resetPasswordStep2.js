@@ -68,8 +68,13 @@ resetPasswordStep2Form.onsubmit = function(e) {
 
     axios.post('/user/resetPasswordStep2', formData)
         .then(res => {
-            alert('비밀번호 재설정이 완료 되었습니다. 로그인 페이지로 이동합니다.');
-            location.href = '/user/login';
+            if(res.data === "FAILURE_SAME_PASSWORD") {
+                alert('기존 비밀번호와 동일합니다. 다른 비밀번호를 입력해 주세요.');
+                return false;
+            } else if(res.data === "SUCCESS") {
+                alert('비밀번호 재설정이 완료 되었습니다. 로그인 페이지로 이동합니다.');
+                location.href = '/user/login';
+            }
         })
         .catch(err => {
             alert('알 수 없는 이유로 비밀번호 재설정에 실패 하였습니다. 잠시 후 다시 시도해 주세요.');

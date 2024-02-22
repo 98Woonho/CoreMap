@@ -45,7 +45,20 @@ public class ArticleService {
     private SubCommentLikeRepository subCommentLikeRepository;
 
     public Article getArticle(Long indexInBoard, String boardCode) {
-        return articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
+        Article article = articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
+
+        int view = article.getView();
+        view += 1;
+
+        article.setView(view);
+
+        articleRepository.save(article);
+
+        return article;
+    }
+
+    public File getFile(Long id) {
+        return fileRepository.findById(id).get();
     }
 
     public List<File> getFileList(Long id) {
@@ -97,17 +110,6 @@ public class ArticleService {
         return subCommentLikeRepository.findBySubCommentCommentArticleId(id);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void viewCount(Long indexInBoard, String boardCode) {
-        Article article = articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
-
-        int view = article.getView();
-        view += 1;
-
-        article.setView(view);
-
-        articleRepository.save(article);
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public Image uploadImage(ImageDto imageDto) {
