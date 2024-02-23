@@ -123,4 +123,12 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("function", function);
     }
+
+    @PatchMapping("modify")
+    @ResponseBody
+    public String patchModify(UserDto userDto) {
+        String result = userService.modify(userDto);
+
+        return result;
+    }
 }

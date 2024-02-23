@@ -107,7 +107,7 @@ mainForm['confirmDuplication'].onclick = function (e) {
     }
 
     if (!new RegExp(nickname.dataset.regex).test(nickname.value)) {
-        alert('올바른 닉네임을 입력해 주세요.');
+        alert('10자 이내 또는 올바른 닉네임을 입력해 주세요.');
         return false;
     }
 
@@ -184,7 +184,7 @@ mainForm['nickname'].addEventListener('blur', function () {
         nicknameWarning.innerText = "닉네임을 입력해 주세요.";
         nicknameWarning.style.color = '#ED5353';
     } else if (!new RegExp(mainForm['nickname'].dataset.regex).test(mainForm['nickname'].value)) {
-        nicknameWarning.innerText = "올바른 닉네임을 입력해 주세요.";
+        nicknameWarning.innerText = "10자 이내 또는 올바른 닉네임을 입력해 주세요.";
         nicknameWarning.style.color = '#ED5353';
     }
 
@@ -393,6 +393,6 @@ mainForm.onsubmit = function (e) {
             }
         })
         .catch(err => {
-            alert('회원가입에 실패 하였습니다. 잠시 후 다시 시도해 주세요.');
+            alert('알 수 없는 이유로 회원가입에 실패 하였습니다. 잠시 후 다시 시도해 주세요.');
         })
 }

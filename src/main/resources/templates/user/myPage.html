@@ -31,72 +31,90 @@
                 <a href="/user/myPage?function=secession" th:class="${function == 'secession'} ? 'selected' : ''"
                    class="link user-secession-link">회원탈퇴</a>
             </div>
-            <form id="modifyForm" class="modify-form"
+            <div class="modify-secession-container"
                   th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}, emailAuthRegex = ${T(com.coremap.demo.regexes.EmailAuthRegex)}">
-                <span class="horizontal">
-                    <span class="text">이메일</span>
-                    <span class="text" th:text="${user.username}"></span>
-                    <span class="text email-warning"></span>
-                </span>
-                <span class="horizontal">
-                    <span class="text">비밀번호변경</span>
-                    <a href="/user/resetPasswordStep1" class="link">비밀번호 재설정하기</a>
-                </span>
-                <label class="label nickname">
+                <form th:if="${function == 'modify'}" id="modifyForm" class="modify-form">
+                    <input hidden type="text" name="currentNickname" th:value="${user.nickname}">
+                    <label class="label email">
                     <span class="horizontal">
-                        <span class="text">닉네임</span>
+                        <div class="layout-1">
+                            <span class="text">이메일</span>
+                        </div>
+                        <span class="text" th:text="${user.username}"></span>
+                    </span>
+                    </label>
+
+                    <label class="label password">
+                    <span class="horizontal">
+                        <div class="layout-1">
+                             <span class="text">비밀번호변경</span>
+                        </div>
+                        <a href="/user/resetPasswordStep1" class="link">비밀번호 재설정하기</a>
+                    </span>
+                    </label>
+
+                    <label class="label nickname">
+                    <span class="horizontal">
+                        <div class="layout-1">
+                            <span class="text">닉네임</span>
+                        </div>
+                        <input class="big common-field" maxlength="10" name="nickname" th:value="${user.nickname}"
+                               type="text"
+                               th:data-regex="${userRegex.NICKNAME.expression}">
+                        <input disabled type="button" name="confirmDuplication" value="중복확인" class="common-btn">
                         <span class="text nickname-warning"></span>
                     </span>
+                    </label>
+
+                    <label class="label name">
                     <span class="horizontal">
-                        <input class="big common-field" maxlength="10" name="nickname" th:value="${user.nickname}" type="text"
-                               th:data-regex="${userRegex.NICKNAME.expression}">
-                        <input type="button" name="confirmDuplication" value="중복확인" class="common-btn">
-                    </span>
-                </label>
-                <label class="label name">
-                    <span class="horizontal">
-                        <span class="text">이름</span>
+                        <div class="layout-1">
+                            <span class="text">이름</span>
+                        </div>
+                        <span class="text" th:text="${user.name}"></span>
                         <span class="text name-warning"></span>
                     </span>
-                    <input class="common-field" maxlength="50" name="name" th:value="${user.name}" type="text"
-                           th:data-regex="${userRegex.NAME.expression}">
-                </label>
-                <label class="label contact">
-                    <span class="horizontal">
-                        <span class="text">연락처</span>
-                        <span class="text contact-warning"></span>
-                    </span>
-                    <span class="horizontal contact">
-                        <select name="contactCompany" class="common-field">
-                        <option disabled hidden selected th:text="${user.contactCompany.text}"></option>
-                        <option th:each="contactCompany : ${contactCompanyList}"
-                                th:value="${contactCompany.getCode()}"
-                                th:text="${contactCompany.getText()}"></option>
-                        </select>
-                        <input maxlength="20" name="contact" type="text" class="common-field big"
-                               th:value="${user.contact}"
-                               th:data-regex="${userRegex.CONTACT.expression}">
-                    </span>
-                </label>
-                <label class="label address">
-                    <span class="horizontal">
-                        <span class="text">주소</span>
-                        <span class="text address-warning"></span>
-                    </span>
-                    <span class="horizontal">
-                        <input type="text" maxlength="5" name="addressPostal" th:value="${user.addressPostal}"
-                           class="common-field big" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
-                        <input type="button" name="addressFind" class="common-btn" value="주소 찾기">
-                    </span>
-                    <input readonly type="text" maxlength="100" name="addressPrimary"
-                          th:value="${user.addressPrimary}" class="common-field"
-                           th:data-regex="${userRegex.ADDRESS_PRIMARY.expression}">
-                    <input type="text" maxlength="100" name="addressSecondary" th:value="${user.addressSecondary}" placeholder="상세 주소(건물명, 동, 호수 등)"
-                           class="common-field" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
-                </label>
+                    </label>
 
-                <input type="submit" value="개인정보수정" class="common-btn modify-btn">
-            </form>
+                    <label class="label contact">
+                    <span class="horizontal">
+                        <div class="layout-1">
+                            <span class="text">연락처</span>
+                        </div>
+                        <span class="text" th:text="${user.contactCompany.code}"></span>
+                        <span class="text" th:text="${user.contact}"></span>
+                    </span>
+                    </label>
+
+                    <label class="label address">
+                    <span class="horizontal">
+                        <div class="layout-1">
+                            <span class="text">주소</span>
+                        </div>
+                        <span class="text">
+                            (<span class="text" th:text="${user.addressPostal}"></span>)
+                            <span class="text" th:text="${user.addressPrimary}"></span>
+                            <span class="text" th:text="${user.addressSecondary}"></span>
+                        </span>
+                    </span>
+                    </label>
+                    <input disabled type="submit" value="개인정보수정" class="common-btn modify-btn">
+                </form>
+
+                <form th:if="${function == 'secession'}" id="secessionForm" class="secession-form">
+                    <span class="text">
+                        <h2>회원 탈퇴 확인 안내</h2> <br><br>
+                        안녕하세요, <span class="text" th:text="${user.name}"></span>님. <br><br>
+                        귀하의 회원 탈퇴 요청을 받았습니다. 귀하께서 소중한 회원으로서 보낸 시간에 감사드립니다. <br><br>
+                        다음 사항에 유의하시기 바랍니다. <br><br>
+                        - 회원 탈퇴는 1시간 내에 공식적으로 완료 됩니다. <br>
+                        - 회원 탈퇴 시, 작성한 게시글이나 댓글은 모두 삭제 됩니다. <br>
+                        - 회원 전용 기능 및 혜택은 탈퇴 후에는 더 이상 이용할 수 없습니다. <br><br>
+                        탈퇴와 관련하여 궁금한 사항이 있으시면 언제든지 고객지원팀에 연락 주시기 바랍니다. <br><br>
+                        탈퇴를 원하시면 오른쪽 하단의 회원탈퇴 버튼을 클릭해 주시기 바랍니다.
+                    </span>
+                </form>
+            </div>
         </div>
     </div>
 </main>

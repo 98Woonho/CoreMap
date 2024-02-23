@@ -210,6 +210,7 @@ public class ArticleController {
     }
 
     @GetMapping("modify")
+    @ResponseBody
     public void getModify(@RequestParam(value = "index") Long index,
                           @RequestParam(value = "code") String code,
                           Model model) {

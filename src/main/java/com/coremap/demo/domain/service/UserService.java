@@ -19,6 +19,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,8 +124,10 @@ public class UserService {
         List<User> userList = userRepository.findAll();
 
         for (User user : userList) {
-            if(user.getNickname().equals(nickname)) {
-                return "FAILURE_DUPLICATED_NICKNAME";
+            if(user.getNickname() != null) {
+                if(user.getNickname().equals(nickname)) {
+                    return "FAILURE_DUPLICATED_NICKNAME";
+                }
             }
         }
         return "SUCCESS";
@@ -174,6 +178,20 @@ public class UserService {
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPassword(userDto.getPassword());
+
+        userRepository.save(user);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String modify(UserDto userDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        user.setNickname(userDto.getNickname());
 
         userRepository.save(user);
 
