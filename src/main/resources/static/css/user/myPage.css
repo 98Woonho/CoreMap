@@ -77,7 +77,12 @@
     width: 130px;
 }
 
-.secession-form {
+.secession-text-container {
     padding: 2rem 3rem;
     border: 0.0625rem solid #202127;
+}
+
+.secession-btn {
+    margin-top: 3rem;
+    float: right;
 }

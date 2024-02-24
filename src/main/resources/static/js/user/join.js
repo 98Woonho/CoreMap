@@ -268,7 +268,7 @@ mainForm.onsubmit = function (e) {
         return false;
     }
 
-    if (!mainForm['email'].hasAttribute('disabled') || !mainForm['emailCode'].hasAttribute('disabled')) {
+    if (!mainForm['emailCode'].hasAttribute('disabled')) {
         console.log("hi");
         alert('인증번호 확인 버튼을 통해 인증번호를 확인해 주세요.');
         return false;

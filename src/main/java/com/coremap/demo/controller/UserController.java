@@ -6,12 +6,14 @@ import com.coremap.demo.domain.entity.ContactCompany;
 import com.coremap.demo.domain.entity.User;
 import com.coremap.demo.domain.service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -127,8 +129,27 @@ public class UserController {
     @PatchMapping("modify")
     @ResponseBody
     public String patchModify(UserDto userDto) {
-        String result = userService.modify(userDto);
+
+        return userService.modifyUser(userDto);
+    }
+
+    @DeleteMapping("myPage")
+    @ResponseBody
+    public String deleteMyPage(HttpServletRequest request, HttpServletResponse response) {
+        String result = userService.deleteUser();
+
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie : cookies) {
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
 
         return result;
+    }
+
+    @GetMapping("secessionCompletion")
+    public void getSecessionCompletion() {
+
     }
 }
