@@ -1,19 +1,16 @@
 @charset "UTF-8";
 
+#main .content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .title {
     margin: 5rem 0;
 }
 
-
-#findEmailForm {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-
-
-}
-
-.find-email-container {
+#additionalInfoForm {
     align-items: stretch;
     display: flex;
     flex-direction: column;
@@ -22,7 +19,7 @@
     border-radius: 10px;
     box-shadow: 0 0 0.1rem 0.0625rem #17202a50;
     padding: 1rem;
-    margin-bottom: 2rem;
+    width: 500px;
 }
 
 .label {
@@ -34,17 +31,21 @@
     margin-top: 0.5rem;
 }
 
-.text {
+#additionalInfoForm > label.password a {
     color: #eaecee;
+    background-color: #202127;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    padding: 0.5rem 0.625rem;
 }
 
-.contact input {
-
+.address-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.5rem;
 }
 
-.find-email-btn {
-    background-color: #0D0C2E;
-    color: #eaecee;
-    margin-top: 1.15rem;
-    text-align: center;
+.warning {
+    margin: 1rem 0;
 }

@@ -92,7 +92,6 @@
                     <span class="horizontal contact">
                         <select name="contactCompany" class="common-field">
                         <option disabled hidden selected value="-1">통신사</option>
-                        <!-- contactCompanies[] 인자의 개수 만큼 <option> 태그 반복 -->
                         <option th:each="contactCompany : ${contactCompanyList}"
                                 th:value="${contactCompany.getCode()}"
                                 th:text="${contactCompany.getText()}"></option>
@@ -110,7 +109,7 @@
                     <input type="text" maxlength="5" name="addressPostal" placeholder="우편번호"
                            class="common-field big" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
                     <input type="button" name="addressFind" class="common-btn" value="주소 찾기">
-                </span>
+                    </span>
                     <input readonly type="text" maxlength="100" name="addressPrimary"
                            placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)" class="common-field"
                            th:data-regex="${userRegex.ADDRESS_PRIMARY.expression}">

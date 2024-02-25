@@ -38,6 +38,10 @@ body {
     width: 100%;
 }
 
+.big {
+    flex: 1;
+}
+
 h1, h2, h3, h4, h5, h6, .text {
     color: white;
 }
@@ -110,6 +114,7 @@ button {
 }
 
 #main {
+    background-color: #2A292E;
     flex: 1;
 }
 
@@ -241,17 +246,20 @@ button {
 .common-btn {
     color: #eaecee;
     background-color: #202127;
+    border: 0.0625rem solid #202127;
     border-radius: 0.375rem;
     cursor: pointer;
     padding: 0.5rem 0.625rem;
 }
 
 .common-btn:active {
-    background-color: #202127;
+    background-color: #212329;
+    border: 0.0625rem solid #212329;
 }
 
 .common-btn:hover {
     background-color: #212329;
+    border: 0.0625rem solid #212329;
 }
 
 .common-btn:focus {
@@ -260,7 +268,7 @@ button {
 
 .common-btn:disabled {
     background-color: #7D7D7D;
-    border: 0.0625rem solid #17202a;
+    border: 0.0625rem solid #7D7D7D;
     cursor: default;
 }
 
@@ -380,4 +388,56 @@ button {
 
 #dialog .button + .button {
     border-left: 0.0625rem solid #d5d8dc;
+}
+
+
+
+
+#addressFind {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0.25rem);
+    background-color: #17202aa0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    transition-duration: 250ms;
+    transition-property: opacity;
+    transition-timing-function: ease;
+    z-index: 9;
+}
+
+#addressFind.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#addressFind  .close {
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    cursor: pointer;
+    position: absolute;
+}
+
+#addressFind  .modal {
+    top: calc(50% + 1rem);
+    left: 50%;
+    width: 25rem;
+    height: 30rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem 0.0625rem #17202a50;
+    overflow: hidden;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition-duration: 250ms;
+    transition-property: top;
+    transition-timing-function: ease;
+}
+
+#addressFind.visible .modal {
+    top: 50%;
 }

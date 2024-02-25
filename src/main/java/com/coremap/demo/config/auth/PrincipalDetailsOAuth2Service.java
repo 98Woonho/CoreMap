@@ -28,14 +28,6 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() userRequest : " + userRequest);
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() userRequest.getClientRegistration() : " + userRequest.getClientRegistration());
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() userRequest.getAccessToken() : " + userRequest.getAccessToken());
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() userRequest.getAdditionalParameters() : " + userRequest.getAdditionalParameters());
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() userRequest.getAccessToken().getTokenValue() : " + userRequest.getAccessToken().getTokenValue());
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() userRequest.getAccessToken().getTokenType().getValue() : " + userRequest.getAccessToken().getTokenType().getValue());
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() userRequest.getAccessToken().getAccessToken().getScopes() : " + userRequest.getAccessToken().getScopes());
-
         //Attribute확인
         OAuth2User oAuth2User = super.loadUser(userRequest);
         System.out.println("[PrincipalDetailsOAuth2Service] loadUser() oAuth2User : " + oAuth2User);
@@ -92,13 +84,30 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
             System.out.println("[PrincipalDetailsOAuth2Service] loadUser() " + oAuth2UserInfo.getProvider() + " 최초 로그인!");
         } else {
             User user = optional.get();
-            dto = UserDto.builder()
-                    .username(user.getUsername())
-                    .password(user.getPassword())
-                    .role(user.getRole())
-                    .provider(user.getProvider())
-                    .providerId(user.getProviderId())
-                    .build();
+            if(user.getContactCompany() != null) {
+                dto = UserDto.builder()
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .name(user.getName())
+                        .nickname(user.getNickname())
+                        .contact(user.getContact())
+                        .contactCompanyCode(user.getContactCompany().getCode())
+                        .addressPostal(user.getAddressPostal())
+                        .addressPrimary(user.getAddressPrimary())
+                        .addressSecondary(user.getAddressSecondary())
+                        .role(user.getRole())
+                        .provider(user.getProvider())
+                        .providerId(user.getProviderId())
+                        .build();
+            } else {
+                dto = UserDto.builder()
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .role(user.getRole())
+                        .provider(user.getProvider())
+                        .providerId(user.getProviderId())
+                        .build();
+            }
             System.out.println("[PrincipalDetailsOAuth2Service] loadUser() " + oAuth2UserInfo.getProvider() + " 기존계정 로그인!");
 
         }

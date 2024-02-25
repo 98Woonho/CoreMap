@@ -210,7 +210,6 @@ public class ArticleController {
     }
 
     @GetMapping("modify")
-    @ResponseBody
     public void getModify(@RequestParam(value = "index") Long index,
                           @RequestParam(value = "code") String code,
                           Model model) {
@@ -254,8 +253,7 @@ public class ArticleController {
 
     @DeleteMapping("delete")
     @ResponseBody
-    public String deleteArticle(@RequestParam(value = "id") Long id ,
-                                Model model) {
+    public String deleteArticle(@RequestParam(value = "id") Long id) {
         return articleService.delete(id);
     }
 
@@ -271,6 +269,12 @@ public class ArticleController {
         return articleService.updateComment(commentDto);
     }
 
+    @DeleteMapping("comment")
+    @ResponseBody
+    public String deleteComment(@RequestParam(value = "id") Long id) {
+        return articleService.deleteComment(id);
+    }
+
     @PostMapping("subComment")
     @ResponseBody
     public String postSubComment(SubCommentDto subCommentDto) {
@@ -281,6 +285,12 @@ public class ArticleController {
     @ResponseBody
     public String patchSubComment(SubCommentDto subCommentDto) {
         return articleService.updateSubComment(subCommentDto);
+    }
+
+    @DeleteMapping("subComment")
+    @ResponseBody
+    public String deleteSubComment(@RequestParam(value = "id") Long id) {
+        return articleService.deleteSubComment(id);
     }
 
     @PostMapping("commentLike")

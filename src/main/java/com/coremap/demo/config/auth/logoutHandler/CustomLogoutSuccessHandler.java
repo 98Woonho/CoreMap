@@ -45,7 +45,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
         String provider =  principalDetails.getUserDto().getProvider();
 
-        if(provider!=null&&provider.equals("kakao")){
+        if(provider!=null && provider.equals("kakao")){
             String url = "https://kauth.kakao.com/oauth/logout?client_id="+kakaoClientId+"&logout_redirect_uri="+REDIRECT_URI;
             response.sendRedirect(url);
             return ;

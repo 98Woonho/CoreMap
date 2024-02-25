@@ -40,12 +40,12 @@ public class Oauth2JwtLoginSuccessHandler implements AuthenticationSuccessHandle
         collection.forEach( (role)->{
             String role_str =  role.getAuthority();
             try {
-                if (role_str.equals("ROLE_USER") && principalDetails.getUserDto().getAddressPostal() == null) {
+                if(role_str.equals("ROLE_USER") && principalDetails.getUserDto().getContactCompanyCode() == null) {
                     response.sendRedirect("/user/additionalInfo");
                 } else {
                     response.sendRedirect("/");
                 }
-            }catch(Exception e){
+            } catch(Exception e){
                 e.printStackTrace();
             }
         });

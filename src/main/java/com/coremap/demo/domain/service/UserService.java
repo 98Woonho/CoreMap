@@ -191,7 +191,15 @@ public class UserService {
 
         User user = userRepository.findById(username).get();
 
+        ContactCompany contactCompany = contactCompanyRepository.findById(userDto.getContactCompanyCode()).get();
+
         user.setNickname(userDto.getNickname());
+        user.setName(userDto.getName());
+        user.setContactCompany(contactCompany);
+        user.setContact(userDto.getContact());
+        user.setAddressPostal(userDto.getAddressPostal());
+        user.setAddressPrimary(userDto.getAddressPrimary());
+        user.setAddressSecondary(userDto.getAddressSecondary());
 
         userRepository.save(user);
 

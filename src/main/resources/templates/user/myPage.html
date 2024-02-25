@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/user/myPage.css">
 
+    <!-- daum map js -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
     <script defer src="/js/common.js"></script>
     <script defer src="/js/user/myPage.js"></script>
 
@@ -20,6 +23,13 @@
 
 <th:block th:replace="~{fragments/fragments.html :: common}"></th:block>
 <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+
+<div id="addressFind">
+    <img alt="X"
+         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAoElEQVR4nO2WUQqAIBBE57TzVZ3DSxf9FASJueusBTnQp/seplPAyMg9CcAEfaZj9mMIYAWwCOHnzNm6YHkDrpRwwxUSzfAWCRncIyGHWyTC4DUS4fCSRDd4TqI7/Fqt2/FEVPe3BXjZ9ohvRzG5d95NgoUDFy7BitMeJkHDVZNL0HHPZRJsKJlmCQoazi1BYb2aJRjQ7SaJ9PZv+ci/sgM32VIN2RJOpwAAAABJRU5ErkJggg=="
+         class="close" rel="close">
+    <div class="modal"></div>
+</div>
 
 <main id="main" class="content-container-wrapper">
     <div class="content-container">
@@ -31,8 +41,8 @@
                 <a href="/user/myPage?function=secession" th:class="${function == 'secession'} ? 'selected' : ''"
                    class="link user-secession-link">회원탈퇴</a>
             </div>
-            <div class="modify-secession-container"
-                  th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}, emailAuthRegex = ${T(com.coremap.demo.regexes.EmailAuthRegex)}">
+            <div class="function-container"
+                 th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}">
                 <form th:if="${function == 'modify'}" id="modifyForm" class="modify-form">
                     <input hidden type="text" name="currentNickname" th:value="${user.nickname}">
                     <label class="label email">
@@ -58,7 +68,7 @@
                         <div class="layout-1">
                             <span class="text">닉네임</span>
                         </div>
-                        <input class="big common-field" maxlength="10" name="nickname" th:value="${user.nickname}"
+                        <input class="big common-field" maxlength="10" name="nickname" placeholder="닉네임" th:attr="value=${user.nickname != null} ? ${user.nickname} : null"
                                type="text"
                                th:data-regex="${userRegex.NICKNAME.expression}">
                         <input disabled type="button" name="confirmDuplication" value="중복확인" class="common-btn">
@@ -71,7 +81,8 @@
                         <div class="layout-1">
                             <span class="text">이름</span>
                         </div>
-                        <span class="text" th:text="${user.name}"></span>
+                        <input class="common-field" maxlength="50" name="name" placeholder="이름" th:attr="value=${user.name != null} ? ${user.name} : null" type="text"
+                               th:data-regex="${userRegex.NAME.expression}">
                         <span class="text name-warning"></span>
                     </span>
                     </label>
@@ -81,8 +92,19 @@
                         <div class="layout-1">
                             <span class="text">연락처</span>
                         </div>
-                        <span class="text" th:text="${user.contactCompany.code}"></span>
-                        <span class="text" th:text="${user.contact}"></span>
+                        <span class="horizontal contact">
+                            <select name="contactCompany" class="common-field">
+                                <option th:if="${user.contactCompany != null}" disabled hidden selected th:value="${user.contactCompany.code}" th:text="${user.contactCompany.text}"></option>
+                                <option th:if="${user.contactCompany == null}" disabled hidden selected value="-1">통신사</option>
+                                <option th:each="contactCompany : ${contactCompanyList}"
+                                th:value="${contactCompany.getCode()}"
+                                th:text="${contactCompany.getText()}"></option>
+                            </select>
+                            <input maxlength="20" name="contact" type="text" class="common-field big" placeholder="-을 제외한 전화번호"
+                                   th:attr="value=${user.contact != null} ? ${user.contact} : null"
+                               th:data-regex="${userRegex.CONTACT.expression}">
+                        </span>
+                        <span class="text contact-warning"></span>
                     </span>
                     </label>
 
@@ -90,14 +112,23 @@
                     <span class="horizontal">
                         <div class="layout-1">
                             <span class="text">주소</span>
+                            <span class="text address-warning"></span>
                         </div>
-                        <span class="text">
-                            (<span class="text" th:text="${user.addressPostal}"></span>)
-                            <span class="text" th:text="${user.addressPrimary}"></span>
-                            <span class="text" th:text="${user.addressSecondary}"></span>
-                        </span>
+                        <div class="address-container">
+                            <span class="horizontal">
+                                <input type="text" maxlength="5" name="addressPostal" placeholder="우편번호" th:attr="value=${user.addressPostal != null} ? ${user.addressPostal} : null"
+                                   class="common-field big" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
+                                <input type="button" class="common-btn address-find-btn" name="addressFind" value="주소 찾기">
+                            </span>
+                            <input readonly type="text" maxlength="100" name="addressPrimary" placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)"
+                                   th:attr="value=${user.addressPrimary != null} ? ${user.addressPrimary} : null"class="common-field"
+                               th:data-regex="${userRegex.ADDRESS_PRIMARY.expression}">
+                            <input type="text" maxlength="100" name="addressSecondary" placeholder="상세 주소(건물명, 동, 호수 등)" th:attr="value=${user.addressSecondary != null} ? ${user.addressSecondary} : null"
+                                   class="common-field" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
+                        </div>
                     </span>
                     </label>
+                    <span class="text warning">* 개인 정보를 모두 입력하지 않을 시, 사이트 이용에 제한이 발생할 수 있습니다.</span>
                     <input disabled type="submit" value="개인정보수정" class="common-btn modify-btn">
                 </form>
 

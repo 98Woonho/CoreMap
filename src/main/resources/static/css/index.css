@@ -1,4 +1,14 @@
+@charset "UTF-8";
+
+.section-title {
+    font-size: 3rem;
+}
+
 .main-section-1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     width: 100vw;
     background-image: url('../images/main1.jpg');
     position: relative;
@@ -15,9 +25,16 @@
 }
 
 .main-section-1 > .content-container {
+    height: inherit;
     color: #eaecee;
     position: absolute;
-    z-index: 5;
+}
+
+.main-section-1 .section-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .swiper {

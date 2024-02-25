@@ -4,10 +4,6 @@
     cursor: pointer;
 }
 
-#main {
-    background-color: #2A292E;
-}
-
 figure img {
     max-width: 1000px;
 }
@@ -137,6 +133,10 @@ figure img {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+}
+
+#commentForm .horizontal {
+    align-items: stretch;
 }
 
 .label {

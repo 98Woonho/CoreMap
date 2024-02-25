@@ -211,7 +211,7 @@ mainForm['name'].addEventListener('blur', function () {
 
 const contactWarning = mainForm.querySelector('.contact-warning');
 
-mainForm['contactCompany'].addEventListener('input', function () {
+mainForm['contactCompany'].addEventListener('blur', function () {
     if (mainForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";
         contactWarning.style.color = '#ED5353';

@@ -53,10 +53,6 @@ comments.forEach(comment => {
     modifyForm.querySelector('textarea').value = comment.querySelector('.content').innerText;
 
     if (modify) {
-        if (currentNickname.value !== comment.querySelector('.nickname').innerText) {
-            modify.style.display = 'none';
-        }
-
         modify.onclick = function (e) {
             e.preventDefault();
             comment.classList.add('modifying');
@@ -100,9 +96,26 @@ comments.forEach(comment => {
         }
     }
 
-    const deleteComment = comment.querySelector('.delete');
-    if (currentNickname.value !== comment.querySelector('.nickname').innerText && currentNickname.value !== comment.querySelector('.nickname').innerText) {
-        deleteComment.style.display = 'none';
+
+    const Delete = comment.querySelector('.delete');
+    if(Delete) {
+        Delete.onclick = function(e) {
+            e.preventDefault();
+
+            if(confirm('정말로 댓글을 삭제 할까요? 댓글을 삭제 할 시 답글도 함께 삭제 됩니다.')) {
+                axios.delete("/article/comment?id=" + comment.dataset.id)
+                    .then(res => {
+                        if(res.data === 'SUCCESS') {
+                            location.reload();
+                        }
+                    })
+                    .catch(err => {
+                        alert('알 수 없는 이유로 댓글을 삭제하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
+                    })
+            } else {
+                return false;
+            }
+        }
     }
 
     const replyForm = comment.querySelector('.reply-form');
@@ -277,10 +290,6 @@ subComments.forEach(subComment => {
     subCommentModifyForm.querySelector('textarea').value = subComment.querySelector('.content').innerText;
 
     if (modify) {
-        if (currentNickname.value !== subComment.querySelector('.nickname').innerText) {
-            modify.style.display = 'none';
-        }
-
         modify.onclick = function (e) {
             e.preventDefault();
             subComment.classList.add('modifying');
@@ -324,9 +333,25 @@ subComments.forEach(subComment => {
         }
     }
 
-    const deleteComment = subComment.querySelector('.delete');
-    if (currentNickname.value !== subComment.querySelector('.nickname').innerText && currentNickname.value !== subComment.querySelector('.nickname').innerText) {
-        deleteComment.style.display = 'none';
+    const Delete = subComment.querySelector('.delete');
+    if(Delete) {
+        Delete.onclick = function(e) {
+            e.preventDefault();
+
+            if(confirm('정말로 답글을 삭제 할까요?')) {
+                axios.delete("/article/subComment?id=" + subComment.dataset.id)
+                    .then(res => {
+                        if(res.data === 'SUCCESS') {
+                            location.reload();
+                        }
+                    })
+                    .catch(err => {
+                        alert('알 수 없는 이유로 답글을 삭제하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
+                    })
+            } else {
+                return false;
+            }
+        }
     }
 
     const voteUp = subComment.querySelector('.vote-up');

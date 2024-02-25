@@ -312,6 +312,13 @@ public class ArticleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public String deleteComment(Long id) {
+        commentRepository.deleteById(id);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public String writeSubComment(SubCommentDto subCommentDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -345,6 +352,13 @@ public class ArticleService {
         subComment.setModifiedAt(new Date());
 
         subCommentRepository.save(subComment);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String deleteSubComment(Long id) {
+        subCommentRepository.deleteById(id);
 
         return "SUCCESS";
     }

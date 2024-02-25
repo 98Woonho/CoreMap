@@ -152,4 +152,17 @@ public class UserController {
     public void getSecessionCompletion() {
 
     }
+
+    @GetMapping("additionalInfo")
+    public void getAdditionalInfo(Model model) {
+        List<ContactCompany> contactCompanyList = userService.getAllContactCompanyList();
+
+        model.addAttribute("contactCompanyList", contactCompanyList);
+    }
+
+    @PatchMapping("additionalInfo")
+    @ResponseBody
+    public String patchAdditionalInfo(UserDto userDto) {
+        return userService.modifyUser(userDto);
+    }
 }

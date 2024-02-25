@@ -107,10 +107,10 @@
                                th:if="${page.pageTo < page.maxPage}">&gt;&gt;</a>
                         </th:block>
                         <div class="spring"></div>
-                        <a class="common-btn"
+                        <a class="common-btn write-btn"
                            th:href="@{/article/write (code = ${board.code})}"
                            sec:authorize="isAuthenticated()"
-                           th:if="${!board.isAdminWrite}">글쓰기</a>
+                           th:if="${#authentication.principal.userDto.role == 'ROLE_USER' ? (board.isAdminWrite == true ? false : true) : true}">글쓰기</a>
                     </div>
                 </td>
             </tr>
