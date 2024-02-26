@@ -9,8 +9,6 @@ import com.coremap.demo.domain.entity.User;
 import com.coremap.demo.domain.repository.ContactCompanyRepository;
 import com.coremap.demo.domain.repository.EmailAuthRepository;
 import com.coremap.demo.domain.repository.UserRepository;
-import com.coremap.demo.regexes.EmailAuthRegex;
-import com.coremap.demo.regexes.UserRegex;
 import com.coremap.demo.utils.CryptoUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -29,7 +27,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserService {

@@ -45,8 +45,6 @@ h2 {
 .exercise-movement,
 .breath-technique {
     margin-top: 2.25rem;
-    display: flex;
-    flex-direction: column;
 }
 
 .precaution {

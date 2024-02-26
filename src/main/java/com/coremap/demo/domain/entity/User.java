@@ -1,6 +1,5 @@
 package com.coremap.demo.domain.entity;
 
-import com.coremap.demo.domain.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

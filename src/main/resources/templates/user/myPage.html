@@ -48,16 +48,16 @@
                     <label class="label email">
                     <span class="horizontal">
                         <div class="layout-1">
-                            <span class="text">이메일</span>
+                            <p class="text">이메일</p>
                         </div>
-                        <span class="text" th:text="${user.username}"></span>
+                        <p class="text" th:text="${user.username}"></p>
                     </span>
                     </label>
 
                     <label class="label password">
                     <span class="horizontal">
                         <div class="layout-1">
-                             <span class="text">비밀번호변경</span>
+                             <p class="text">비밀번호변경</p>
                         </div>
                         <a href="/user/resetPasswordStep1" class="link">비밀번호 재설정하기</a>
                     </span>
@@ -66,7 +66,7 @@
                     <label class="label nickname">
                     <span class="horizontal">
                         <div class="layout-1">
-                            <span class="text">닉네임</span>
+                            <p class="text">닉네임</p>
                         </div>
                         <input class="big common-field" maxlength="10" name="nickname" placeholder="닉네임" th:attr="value=${user.nickname != null} ? ${user.nickname} : null"
                                type="text"
@@ -79,7 +79,7 @@
                     <label class="label name">
                     <span class="horizontal">
                         <div class="layout-1">
-                            <span class="text">이름</span>
+                            <p class="text">이름</p>
                         </div>
                         <input class="common-field" maxlength="50" name="name" placeholder="이름" th:attr="value=${user.name != null} ? ${user.name} : null" type="text"
                                th:data-regex="${userRegex.NAME.expression}">
@@ -90,7 +90,7 @@
                     <label class="label contact">
                     <span class="horizontal">
                         <div class="layout-1">
-                            <span class="text">연락처</span>
+                            <p class="text">연락처</p>
                         </div>
                         <span class="horizontal contact">
                             <select name="contactCompany" class="common-field">
@@ -111,8 +111,7 @@
                     <label class="label address">
                     <span class="horizontal">
                         <div class="layout-1">
-                            <span class="text">주소</span>
-                            <span class="text address-warning"></span>
+                            <p class="text">주소</p>
                         </div>
                         <div class="address-container">
                             <span class="horizontal">
@@ -128,7 +127,7 @@
                         </div>
                     </span>
                     </label>
-                    <span class="text warning">* 개인 정보를 모두 입력하지 않을 시, 사이트 이용에 제한이 발생할 수 있습니다.</span>
+                    <p class="text warning">* 개인 정보를 모두 입력하지 않을 시, 사이트 이용에 제한이 발생할 수 있습니다.</p>
                     <input disabled type="submit" value="개인정보수정" class="common-btn modify-btn">
                 </form>
 
