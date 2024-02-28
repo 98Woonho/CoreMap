@@ -12,7 +12,7 @@ WEB PROJECT PLANING
 ## ▶️ 개발 일정
 #### 2024-02-07 ~ 2024-02-08(02Days) : 주제 선정 및 요구사항 분석, 기술스택 결정, 개발환경 구축
 #### 2024-02-08 ~ 2024-02-09(02Days) : 기본 프론트엔드 구조 기획 및 개발, DB 기획 및 개발
-#### 2024-02-09 ~ 2024-02-20(12Days) : 프론트엔드 및 백엔드 개발
+#### 2024-02-09 ~ 2024-02-28(20Days) : 프론트엔드 및 백엔드 개발
 
 <br/>
 
@@ -29,22 +29,6 @@ WEB PROJECT PLANING
 ##### Mysql Workbench 8.x.x
 <br/>
 
-## ▶️ 의존 lib
-##### lombok
-##### thymeleaf
-##### spring security
-##### web mvc
-##### mysql
-##### jdbc
-##### mybatis
-##### jpa
-##### oauth2-client
-##### jwt-token
-##### mail
-##### devtools
-##### validation
-
-
 ## ▶️ 사용 API
 ##### 다음 주소 API
 ##### OAuth2 로그인 API
@@ -56,12 +40,9 @@ WEB PROJECT PLANING
 ![JAVA](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![MySQL](https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white)
 
-
-[참고 배지 사이트] <br/>
 https://badgen.net/ <br/>
 https://shields.io/
 
