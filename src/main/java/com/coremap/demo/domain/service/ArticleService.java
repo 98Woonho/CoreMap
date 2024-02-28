@@ -44,15 +44,21 @@ public class ArticleService {
     @Autowired
     private SubCommentLikeRepository subCommentLikeRepository;
 
+    public User getUser(String username) {
+        return userRepository.findById(username).get();
+    }
+
     public Article getArticle(Long indexInBoard, String boardCode) {
         Article article = articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
 
-        int view = article.getView();
-        view += 1;
+        if(article != null) {
+            int view = article.getView();
+            view += 1;
 
-        article.setView(view);
+            article.setView(view);
 
-        articleRepository.save(article);
+            articleRepository.save(article);
+        }
 
         return article;
     }
@@ -177,7 +183,6 @@ public class ArticleService {
         article.setView(0);
         article.setWrittenAt(new Date());
         article.setModifiedAt(null);
-        article.setDeleted(false);
         article.setTitle(articleDto.getTitle());
         article.setContent(articleDto.getContent());
         article.setBoard(board);

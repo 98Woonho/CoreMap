@@ -2,6 +2,7 @@ package com.coremap.demo.controller;
 
 import com.coremap.demo.domain.dto.*;
 import com.coremap.demo.domain.entity.*;
+import com.coremap.demo.domain.repository.UserRepository;
 import com.coremap.demo.domain.service.ArticleService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +29,6 @@ import java.util.*;
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
-
 
     @GetMapping("write")
     public void getWrite(@RequestParam(value = "code", required = false, defaultValue = "") String code,
@@ -133,80 +133,93 @@ public class ArticleController {
                         @RequestParam(value = "keyword", required = false) String keyword,
                         @RequestParam(value = "code") String code,
                         Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(principal != "anonymousUser") {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            String username = authentication.getName();
+
+            User user = articleService.getUser(username);
+            model.addAttribute("user", user);
+        }
+
         Board[] boards = articleService.getBoards();
 
         Article article = articleService.getArticle(index, code);
 
-        List<Comment> commentList = articleService.getCommentList(article.getId());
+        if(article != null) {
+            List<Comment> commentList = articleService.getCommentList(article.getId());
 
-        List<SubComment> subCommentList = articleService.getSubCommentList(article.getId());
+            List<SubComment> subCommentList = articleService.getSubCommentList(article.getId());
 
-        List<CommentLike> commentLikeList = articleService.getCommentLikeList(article.getId());
+            List<CommentLike> commentLikeList = articleService.getCommentLikeList(article.getId());
 
-        List<Map<String, Object>> commentLikeCountList = new ArrayList<>();
-        List<Long> existingCommentIdList = new ArrayList<>();
+            List<Map<String, Object>> commentLikeCountList = new ArrayList<>();
+            List<Long> existingCommentIdList = new ArrayList<>();
 
-        for(CommentLike commentLike : commentLikeList) {
-            Long commentId = commentLike.getComment().getId();
+            for(CommentLike commentLike : commentLikeList) {
+                Long commentId = commentLike.getComment().getId();
 
-            if (existingCommentIdList.contains(commentId)) {
-                continue;
+                if (existingCommentIdList.contains(commentId)) {
+                    continue;
+                }
+
+                int likeCount = articleService.getLikeCount(commentLike.getComment().getId(), true);
+                int dislikeCount = articleService.getDislikeCount(commentLike.getComment().getId(), false);
+
+                Map<String, Object> commentLikeCount = new HashMap<>();
+
+                commentLikeCount.put("commentId", commentLike.getComment().getId());
+                commentLikeCount.put("likeCount", likeCount);
+                commentLikeCount.put("dislikeCount", dislikeCount);
+                commentLikeCountList.add(commentLikeCount);
+                existingCommentIdList.add(commentId);
             }
 
-            int likeCount = articleService.getLikeCount(commentLike.getComment().getId(), true);
-            int dislikeCount = articleService.getDislikeCount(commentLike.getComment().getId(), false);
+            List<SubCommentLike> subCommentLikeList = articleService.getSubCommentLikeList(article.getId());
 
-            Map<String, Object> commentLikeCount = new HashMap<>();
+            List<Map<String, Object>> subCommentLikeCountList = new ArrayList<>();
+            List<Long> existingSubCommentIdList = new ArrayList<>();
 
-            commentLikeCount.put("commentId", commentLike.getComment().getId());
-            commentLikeCount.put("likeCount", likeCount);
-            commentLikeCount.put("dislikeCount", dislikeCount);
-            commentLikeCountList.add(commentLikeCount);
-            existingCommentIdList.add(commentId);
-        }
+            for(SubCommentLike subCommentLike : subCommentLikeList) {
+                Long subCommentId = subCommentLike.getSubComment().getId();
 
-        List<SubCommentLike> subCommentLikeList = articleService.getSubCommentLikeList(article.getId());
+                if (existingSubCommentIdList.contains(subCommentId)) {
+                    continue;
+                }
 
-        List<Map<String, Object>> subCommentLikeCountList = new ArrayList<>();
-        List<Long> existingSubCommentIdList = new ArrayList<>();
+                int likeCount = articleService.getSubCommentLikeCount(subCommentLike.getSubComment().getId(), true);
+                int dislikeCount = articleService.getSubCommentDislikeCount(subCommentLike.getSubComment().getId(), false);
 
-        for(SubCommentLike subCommentLike : subCommentLikeList) {
-            Long subCommentId = subCommentLike.getSubComment().getId();
+                Map<String, Object> subCommentLikeCount = new HashMap<>();
 
-            if (existingSubCommentIdList.contains(subCommentId)) {
-                continue;
+                subCommentLikeCount.put("subCommentId", subCommentLike.getSubComment().getId());
+                subCommentLikeCount.put("likeCount", likeCount);
+                subCommentLikeCount.put("dislikeCount", dislikeCount);
+                subCommentLikeCountList.add(subCommentLikeCount);
+                existingSubCommentIdList.add(subCommentId);
             }
 
-            int likeCount = articleService.getSubCommentLikeCount(subCommentLike.getSubComment().getId(), true);
-            int dislikeCount = articleService.getSubCommentDislikeCount(subCommentLike.getSubComment().getId(), false);
+            Board board = Arrays.stream(boards)
+                    .filter(x -> x.getCode().equals(code))
+                    .findFirst()
+                    .orElse(null);
+            List<File> fileList = this.articleService.getFileList(article.getId());
 
-            Map<String, Object> subCommentLikeCount = new HashMap<>();
-
-            subCommentLikeCount.put("subCommentId", subCommentLike.getSubComment().getId());
-            subCommentLikeCount.put("likeCount", likeCount);
-            subCommentLikeCount.put("dislikeCount", dislikeCount);
-            subCommentLikeCountList.add(subCommentLikeCount);
-            existingSubCommentIdList.add(subCommentId);
+            model.addAttribute("fileList", fileList);
+            model.addAttribute("board", board);
+            model.addAttribute("page", page);
+            model.addAttribute("criterion", criterion);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("article", article);
+            model.addAttribute("commentList", commentList);
+            model.addAttribute("subCommentList", subCommentList);
+            model.addAttribute("commentLikeList", commentLikeList);
+            model.addAttribute("commentLikeCountList", commentLikeCountList);
+            model.addAttribute("subCommentLikeList", subCommentLikeList);
+            model.addAttribute("subCommentLikeCountList", subCommentLikeCountList);
         }
-
-        Board board = Arrays.stream(boards)
-                .filter(x -> x.getCode().equals(code))
-                .findFirst()
-                .orElse(null);
-        List<File> fileList = this.articleService.getFileList(article.getId());
-
-        model.addAttribute("fileList", fileList);
-        model.addAttribute("board", board);
-        model.addAttribute("page", page);
-        model.addAttribute("criterion", criterion);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("article", article);
-        model.addAttribute("commentList", commentList);
-        model.addAttribute("subCommentList", subCommentList);
-        model.addAttribute("commentLikeList", commentLikeList);
-        model.addAttribute("commentLikeCountList", commentLikeCountList);
-        model.addAttribute("subCommentLikeList", subCommentLikeList);
-        model.addAttribute("subCommentLikeCountList", subCommentLikeCountList);
     }
 
     @GetMapping("modify")

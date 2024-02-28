@@ -48,7 +48,7 @@
             </h1>
         </li>
 
-        <li class="item board" th:each="board : ${boardList}">
+        <li th:each="board : ${boardList}">
             <a th:href="@{/board/list (code=${board.code})}" class="link" th:text="${board.text}"></a>
         </li>
         <li class="spring"></li>

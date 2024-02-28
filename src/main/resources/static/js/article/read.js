@@ -1,3 +1,9 @@
+if (document.head.querySelector('[name="article-status"]').getAttribute('content') === 'false') {
+    alert('존재하지 않는 게시글입니다.');
+    window.history.back();
+}
+
+
 const articleTable = document.getElementById('articleTable');
 const commentForm = document.getElementById('commentForm');
 
@@ -33,8 +39,14 @@ comments.forEach(comment => {
     reply.onclick = function (e) {
         e.preventDefault();
 
-        if (document.head.querySelector(':scope > meta[name="user-status"]').getAttribute('content') === 'false') {
-            alert('답글 작성은 로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+        if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
+            alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+            return false;
+        }
+
+        if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+            e.preventDefault();
+            alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
             return false;
         }
 
@@ -98,14 +110,14 @@ comments.forEach(comment => {
 
 
     const Delete = comment.querySelector('.delete');
-    if(Delete) {
-        Delete.onclick = function(e) {
+    if (Delete) {
+        Delete.onclick = function (e) {
             e.preventDefault();
 
-            if(confirm('정말로 댓글을 삭제 할까요? 댓글을 삭제 할 시 답글도 함께 삭제 됩니다.')) {
+            if (confirm('정말로 댓글을 삭제 할까요? 댓글을 삭제 할 시 답글도 함께 삭제 됩니다.')) {
                 axios.delete("/article/comment?id=" + comment.dataset.id)
                     .then(res => {
-                        if(res.data === 'SUCCESS') {
+                        if (res.data === 'SUCCESS') {
                             location.reload();
                         }
                     })
@@ -163,6 +175,18 @@ comments.forEach(comment => {
     voteUp.onclick = function (e) {
         if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
+
+            if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
+                alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+                return false;
+            }
+
+            if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+                e.preventDefault();
+                alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
+                return false;
+            }
+
             const value = voteUp.querySelector('.value');
 
             const formData = new FormData();
@@ -221,6 +245,18 @@ comments.forEach(comment => {
 
     voteDown.onclick = function (e) {
         if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
+
+            if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
+                alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+                return false;
+            }
+
+            if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+                e.preventDefault();
+                alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
+                return false;
+            }
+
             e.preventDefault();
             const value = voteDown.querySelector('.value');
 
@@ -263,9 +299,9 @@ comments.forEach(comment => {
         }
 
         if (voteDown.classList.contains('selected')) {
-            const value = voteDown.querySelector('.value');
-
             e.preventDefault();
+
+            const value = voteDown.querySelector('.value');
 
             axios.delete(`/article/commentLike?commentId=${comment.dataset.id}`)
                 .then(res => {
@@ -334,14 +370,14 @@ subComments.forEach(subComment => {
     }
 
     const Delete = subComment.querySelector('.delete');
-    if(Delete) {
-        Delete.onclick = function(e) {
+    if (Delete) {
+        Delete.onclick = function (e) {
             e.preventDefault();
 
-            if(confirm('정말로 답글을 삭제 할까요?')) {
+            if (confirm('정말로 답글을 삭제 할까요?')) {
                 axios.delete("/article/subComment?id=" + subComment.dataset.id)
                     .then(res => {
-                        if(res.data === 'SUCCESS') {
+                        if (res.data === 'SUCCESS') {
                             location.reload();
                         }
                     })
@@ -371,6 +407,18 @@ subComments.forEach(subComment => {
     voteUp.onclick = function (e) {
         if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
+
+            if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
+                alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+                return false;
+            }
+
+            if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+                e.preventDefault();
+                alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
+                return false;
+            }
+
             const value = voteUp.querySelector('.value');
 
             const formData = new FormData();
@@ -429,6 +477,18 @@ subComments.forEach(subComment => {
     voteDown.onclick = function (e) {
         if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
+
+            if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
+                alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+                return false;
+            }
+
+            if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+                e.preventDefault();
+                alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
+                return false;
+            }
+
             const value = voteDown.querySelector('.value');
 
             const formData = new FormData();
@@ -491,10 +551,17 @@ subComments.forEach(subComment => {
 commentForm.onsubmit = function (e) {
     e.preventDefault();
 
-    if (document.head.querySelector(':scope > meta[name="user-status"]').getAttribute('content') === 'false') {
-        alert('댓글 작성은 로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+    if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
+        alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
         return false;
     }
+
+    if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+        e.preventDefault();
+        alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
+        return false;
+    }
+
 
     if (commentForm['content'].value === '') {
         alert('댓글을 입력해 주세요.');

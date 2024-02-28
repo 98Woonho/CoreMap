@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+#main .content-container {
+    margin: 5rem 0;
+}
+
+.margin-left {
+    margin-left: 0.75rem;
+}
+
+.bold {
+    font-weight: 500;
+    margin: 0.5rem 0;
+}
+
+.terms-container {
+    border-top: 0.175rem solid #575757;
+    margin-top: 5rem;
+}
+
+.terms-container li {
+    border-bottom: 0.0625rem solid #575757;
+}
+
+.terms-btn {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem 0;
+    cursor: pointer;
+}
+
+.terms-btn .icon {
+    height: 2rem;
+}
+
+.terms-content {
+    background-color: #212329;
+    max-height: 0;
+    overflow: hidden;
+    transition-duration: 500ms;
+    transition-property: max-height;
+    transition-timing-function: ease;
+}
+
+.terms-content.visible {
+    max-height: 300vh;
+}
+
+.terms-content p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}

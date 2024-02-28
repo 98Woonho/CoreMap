@@ -1,12 +1,16 @@
 package com.coremap.demo.controller;
 
+import com.coremap.demo.config.auth.PrincipalDetails;
 import com.coremap.demo.domain.entity.Article;
 import com.coremap.demo.domain.entity.Board;
+import com.coremap.demo.domain.entity.User;
 import com.coremap.demo.domain.service.BoardService;
 import com.coremap.demo.domain.vo.PageVo;
 import com.coremap.demo.domain.vo.SearchVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +32,7 @@ public class BoardController {
                         @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                         SearchVo search,
                         Model model) {
+
         Board[] boards = boardService.getBoards();
 
         Board board = Arrays.stream(boards).filter(x -> x.getCode().equals(code)).findFirst().orElse(null);
@@ -45,6 +50,18 @@ public class BoardController {
             List<Article> articleList = searching
                     ? this.boardService.getArticles(board, pageVo, search)
                     : this.boardService.getArticles(board, pageVo);
+
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if(principal != "anonymousUser") {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+                String username = authentication.getName();
+
+                User user = boardService.getUser(username);
+                model.addAttribute("user", user);
+            }
+
             model.addAttribute("articleList", articleList);
             model.addAttribute("page", pageVo);
             model.addAttribute("searching", searching);

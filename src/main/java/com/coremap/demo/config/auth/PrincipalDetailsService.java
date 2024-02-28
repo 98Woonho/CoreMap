@@ -23,8 +23,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         Optional<User> userOptional = userRepository.findById(username);
 
         //Entity -> Dto
-        UserDto dto = new UserDto();
-        dto = UserDto.builder()
+        UserDto dto = UserDto.builder()
                 .username(userOptional.get().getUsername())
                 .password(userOptional.get().getPassword())
                 .nickname(userOptional.get().getNickname())

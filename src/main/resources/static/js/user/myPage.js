@@ -1,26 +1,26 @@
 const modifyForm = document.getElementById('modifyForm');
 const addressFind = document.getElementById('addressFind');
 
-modifyForm['addressFind'].onclick = function () {
-    new daum.Postcode({
-        width: '100%',
-        height: '100%',
-        oncomplete: function (data) {
-            modifyForm['addressPostal'].value = data['zonecode'];
-            modifyForm['addressPrimary'].value = data['address'];
-            addressFind.classList.remove('visible');
-            modifyForm['addressSecondary'].focus();
-            modifyForm['addressSecondary'].select();
-        }
-    }).embed(addressFind.querySelector(':scope > .modal'))
-    addressFind.classList.add('visible');
-}
-
 addressFind.querySelector('[rel="close"]').onclick = function () {
     addressFind.classList.remove('visible');
 }
 
 if(modifyForm) {
+    modifyForm['addressFind'].onclick = function () {
+        new daum.Postcode({
+            width: '100%',
+            height: '100%',
+            oncomplete: function (data) {
+                modifyForm['addressPostal'].value = data['zonecode'];
+                modifyForm['addressPrimary'].value = data['address'];
+                addressFind.classList.remove('visible');
+                modifyForm['addressSecondary'].focus();
+                modifyForm['addressSecondary'].select();
+            }
+        }).embed(addressFind.querySelector(':scope > .modal'))
+        addressFind.classList.add('visible');
+    }
+
     const modifyBtn = modifyForm.querySelector('.modify-btn');
     const inputs = modifyForm.querySelectorAll('input');
 

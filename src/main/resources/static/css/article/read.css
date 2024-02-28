@@ -8,9 +8,8 @@ figure img {
     max-width: 1000px;
 }
 
-.content-container {
-    padding: 2rem 0;
-
+#main .content-container {
+    margin: 5rem 0;
     align-items: stretch;
     display: flex;
     flex-direction: column;
@@ -18,14 +17,10 @@ figure img {
     justify-content: flex-start;
 }
 
-.title-container {
-    margin-bottom: 1.5rem;
-}
-
 #articleTable {
+    margin: 1.5rem -0.375rem -0.375rem -0.375rem;
     border-collapse: separate;
     border-spacing: 0.375rem;
-    margin: -0.375rem;
 }
 
 #articleTable td, th {

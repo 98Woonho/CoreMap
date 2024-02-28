@@ -129,7 +129,6 @@ public class UserController {
     @PatchMapping("modify")
     @ResponseBody
     public String patchModify(UserDto userDto) {
-
         return userService.modifyUser(userDto);
     }
 
@@ -149,9 +148,7 @@ public class UserController {
     }
 
     @GetMapping("secessionCompletion")
-    public void getSecessionCompletion() {
-
-    }
+    public void getSecessionCompletion() {}
 
     @GetMapping("additionalInfo")
     public void getAdditionalInfo(Model model) {

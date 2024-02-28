@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta name="article-status" th:content="${article != null && !article.isDeleted()}">
+    <meta name="article-status" th:content="${article != null}">
     <meta name="user-status" th:content="${#authentication.getPrincipal() != 'anonymousUser'}">
+    <meta name="info-status" th:if="${user != null && (user.role != 'ROLE_ADMIN')}" th:content="${!(user.nickname == null || user.name == null || user.contactCompany.code == null || user.contact == null || user.addressPostal == null || user.addressPrimary == null || user.addressSecondary == null)}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
@@ -18,9 +19,11 @@
 </head>
 <body>
 
-<th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+<th:block th:if="${article != null}">
+    <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+</th:block>
 
-<main id="main" class="content-container-wrapper" th:if="${article != null && !article.isDeleted()}">
+<main id="main" class="content-container-wrapper" th:if="${article != null}">
     <div class="content-container">
         <h1 class="title" th:text="${board.text}"></h1>
         <table class="table" id="articleTable" th:data-id="${article.id}" th:data-code="${board.code}">
@@ -78,10 +81,10 @@
                            th:if="${criterion != null && keyword != null}">목록</a>
                         <span class="spring"></span>
                         <a class="common-btn" rel="modify" sec:authorize="isAuthenticated()"
-                           th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}"
+                           th:if="${(#authentication.principal.userDto.username == article.user.username) || user.role == 'ROLE_ADMIN'}"
                            th:href="@{/article/modify(index=${article.indexInBoard}, code=${board.code})}">수정</a>
                         <div class="common-btn delete-btn" sec:authorize="isAuthenticated()"
-                             th:if="${(#authentication.Principal.userDto.username == article.user.username) || #authentication.Principal.userDto.role == 'ROLE_ADMIN'}">
+                             th:if="${(#authentication.principal.userDto.username == article.user.username) || user.role == 'ROLE_ADMIN'}">
                             삭제
                         </div>
                     </div>
@@ -120,7 +123,7 @@
                         <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}"
                                   th:each="commentLike : ${commentLikeList}">
                             <th:block
-                                    th:if="${comment.id == commentLike.comment.id && #authentication.Principal.userDto.username == commentLike.user.username}"
+                                    th:if="${comment.id == commentLike.comment.id && #authentication.principal.userDto.username == commentLike.user.username}"
                                     th:with="isLike=${commentLike.isLike}">
                                 <input type="hidden" class="is-like" th:value="${isLike}">
                             </th:block>
@@ -131,7 +134,7 @@
                             <span class="modified" th:if="${comment.modifiedAt != null}">(수정됨)</span>
                             <span th:if="${article.user.username == comment.user.username}">- 작성자</span>
                             <span class="spring"></span>
-                            <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.Principal.userDto.username == comment.user.username || #authentication.Principal.userDto.username == article.user.username || #authentication.Principal.userDto.role == 'ROLE_ADMIN')}">
+                            <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.principal.userDto.username == comment.user.username || #authentication.principal.userDto.username == article.user.username || user.role == 'ROLE_ADMIN')}">
                                 <span class="action modify">수정</span>
                                 <span class="action delete">삭제</span>
                             </th:block>
@@ -176,7 +179,7 @@
                             <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}"
                                       th:each="subCommentLike : ${subCommentLikeList}">
                                 <th:block
-                                        th:if="${subComment.id == subCommentLike.subComment.id && #authentication.Principal.userDto.username == subCommentLike.user.username}"
+                                        th:if="${subComment.id == subCommentLike.subComment.id && #authentication.principal.userDto.username == subCommentLike.user.username}"
                                         th:with="isLike=${subCommentLike.isLike}">
                                     <input type="hidden" class="is-like" th:value="${isLike}">
                                 </th:block>
@@ -187,7 +190,7 @@
                                 <span class="modified" th:if="${subComment.modifiedAt != null}">(수정됨)</span>
                                 <span th:if="${article.user.username == subComment.user.username}">- 작성자</span>
                                 <span class="spring"></span>
-                                <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.Principal.userDto.username == subComment.user.username || #authentication.Principal.userDto.username == article.user.username || #authentication.Principal.userDto.role == 'ROLE_ADMIN')}">
+                                <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.principal.userDto.username == subComment.user.username || #authentication.principal.userDto.username == article.user.username || user.role == 'ROLE_ADMIN')}">
                                     <span class="action modify">수정</span>
                                     <span class="action delete">삭제</span>
                                 </th:block>
@@ -223,10 +226,12 @@
     </div>
 
     <input hidden class="current-nickname" type="hidden"
-           th:value="${#authentication.getPrincipal() != 'anonymousUser' ? #authentication.Principal.userDto.nickname : ''}">
+           th:value="${#authentication.getPrincipal() != 'anonymousUser' ? user.nickname : ''}">
 </main>
 
-<th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+<th:block th:if="${article != null}">
+    <th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+</th:block>
 
 </body>
 </html>

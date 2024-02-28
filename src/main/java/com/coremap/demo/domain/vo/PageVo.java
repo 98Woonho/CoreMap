@@ -9,7 +9,6 @@ public class PageVo {
     public final int pageButtonCount; // 표시할 페이지 버튼 개수
     public final int pageFrom; // 표시할 가장 작은 페이지 번호
     public final int pageTo; // 표시할 가장 큰 페이지 번호
-    public final int queryOffset; // 쿼리에서 사용할 OFFSET 값
 
     public PageVo(int requestPage, int countPerPage, int pageButtonCount, int totalCount) {
         this.countPerPage = countPerPage;
@@ -22,6 +21,5 @@ public class PageVo {
         // this.requestPage에서 1을 빼는 이유는 10, 20, 30, ... 이 들어왔을 때 pageFrom이 혼자 달라서
         this.pageFrom = ((this.requestPage - 1) / this.pageButtonCount) * this.pageButtonCount + 1;
         this.pageTo = Math.min(this.maxPage, this.pageFrom + this.pageButtonCount - 1);
-        this.queryOffset = this.countPerPage * (this.requestPage - 1);
     }
 }

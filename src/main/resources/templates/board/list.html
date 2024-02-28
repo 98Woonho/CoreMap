@@ -5,6 +5,8 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="user-status" th:content="${#authentication.getPrincipal() != 'anonymousUser'}">
+    <meta name="info-status" th:if="${user != null && (user.role != 'ROLE_ADMIN')}" th:content="${!(user.nickname == null || user.name == null || user.contactCompany.code == null || user.contact == null || user.addressPostal == null || user.addressPrimary == null || user.addressSecondary == null)}">
     <title>코어맵 운동 가이드</title>
 
     <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
@@ -21,10 +23,7 @@
 
 <main id="main" class="content-container-wrapper">
     <div class="content-container">
-
-        <div class="title-container">
-            <h1 class="title" th:text="${board.text}"></h1>
-        </div>
+        <h1 class="title" th:text="${board.text}"></h1>
         <table class="list-table" id="listTable">
             <thead>
             <tr>
@@ -108,9 +107,8 @@
                         </th:block>
                         <div class="spring"></div>
                         <a class="common-btn write-btn"
-                           th:href="@{/article/write (code = ${board.code})}"
-                           sec:authorize="isAuthenticated()"
-                           th:if="${#authentication.principal.userDto.role == 'ROLE_USER' ? (board.isAdminWrite == true ? false : true) : true}">글쓰기</a>
+                           th:href="@{/article/write (code = ${board.code})}" th:if="${user == null ? (board.isAdminWrite == true ? false : true) : (#authentication.principal.userDto.role == 'ROLE_USER' ? (board.isAdminWrite == true ? false : true) : true)}">
+                            글쓰기</a>
                     </div>
                 </td>
             </tr>

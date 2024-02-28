@@ -1,6 +1,7 @@
 package com.coremap.demo.domain.service;
 
 
+import com.coremap.demo.config.auth.PrincipalDetails;
 import com.coremap.demo.domain.dto.EmailAuthDto;
 import com.coremap.demo.domain.dto.UserDto;
 import com.coremap.demo.domain.entity.ContactCompany;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,8 +64,8 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public String sendJoinEmail(EmailAuthDto emailAuthDto, boolean resetPassword) throws MessagingException {
-        if(!resetPassword) {
-            if(userRepository.existsById(emailAuthDto.getEmail())) {
+        if (!resetPassword) {
+            if (userRepository.existsById(emailAuthDto.getEmail())) {
                 return "FAILURE_DUPLICATE_EMAIL";
             }
         }
@@ -102,7 +104,7 @@ public class UserService {
     public String verifyJoinEmail(EmailAuthDto emailAuthDto) {
         EmailAuth emailAuth = emailAuthRepository.findByEmailAndCodeAndSalt(emailAuthDto.getEmail(), emailAuthDto.getCode(), emailAuthDto.getSalt());
 
-        if(emailAuth == null) {
+        if (emailAuth == null) {
             return "FAILURE_INVALID_CODE";
         }
 
@@ -121,8 +123,8 @@ public class UserService {
         List<User> userList = userRepository.findAll();
 
         for (User user : userList) {
-            if(user.getNickname() != null) {
-                if(user.getNickname().equals(nickname)) {
+            if (user.getNickname() != null) {
+                if (user.getNickname().equals(nickname)) {
                     return "FAILURE_DUPLICATED_NICKNAME";
                 }
             }
@@ -134,7 +136,7 @@ public class UserService {
         List<User> userList = userRepository.findAll();
 
         for (User user : userList) {
-            if(user.getUsername().equals(username)) {
+            if (user.getUsername().equals(username)) {
                 return "SUCCESS";
             }
         }
@@ -146,19 +148,20 @@ public class UserService {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         ContactCompany contactCompany = contactCompanyRepository.findById(userDto.getContactCompanyCode()).get();
 
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setNickname(userDto.getNickname());
-        user.setName(userDto.getName());
-        user.setContactCompany(contactCompany);
-        user.setContact(userDto.getContact());
-        user.setAddressPostal(userDto.getAddressPostal());
-        user.setAddressPrimary(userDto.getAddressPrimary());
-        user.setAddressSecondary(userDto.getAddressSecondary());
-        user.setRole("ROLE_USER");
-        user.setSuspended(false);
-        user.setRegisteredAt(new Date());
+        User user = User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .nickname(userDto.getNickname())
+                .name(userDto.getName())
+                .contactCompany(contactCompany)
+                .contact(userDto.getContact())
+                .addressPostal(userDto.getAddressPostal())
+                .addressPrimary(userDto.getAddressPrimary())
+                .addressSecondary(userDto.getAddressSecondary())
+                .role("ROLE_USER")
+                .isSuspended(false)
+                .registeredAt(new Date())
+                .build();
 
         userRepository.save(user);
 
@@ -169,7 +172,7 @@ public class UserService {
     public String resetPassword(UserDto userDto) {
         User user = userRepository.findById(userDto.getUsername()).get();
 
-        if(passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
             return "FAILURE_SAME_PASSWORD";
         }
 
@@ -184,11 +187,13 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public String modifyUser(UserDto userDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         String username = authentication.getName();
 
         User user = userRepository.findById(username).get();
 
         ContactCompany contactCompany = contactCompanyRepository.findById(userDto.getContactCompanyCode()).get();
+
 
         user.setNickname(userDto.getNickname());
         user.setName(userDto.getName());
