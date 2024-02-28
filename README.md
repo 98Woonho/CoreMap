@@ -22,11 +22,12 @@ WEB PROJECT PLANING
 <br/>
 
 ## ▶️ Software 목록
-##### IDE : IntelliJ Ultimate 2023.3.3
-##### SpringBoot 3.1.7
-##### gradle version 8.5
-##### Mysql Server 8.x.x
-##### Mysql Workbench 8.x.x
+##### IDE : IntelliJ Ultimate
+##### SpringBoot
+##### gradle
+##### Mysql Server
+##### Mysql Workbench
+
 <br/>
 
 ## ▶️ 사용 API
@@ -46,10 +47,6 @@ WEB PROJECT PLANING
 ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![Github](https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white)
-
-https://badgen.net/ <br/>
-https://shields.io/
-
 
 <br/>
 
