@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 #main .content-container {
-    margin-top: 5rem;
+    margin: 5rem 0;
     max-width: 800px;
 }
 
@@ -60,6 +60,7 @@
 }
 
 .file-list .item {
+    color: white;
     white-space: nowrap;
     position: relative;
 
