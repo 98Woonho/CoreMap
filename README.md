@@ -21,6 +21,9 @@ WEB PROJECT PLANING
 
 <br/>
 
+## ▶️ 시연 영상
+https://youtu.be/_GCZQAQWLYg?si=v9SzsAu3_0Q6VoUL
+
 ## ▶️ 개발 환경
 ##### IDE : IntelliJ Ultimate
 ##### OpenJDK 21
