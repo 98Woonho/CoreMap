@@ -22,13 +22,9 @@ WEB PROJECT PLANING
 <br/>
 
 ## ▶️ 개발 환경
-##### IntelliJ Ultimate
-
-<br/>
-
-## ▶️ Software 목록
 ##### IDE : IntelliJ Ultimate
-##### SpringBoot
+##### Java21
+##### SpringBoot 3.1.7
 ##### gradle
 ##### Mysql Server
 ##### Mysql Workbench
@@ -58,7 +54,6 @@ WEB PROJECT PLANING
 ## ▶️ END POINT 
 
 |END POINT|METHOD|DESCRIPTION|
-|------|---|---|
 |/|GET|홈페이지|
 |/hotel/find|GET|호텔 찾기 페이지|
 |/hotel/findMap|GET|호텔 찾기 지도 페이지|
