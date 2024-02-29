@@ -31,6 +31,4 @@ public class SubComment {
     private String content;
     private Date writtenAt;
     private Date modifiedAt;
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isDeleted;
 }

@@ -55,12 +55,6 @@ public class CustomLogoutHandler implements LogoutHandler {
                 .map(cookie -> cookie.getValue())
                 .orElse(null);
         Authentication authentication =  jwtTokenProvider.getAuthentication(token);
-        //----------------------------------------
-        //----------------------------------------
-        //REMEMBERME USER DELETE
-        //----------------------------------------
-        persistentTokenRepository.removeUserTokens(authentication.getName());
-        //----------------------------------------
 
         PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
         String provider =  principalDetails.getUserDto().getProvider();

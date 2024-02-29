@@ -29,7 +29,7 @@ public class Article {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
     private int view;
-    @Column(columnDefinition = "DATETIME DEFAULT NOW()")
+    @Column(columnDefinition = "DATETIME(6) DEFAULT NOW()")
     private Date writtenAt;
     private Date modifiedAt;
     private Long indexInBoard;

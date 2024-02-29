@@ -33,7 +33,7 @@ public class PrincipalDetailsService implements UserDetailsService {
                 .addressPrimary(userOptional.get().getAddressPrimary())
                 .addressSecondary(userOptional.get().getAddressSecondary())
                 .role(userOptional.get().getRole())
-                .isSuspended(userOptional.get().isSuspended())
+                .isSuspended(userOptional.get().getIsSuspended())
                 .registeredAt(userOptional.get().getRegisteredAt())
                 .build();
 

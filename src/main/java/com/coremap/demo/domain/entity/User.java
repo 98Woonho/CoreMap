@@ -31,7 +31,7 @@ public class User {
     private String provider;
     private String providerId;
     @Column(name = "suspended_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isSuspended;
+    private Boolean isSuspended;
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private Date registeredAt;
 

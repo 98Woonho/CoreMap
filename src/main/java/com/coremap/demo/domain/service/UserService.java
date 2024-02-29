@@ -112,7 +112,7 @@ public class UserService {
             return "FAILURE_EXPIRED";
         }
 
-        emailAuth.setVerified(true);
+        emailAuth.setIsVerified(true);
 
         emailAuthRepository.save(emailAuth);
 
