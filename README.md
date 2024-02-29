@@ -22,7 +22,7 @@ WEB PROJECT PLANING
 <br/>
 
 ## ▶️ 시연 영상
-https://youtu.be/_GCZQAQWLYg?si=v9SzsAu3_0Q6VoUL
+https://www.youtube.com/watch?v=_GCZQAQWLYg&t=2s
 
 ## ▶️ 개발 환경
 ##### IDE : IntelliJ Ultimate
