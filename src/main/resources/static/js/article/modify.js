@@ -7,8 +7,9 @@ if (document.head.querySelector(':scope > meta[name="_allowed-status"]').getAttr
     }
 }
 
-const modifyForm = document.getElementById('modifyForm');
+const modifyForm = document.getElementById('modifyForm'); // 게시글 수정 form
 
+// ckeditor
 ClassicEditor.create(modifyForm['content'], {
         // 게시글에 이미지를 띄우기 위해 Markdown 기능 비활성화
         removePlugins: ['Markdown'],
@@ -24,10 +25,10 @@ ClassicEditor.create(modifyForm['content'], {
         console.log(error)
     });
 
-const items = modifyForm.querySelectorAll('.item');
+const items = modifyForm.querySelectorAll('.item'); // 모든 첨부파일
 
 items.forEach(item => {
-    const deleteBtn = item.querySelector('.delete-btn');
+    const deleteBtn = item.querySelector('.delete-btn'); // 첨부파일 삭제 버튼
     deleteBtn.onclick = function() {
         item.remove();
     }

@@ -1,27 +1,30 @@
-const modifyForm = document.getElementById('modifyForm');
-const addressFind = document.getElementById('addressFind');
-
-addressFind.querySelector('[rel="close"]').onclick = function () {
-    addressFind.classList.remove('visible');
-}
+const modifyForm = document.getElementById('modifyForm'); // 마이페이지 - 개인정보확인/수정 form
+const addressFindClose = document.getElementById('addressFindClose'); // 주소 찾기 창 close
 
 if(modifyForm) {
+    // 주소 찾기 버튼 클릭 함수
     modifyForm['addressFind'].onclick = function () {
+        // 다음 주소 API
         new daum.Postcode({
             width: '100%',
             height: '100%',
             oncomplete: function (data) {
                 modifyForm['addressPostal'].value = data['zonecode'];
                 modifyForm['addressPrimary'].value = data['address'];
-                addressFind.classList.remove('visible');
+                addressFindClose.classList.remove('visible');
                 modifyForm['addressSecondary'].focus();
                 modifyForm['addressSecondary'].select();
             }
-        }).embed(addressFind.querySelector(':scope > .modal'))
-        addressFind.classList.add('visible');
+        }).embed(addressFindClose.querySelector('.modal'))
+        addressFindClose.classList.add('visible');
     }
 
-    const modifyBtn = modifyForm.querySelector('.modify-btn');
+    // 주소 찾기 창 close 클릭 함수
+    addressFindClose.querySelector('[rel="close"]').onclick = function () {
+        addressFindClose.classList.remove('visible');
+    }
+
+    const modifyBtn = modifyForm.querySelector('.modify-btn'); // 수정 버튼
     const inputs = modifyForm.querySelectorAll('input');
 
     modifyForm['contactCompany'].addEventListener('change', function() {
@@ -42,7 +45,7 @@ if(modifyForm) {
         }
     })
 
-    const nicknameWarning = modifyForm.querySelector('.nickname-warning');
+    const nicknameWarning = modifyForm.querySelector('.nickname-warning'); // 닉네임 경고 문구
 
     modifyForm['nickname'].addEventListener('blur', function () {
         if (modifyForm['nickname'].value === '') {
@@ -58,6 +61,7 @@ if(modifyForm) {
         }
     })
 
+    // 닉네임 중복 확인 버튼 클릭 함수
     modifyForm['confirmDuplication'].onclick = function (e) {
         e.preventDefault();
 
@@ -86,7 +90,7 @@ if(modifyForm) {
     }
 
 
-    const nameWarning = modifyForm.querySelector('.name-warning');
+    const nameWarning = modifyForm.querySelector('.name-warning'); // 이름 경고 문구
 
     modifyForm['name'].addEventListener('blur', function () {
         if (modifyForm['name'].value === '') {
@@ -102,7 +106,7 @@ if(modifyForm) {
         }
     })
 
-    const contactWarning = modifyForm.querySelector('.contact-warning');
+    const contactWarning = modifyForm.querySelector('.contact-warning'); // 연락처 경고 문구
 
     modifyForm['contactCompany'].addEventListener('blur', function () {
         if (modifyForm['contactCompany'].value === '-1') {
@@ -134,7 +138,7 @@ if(modifyForm) {
         }
     })
     
-
+    // 개인 정보 수정 submit 함수
     modifyForm.onsubmit = function(e) {
         e.preventDefault();
 
@@ -235,9 +239,10 @@ if(modifyForm) {
     }
 }
 
-const secessionForm = document.getElementById('secessionForm');
+const secessionForm = document.getElementById('secessionForm'); // 회원 탈퇴 form
 
 if(secessionForm) {
+    // 회원 탈퇴 submit 함수
     secessionForm.onsubmit = function(e) {
         e.preventDefault();
 

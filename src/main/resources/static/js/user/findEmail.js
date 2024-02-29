@@ -1,6 +1,6 @@
-const findEmailForm = document.getElementById('findEmailForm');
+const findEmailForm = document.getElementById('findEmailForm'); // 이메일 찾기 form
 
-const nameWarning = findEmailForm.querySelector('.name-warning');
+const nameWarning = findEmailForm.querySelector('.name-warning'); // 이름 경고 문구
 
 findEmailForm['name'].addEventListener('blur', function () {
     if (findEmailForm['name'].value === '') {
@@ -16,7 +16,7 @@ findEmailForm['name'].addEventListener('blur', function () {
     }
 })
 
-const contactWarning = findEmailForm.querySelector('.contact-warning');
+const contactWarning = findEmailForm.querySelector('.contact-warning'); // 연락처 경고 문구
 
 findEmailForm['contact'].addEventListener('blur', function () {
     if (findEmailForm['contact'].value === '') {
@@ -30,6 +30,7 @@ findEmailForm['contact'].addEventListener('blur', function () {
     }
 })
 
+// 이메일 찾기 submit 함수
 findEmailForm.onsubmit = function(e) {
     e.preventDefault();
 

@@ -3,19 +3,18 @@ if (document.head.querySelector('[name="article-status"]').getAttribute('content
     window.history.back();
 }
 
+const articleTable = document.getElementById('articleTable'); // 게시글 상세 table
+const commentForm = document.getElementById('commentForm'); // 댓글 form
 
-const articleTable = document.getElementById('articleTable');
-const commentForm = document.getElementById('commentForm');
-
-// 게시글 삭제
-const deleteBtn = articleTable.querySelector('.delete-btn');
+const deleteBtn = articleTable.querySelector('.delete-btn'); // 게시글 삭제 버튼
 
 if (deleteBtn) {
+    // 게시글 삭제 버튼 클릭 함수
     deleteBtn.onclick = function (e) {
         e.preventDefault();
 
         if (confirm('정말로 게시글을 삭제할까요? 게시글에 작성된 댓글이 함께 삭제되며 이는 되돌릴 수 없습니다.')) {
-            axios.delete("/article/delete?id=" + articleTable.dataset.id)
+            axios.delete("/article/read?id=" + articleTable.dataset.id)
                 .then(res => {
                     if (res.data === 'SUCCESS') {
                         alert('게시글이 삭제 되었습니다');
@@ -29,13 +28,16 @@ if (deleteBtn) {
     }
 }
 
-const commentTable = document.getElementById('commentTable');
-const comments = commentTable.querySelectorAll('.comment:not(.sub)');
-const currentNickname = document.querySelector('.current-nickname');
+const commentTable = document.getElementById('commentTable'); // 댓글 table
+const comments = commentTable.querySelectorAll('.comment:not(.sub)'); // 모든 댓글
+const currentNickname = document.querySelector('.current-nickname'); // 현재 로그인 한 사용자의 nickname
 
 comments.forEach(comment => {
-    const reply = comment.querySelector('.reply');
-    const replyCancel = comment.querySelector('.reply-cancel');
+    const reply = comment.querySelector('.reply'); // 답글 달기
+    const replyCancel = comment.querySelector('.reply-cancel'); // 답글 취소
+    const replyForm = comment.querySelector('.reply-form'); // 답글 form
+
+    // 답글 달기 click 함수
     reply.onclick = function (e) {
         e.preventDefault();
 
@@ -53,28 +55,60 @@ comments.forEach(comment => {
         comment.classList.add('replying');
     }
 
+    // 답글 취소 click 함수
     replyCancel.onclick = function (e) {
         e.preventDefault();
         comment.classList.remove('replying');
     }
 
-    const modify = comment.querySelector('.modify');
-    const modifyCancel = comment.querySelector('.modify-cancel');
-    const modifyForm = comment.querySelector('.modify-form');
+    // 답글 form submit 함수
+    replyForm.onsubmit = function (e) {
+        e.preventDefault();
+
+        if (replyForm['content'].value === '') {
+            alert('답글을 입력해 주세요.');
+            return false;
+        }
+
+        if (!new RegExp(replyForm['content'].dataset.regex).test(replyForm['content'].value.trim())) {
+            alert('1000자 이내로 입력해 주세요.');
+            return false;
+        }
+
+        const formData = new FormData();
+
+        formData.append("content", replyForm['content'].value.trim());
+        formData.append("commentId", comment.dataset.id);
+
+        axios.post('/article/subComment', formData)
+            .then(res => {
+                location.reload();
+            })
+            .catch(err => {
+                alert('알 수 없는 이유로 답글을 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
+            })
+    }
+
+    const modify = comment.querySelector('.modify'); // 댓글 수정
+    const modifyCancel = comment.querySelector('.modify-cancel'); // 댓글 수정 취소
+    const modifyForm = comment.querySelector('.modify-form'); // 댓글 수정 form
 
     modifyForm.querySelector('textarea').value = comment.querySelector('.content').innerText;
 
     if (modify) {
+        // 댓글 수정 click 함수
         modify.onclick = function (e) {
             e.preventDefault();
             comment.classList.add('modifying');
         }
 
+        // 댓글 수정 취소 click 함수
         modifyCancel.onclick = function (e) {
             e.preventDefault();
             comment.classList.remove('modifying');
         }
 
+        // 댓글 수정 form submit 함수
         modifyForm.onsubmit = function (e) {
             e.preventDefault();
 
@@ -108,9 +142,10 @@ comments.forEach(comment => {
         }
     }
 
+    const Delete = comment.querySelector('.delete'); // 댓글 삭제
 
-    const Delete = comment.querySelector('.delete');
     if (Delete) {
+        // 댓글 삭제 click 함수
         Delete.onclick = function (e) {
             e.preventDefault();
 
@@ -130,36 +165,8 @@ comments.forEach(comment => {
         }
     }
 
-    const replyForm = comment.querySelector('.reply-form');
-    replyForm.onsubmit = function (e) {
-        e.preventDefault();
-
-        if (replyForm['content'].value === '') {
-            alert('답글을 입력해 주세요.');
-            return false;
-        }
-
-        if (!new RegExp(replyForm['content'].dataset.regex).test(replyForm['content'].value.trim())) {
-            alert('1000자 이내로 입력해 주세요.');
-            return false;
-        }
-
-        const formData = new FormData();
-
-        formData.append("content", replyForm['content'].value.trim());
-        formData.append("commentId", comment.dataset.id);
-
-        axios.post('/article/subComment', formData)
-            .then(res => {
-                location.reload();
-            })
-            .catch(err => {
-                alert('알 수 없는 이유로 답글을 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-            })
-    }
-
-    const voteUp = comment.querySelector('.vote-up');
-    const voteDown = comment.querySelector('.vote-down');
+    const voteUp = comment.querySelector('.vote-up'); // 댓글 좋아요
+    const voteDown = comment.querySelector('.vote-down'); // 댓글 싫어요
     if (comment.querySelector('.is-like') != null) {
         const isLike = comment.querySelector('.is-like').value;
 
@@ -172,6 +179,7 @@ comments.forEach(comment => {
         }
     }
 
+    // 댓글 좋아요 click 함수
     voteUp.onclick = function (e) {
         if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
             e.preventDefault();
@@ -243,6 +251,7 @@ comments.forEach(comment => {
         }
     }
 
+    // 댓글 싫어요 click 함수
     voteDown.onclick = function (e) {
         if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
 
@@ -316,26 +325,29 @@ comments.forEach(comment => {
 })
 
 
-const subComments = commentTable.querySelectorAll('.comment.sub');
+const subComments = commentTable.querySelectorAll('.comment.sub'); // 모든 답글(대댓글)
 
 subComments.forEach(subComment => {
-    const modify = subComment.querySelector('.modify');
-    const modifyCancel = subComment.querySelector('.modify-cancel');
-    const subCommentModifyForm = subComment.querySelector('.sub-comment-modify-form');
+    const modify = subComment.querySelector('.modify'); // 답글 수정
+    const modifyCancel = subComment.querySelector('.modify-cancel'); // 답글 수정 취소
+    const subCommentModifyForm = subComment.querySelector('.sub-comment-modify-form'); // 답글 수정 form
 
     subCommentModifyForm.querySelector('textarea').value = subComment.querySelector('.content').innerText;
 
     if (modify) {
+        // 답글 수정 click 함수
         modify.onclick = function (e) {
             e.preventDefault();
             subComment.classList.add('modifying');
         }
 
+        // 답글 수정 취소 click 함수
         modifyCancel.onclick = function (e) {
             e.preventDefault();
             subComment.classList.remove('modifying');
         }
 
+        // 답글 수정 form submit 함수
         subCommentModifyForm.onsubmit = function (e) {
             e.preventDefault();
 
@@ -369,8 +381,10 @@ subComments.forEach(subComment => {
         }
     }
 
-    const Delete = subComment.querySelector('.delete');
+    const Delete = subComment.querySelector('.delete'); // 답글 삭제
+
     if (Delete) {
+        // 답글 삭제 click 함수
         Delete.onclick = function (e) {
             e.preventDefault();
 
@@ -390,8 +404,8 @@ subComments.forEach(subComment => {
         }
     }
 
-    const voteUp = subComment.querySelector('.vote-up');
-    const voteDown = subComment.querySelector('.vote-down');
+    const voteUp = subComment.querySelector('.vote-up'); // 답글 좋아요
+    const voteDown = subComment.querySelector('.vote-down'); // 답글 싫어요
     if (subComment.querySelector('.is-like') != null) {
         const isLike = subComment.querySelector('.is-like').value;
 
@@ -547,7 +561,7 @@ subComments.forEach(subComment => {
     }
 })
 
-
+// 댓글 form submit 함수
 commentForm.onsubmit = function (e) {
     e.preventDefault();
 

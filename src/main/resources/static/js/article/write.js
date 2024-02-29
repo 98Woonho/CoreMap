@@ -1,5 +1,6 @@
-const writeForm = document.getElementById('writeForm');
+const writeForm = document.getElementById('writeForm'); // 게시글 작성 form
 
+// ckeditor
 ClassicEditor.create(writeForm['content'], {
     removePlugins: ['Markdown'],
     language: "ko",
@@ -14,12 +15,14 @@ ClassicEditor.create(writeForm['content'], {
         console.log(error)
     });
 
+// 첨부파일 추가 click 함수
 writeForm['fileAdd'].onclick = function(e) {
     e.preventDefault();
 
     writeForm['file'].click();
 }
 
+// 첨부파일이 추가 되었을 때의 함수
 writeForm['file'].onchange = function () {
     const file = writeForm['file'].files[0];
     if (!file) {
@@ -54,6 +57,7 @@ writeForm['file'].onchange = function () {
     writeForm['file'].value = '';
 }
 
+// 게시글 작성 submit 함수
 writeForm.onsubmit = function(e) {
     e.preventDefault();
 

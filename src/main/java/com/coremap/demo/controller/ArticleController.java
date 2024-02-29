@@ -222,6 +222,12 @@ public class ArticleController {
         }
     }
 
+    @DeleteMapping("read")
+    @ResponseBody
+    public String deleteRead(@RequestParam(value = "id") Long id) {
+        return articleService.delete(id);
+    }
+
     @GetMapping("modify")
     public void getModify(@RequestParam(value = "index") Long index,
                           @RequestParam(value = "code") String code,
@@ -262,12 +268,6 @@ public class ArticleController {
         }
 
         return articleService.modify(articleDto, fileIdArray, imgIdArray);
-    }
-
-    @DeleteMapping("delete")
-    @ResponseBody
-    public String deleteArticle(@RequestParam(value = "id") Long id) {
-        return articleService.delete(id);
     }
 
     @PostMapping("comment")

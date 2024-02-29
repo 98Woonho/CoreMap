@@ -1,6 +1,6 @@
-const resetPasswordStep1Form = document.getElementById('resetPasswordStep1Form');
+const resetPasswordStep1Form = document.getElementById('resetPasswordStep1Form'); // 비밀번호 재설정 step1 form
 
-const emailWarning = resetPasswordStep1Form.querySelector('.email-warning');
+const emailWarning = resetPasswordStep1Form.querySelector('.email-warning'); // 이메일 경고 문구
 
 resetPasswordStep1Form['email'].addEventListener('blur', function () {
     if (resetPasswordStep1Form['email'].value === '') {
@@ -16,6 +16,7 @@ resetPasswordStep1Form['email'].addEventListener('blur', function () {
     }
 })
 
+// 이메일 인증번호 발송 클릭 함수
 resetPasswordStep1Form['emailSend'].onclick = function (e) {
     e.preventDefault();
 
@@ -48,7 +49,7 @@ resetPasswordStep1Form['emailSend'].onclick = function (e) {
         });
 }
 
-
+// 인증번호 확인 클릭 함수
 resetPasswordStep1Form['emailVerify'].onclick = function () {
     if (resetPasswordStep1Form['emailCode'] === '') {
         alert('인증번호를 입력해 주세요.');
@@ -90,6 +91,7 @@ resetPasswordStep1Form['emailVerify'].onclick = function () {
         });
 }
 
+// 비밀번호 재설정 step1 submit 함수
 resetPasswordStep1Form.onsubmit = function(e) {
     e.preventDefault()
     if (resetPasswordStep1Form['email'].value === "") {

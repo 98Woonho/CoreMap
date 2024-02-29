@@ -1,7 +1,7 @@
-const resetPasswordStep2Form = document.getElementById('resetPasswordStep2Form');
+const resetPasswordStep2Form = document.getElementById('resetPasswordStep2Form'); // 비밀번호 재설정 step2 form
 
-const passwordWarning = resetPasswordStep2Form.querySelector('.password-warning');
-const passwordCheckWarning = resetPasswordStep2Form.querySelector('.password-check-warning');
+const passwordWarning = resetPasswordStep2Form.querySelector('.password-warning'); // 비밀번호 경고 문구
+const passwordCheckWarning = resetPasswordStep2Form.querySelector('.password-check-warning'); // 비밀번호 재입력 경고 문구
 
 resetPasswordStep2Form['password'].addEventListener('input', function () {
     if (!new RegExp(resetPasswordStep2Form['password'].dataset.regex).test(resetPasswordStep2Form['password'].value)) {
@@ -35,6 +35,7 @@ resetPasswordStep2Form['passwordCheck'].addEventListener('input', function () {
     }
 })
 
+// 비밀번호 재설정 step2 submit 함수
 resetPasswordStep2Form.onsubmit = function(e) {
     e.preventDefault();
 

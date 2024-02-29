@@ -388,7 +388,7 @@ button {
 
 
 
-#addressFind {
+#addressFindClose {
     top: 0;
     left: 0;
     width: 100%;
@@ -404,12 +404,12 @@ button {
     z-index: 9;
 }
 
-#addressFind.visible {
+#addressFindClose.visible {
     opacity: 1;
     pointer-events: all;
 }
 
-#addressFind  .close {
+#addressFindClose  .close {
     top: 1.5rem;
     right: 1.5rem;
     width: 2.5rem;
@@ -417,7 +417,7 @@ button {
     position: absolute;
 }
 
-#addressFind  .modal {
+#addressFindClose  .modal {
     top: calc(50% + 1rem);
     left: 50%;
     width: 25rem;
@@ -433,6 +433,6 @@ button {
     transition-timing-function: ease;
 }
 
-#addressFind.visible .modal {
+#addressFindClose.visible .modal {
     top: 50%;
 }
