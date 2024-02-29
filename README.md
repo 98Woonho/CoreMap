@@ -49,3 +49,11 @@ WEB PROJECT PLANING
 ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![Github](https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white)
+
+<br/>
+
+## ▶️ 주요 기능
+##### 로그인 및 회원가입
+##### 게시판
+##### 사용자/관리자 페이지
+##### 운동 자세 설명
