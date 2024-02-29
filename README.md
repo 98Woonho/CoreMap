@@ -19,7 +19,6 @@ WEB PROJECT PLANING
 ## ▶️ ERD
 ![coremap ERD](https://github.com/98Woonho/Coremap/assets/145889732/5d7a623c-369d-4781-9883-985d933ca703)
 
-
 <br/>
 
 ## ▶️ 개발 환경
