@@ -23,6 +23,7 @@ WEB PROJECT PLANING
 
 ## ▶️ 개발 환경
 ##### IDE : IntelliJ Ultimate
+##### OpenJDK 21
 ##### Java21
 ##### SpringBoot 3.1.7
 ##### gradle
@@ -48,41 +49,3 @@ WEB PROJECT PLANING
 ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![Github](https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white)
-
-<br/>
-
-## ▶️ END POINT 
-
-|END POINT|METHOD|DESCRIPTION|
-|/|GET|홈페이지|
-|/hotel/find|GET|호텔 찾기 페이지|
-|/hotel/findMap|GET|호텔 찾기 지도 페이지|
-|/hotel/info|GET|호텔 정보 페이지|
-|/reservation/select|GET|호텔 및 객실 선택 페이지|
-|/payment/read|GET|결제 페이지|
-|/admin/inquiry|GET|관리자 문의 페이지|
-|/admin/modifyHotel|GET|관리자 호텔 수정 페이지|
-|/admin/modifyRoom|GET|관리자 객실 수정 페이지|
-|/admin/registerHotel|GET|관리자 호텔 등록 페이지|
-|/admin/registerRoom|GET|관리자 객실 등록 페이지|
-|/admin/monthSales|GET|관리자 월 매출 페이지|
-|/admin/monthSales|GET|관리자 월 매출 페이지|
-|/admin/hotelStatus|GET|관리자 호텔 현황 페이지|
-|/admin/reservationStatus|GET|관리자 예약 현황 페이지|
-|/admin/roomStatus|GET|관리자 객실 현황 페이지|
-|/policy/privacyPolicy|GET|개인정보 처리방침 페이지|
-|/policy/terms|GET|이용약관 페이지|
-|/user/login|GET|로그인 페이지|
-|/user/join|GET|회원가입 페이지|
-|/user/join|POST|회원가입|
-|/user/confirmId|GET|아이디 중복 확인|
-|/user/sendEmail/{email}|GET|이메일 인증 보내기|
-|/user/confirmEmail|GET|이메일 인증 확인|
-|/board/save|GET|게시글 작성 페이지|
-|/board/save|POST|게시글 작성|
-|/board/list|GET|게시글 목록 페이지|
-|/board/update/{id}|GET|게시글 수정 페이지|
-|/board/update|POST|게시글 수정|
-|/board/delete/{id}|GET|게시글 삭제|
-|/comment/save|POST|댓글 작성|
-<br/>
