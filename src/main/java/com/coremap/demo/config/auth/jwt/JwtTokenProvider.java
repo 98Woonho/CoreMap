@@ -47,8 +47,7 @@ public class JwtTokenProvider {
         if (rs.next()) {
 
             byte[] keyByte = rs.getBytes("signature");                 //DB로 서명Key꺼내옴
-            this.key = Keys.hmacShaKeyFor(keyByte);                                    //this.key에 저장
-            System.out.println("[JwtTokenProvider] Key : " + this.key);
+            this.key = Keys.hmacShaKeyFor(keyByte);                                 //this.key에 저장
         } else {
             byte[] keyBytes = KeyGenerator.getKeygen();     //난수키값 가져오기
             this.key = Keys.hmacShaKeyFor(keyBytes);        // 생성된 키를 사용하여 HMAC SHA(암호화알고리즘)알고리즘에 기반한 Key 객체 생성
@@ -56,7 +55,6 @@ public class JwtTokenProvider {
 
             pstmt.setBytes(1, keyBytes);
             pstmt.executeUpdate();
-            System.out.println("[JwtTokenProvider] Constructor Key init: " + key);
         }
 
     }
@@ -73,7 +71,7 @@ public class JwtTokenProvider {
         UserDto userDto = principalDetails.getUserDto();
 
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 86400000);    // 60*5 초후 만료
+        Date accessTokenExpiresIn = new Date(now + 3600000);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("username", authentication.getName())
@@ -99,12 +97,9 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 86400000))    //1일: 24 * 60 * 60 * 1000 = 86400000
+                .setExpiration(new Date(now + 3600000)) // 1시간: 60 * 60 * 1000 = 3600000
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-
-        System.out.println("[JwtTokenProvider] generateToken() accessToken : " + accessToken);
-        System.out.println("[JwtTokenProvider] generateToken() refreshToken : " + refreshToken);
 
         return TokenInfo.builder()
                 .grantType("Bearer")

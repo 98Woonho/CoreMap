@@ -30,24 +30,19 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         //Attribute확인
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() oAuth2User : " + oAuth2User);
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() oAuth2User.getAttributes() : " + oAuth2User.getAttributes());
 
         //OAuth Server Provider 구별
         String provider = userRequest.getClientRegistration().getRegistrationId();
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() provider : " + provider);
 
         OAuth2UserInfo oAuth2UserInfo = null;
         if (provider != null && provider.equals("kakao")) {
             String id = oAuth2User.getAttributes().get("id").toString();
             KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(id, (Map<String, Object>) oAuth2User.getAttributes().get("properties"));
-            System.out.println("[PrincipalDetailsOAuth2Service] loadUser() kakaUserInfo : " + kakaoUserInfo);
             oAuth2UserInfo = kakaoUserInfo;
         } else if (provider != null && provider.equals("naver")) {
             Map<String, Object> resp = (Map<String, Object>) oAuth2User.getAttributes().get("response");
             String id = (String) resp.get("id");
             NaverUserInfo naverUserInfo = new NaverUserInfo(id, resp);
-            System.out.println("[PrincipalDetailsOAuth2Service] loadUser() naverUserInfo : " + naverUserInfo);
             oAuth2UserInfo = naverUserInfo;
 
         } else if (provider != null && provider.equals("google")) {
@@ -55,8 +50,6 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
             GoogleUserInfo googleUserInfo = new GoogleUserInfo(id, oAuth2User.getAttributes());
             oAuth2UserInfo = googleUserInfo;
         }
-
-        System.out.println("[PrincipalDetailsOAuth2Service] loadUser() oAuth2UserInfo : " + oAuth2UserInfo);
 
 
         //Db조회
@@ -81,7 +74,6 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
                     .provider(user.getProvider())
                     .providerId(user.getProviderId())
                     .build();
-            System.out.println("[PrincipalDetailsOAuth2Service] loadUser() " + oAuth2UserInfo.getProvider() + " 최초 로그인!");
         } else {
             User user = optional.get();
             if(user.getContactCompany() != null) {
@@ -108,8 +100,6 @@ public class PrincipalDetailsOAuth2Service extends DefaultOAuth2UserService {
                         .providerId(user.getProviderId())
                         .build();
             }
-            System.out.println("[PrincipalDetailsOAuth2Service] loadUser() " + oAuth2UserInfo.getProvider() + " 기존계정 로그인!");
-
         }
 
         //PrincipalDetails생성
