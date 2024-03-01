@@ -83,19 +83,36 @@ public class UserService {
                 Math.random()));
         emailAuthDto.setSalt(salt);
 
-        Context context = new Context(); // emailAuthDto에 있는 데이터를 registerEmail.html로 넘기기 위한 객체 생성
+        Context context = new Context();
         context.setVariable("emailAuthDto", emailAuthDto);
-        String textHtml = this.templateEngine.process("user/JoinEmail.html", context);
-        MimeMessage message = this.mailSender.createMimeMessage();
-        MimeMessageHelper mimemessageHelper = new MimeMessageHelper(message, false);
-        mimemessageHelper.setTo(emailAuthDto.getEmail());
-        mimemessageHelper.setSubject("[Coremap] 회원가입 인증번호");
-        mimemessageHelper.setText(textHtml, true);
-        this.mailSender.send(message);
 
-        EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
+        if(resetPassword) {
+            String textHtml = this.templateEngine.process("user/resetPasswordEmail.html", context);
 
-        emailAuthRepository.save(emailAuth);
+            MimeMessage message = this.mailSender.createMimeMessage();
+            MimeMessageHelper mimemessageHelper = new MimeMessageHelper(message, false);
+            mimemessageHelper.setTo(emailAuthDto.getEmail());
+            mimemessageHelper.setSubject("[Coremap] 비밀번호 재설정 인증번호");
+            mimemessageHelper.setText(textHtml, true);
+            this.mailSender.send(message);
+
+            EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
+
+            emailAuthRepository.save(emailAuth);
+        } else {
+            String textHtml = this.templateEngine.process("user/joinEmail.html", context);
+
+            MimeMessage message = this.mailSender.createMimeMessage();
+            MimeMessageHelper mimemessageHelper = new MimeMessageHelper(message, false);
+            mimemessageHelper.setTo(emailAuthDto.getEmail());
+            mimemessageHelper.setSubject("[Coremap] 회원가입 인증번호");
+            mimemessageHelper.setText(textHtml, true);
+            this.mailSender.send(message);
+
+            EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
+
+            emailAuthRepository.save(emailAuth);
+        }
 
         return "SUCCESS";
     }

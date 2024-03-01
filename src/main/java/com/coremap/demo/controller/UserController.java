@@ -95,15 +95,15 @@ public class UserController {
 
     }
 
-    @GetMapping("resetPasswordStep2")
-    public void getResetPasswordStep2(@RequestParam(value = "username") String username, Model model) {
-        model.addAttribute("username", username);
-    }
-
     @PostMapping("resetPasswordStep1")
     @ResponseBody
     public String postResetPasswordStep1(String username) {
         return userService.confirmEmptyUser(username);
+    }
+
+    @GetMapping("resetPasswordStep2")
+    public void getResetPasswordStep2(@RequestParam(value = "username") String username, Model model) {
+        model.addAttribute("username", username);
     }
 
     @PostMapping("resetPasswordStep2")
