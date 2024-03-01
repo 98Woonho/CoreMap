@@ -30,16 +30,16 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    // 게시글 작성 view
     @GetMapping("write")
     public void getWrite(@RequestParam(value = "code", required = false, defaultValue = "") String code,
                          Model model) {
-        Board[] boards = articleService.getBoards();
-
-        Board board = Arrays.stream(boards).filter(x -> x.getCode().equals(code)).findFirst().orElse(null);
+        Board board = articleService.getBoard(code);
 
         model.addAttribute("board", board);
     }
 
+    // 게시글 작성
     @PostMapping("write")
     @ResponseBody
     public String postWrite(@RequestParam(value = "fileId", required = false) int[] fileIdArray,
@@ -61,6 +61,7 @@ public class ArticleController {
         return responseObject.toString();
     }
 
+    // ckeditor getImage
     @GetMapping("image")
     public ResponseEntity<byte[]> getImage(@RequestParam(value = "id") Long id) {
         ResponseEntity<byte[]> response;
@@ -77,6 +78,7 @@ public class ArticleController {
         return response;
     }
 
+    // ckeditor postImage
     @PostMapping("image")
     @ResponseBody
     public String postImage(@RequestParam(value = "upload") MultipartFile file) throws IOException {
@@ -89,6 +91,7 @@ public class ArticleController {
         return responseObject.toString();
     }
 
+    // 게시글(/article/read) 에서 첨부파일을 클릭하면 실행
     @GetMapping("file")
     public ResponseEntity<byte[]> getFile(@RequestParam(value = "id") Long id) {
         ResponseEntity<byte[]> response;
@@ -97,7 +100,7 @@ public class ArticleController {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             /**
-             * [공부] ContentDisposition : 파일 다운로드를 할 때 사용되어 웹 서버가 전송한 파일이 브라우저에서 어떻게 처리되어야 하는지를 지정
+             * ContentDisposition : 파일 다운로드를 할 때 사용되어 웹 서버가 전송한 파일이 브라우저에서 어떻게 처리되어야 하는지를 지정
              * attachment() : 파일을 다운로드로 받음.
              * inline() : 파일이 다운로드되지 않고 웹으로 표시 해줌.
              * filename() : 다운로드 받은 파일 이름
@@ -115,6 +118,7 @@ public class ArticleController {
         return response;
     }
 
+    // 게시글 작성(/article/write)에서 첨부파일 등록
     @PostMapping("file")
     @ResponseBody
     public String postFile(@RequestParam(value = "file") MultipartFile mulitpartFile) throws IOException {
@@ -126,6 +130,7 @@ public class ArticleController {
         return responseObject.toString();
     }
 
+    // 게시글 view
     @GetMapping("read")
     public void getRead(@RequestParam(value = "index") Long index,
                         @RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -158,6 +163,7 @@ public class ArticleController {
             List<Map<String, Object>> commentLikeCountList = new ArrayList<>();
             List<Long> existingCommentIdList = new ArrayList<>();
 
+            // 게시글에 있는 각 댓글의 좋아요/싫어요 개수를 가져옴.
             for(CommentLike commentLike : commentLikeList) {
                 Long commentId = commentLike.getComment().getId();
 
@@ -182,6 +188,7 @@ public class ArticleController {
             List<Map<String, Object>> subCommentLikeCountList = new ArrayList<>();
             List<Long> existingSubCommentIdList = new ArrayList<>();
 
+            // 게시글에 있는 각 답글의 좋아요/싫어요 개수를 가져옴.
             for(SubCommentLike subCommentLike : subCommentLikeList) {
                 Long subCommentId = subCommentLike.getSubComment().getId();
 
@@ -201,10 +208,7 @@ public class ArticleController {
                 existingSubCommentIdList.add(subCommentId);
             }
 
-            Board board = Arrays.stream(boards)
-                    .filter(x -> x.getCode().equals(code))
-                    .findFirst()
-                    .orElse(null);
+            Board board = articleService.getBoard(code);
             List<File> fileList = this.articleService.getFileList(article.getId());
 
             model.addAttribute("fileList", fileList);
@@ -222,12 +226,14 @@ public class ArticleController {
         }
     }
 
+    // 게시글 삭제
     @DeleteMapping("read")
     @ResponseBody
     public String deleteRead(@RequestParam(value = "id") Long id) {
         return articleService.delete(id);
     }
 
+    // 게시글 수정 view
     @GetMapping("modify")
     public void getModify(@RequestParam(value = "index") Long index,
                           @RequestParam(value = "code") String code,
@@ -254,6 +260,7 @@ public class ArticleController {
         model.addAttribute("article", article);
     }
 
+    // 게시글 수정
     @PostMapping("modify")
     @ResponseBody
     public String postModify(@RequestParam(value = "fileId", required = false) int[] fileIdArray,
@@ -270,72 +277,84 @@ public class ArticleController {
         return articleService.modify(articleDto, fileIdArray, imgIdArray);
     }
 
+    // 댓글 작성
     @PostMapping("comment")
     @ResponseBody
     public String postComment(CommentDto commentDto) {
         return articleService.writeComment(commentDto);
     }
 
+    // 댓글 수정
     @PatchMapping("comment")
     @ResponseBody
     public String patchComment(CommentDto commentDto) {
         return articleService.updateComment(commentDto);
     }
 
+    // 댓글 삭제
     @DeleteMapping("comment")
     @ResponseBody
     public String deleteComment(@RequestParam(value = "id") Long id) {
         return articleService.deleteComment(id);
     }
 
+    // 답글 작성
     @PostMapping("subComment")
     @ResponseBody
     public String postSubComment(SubCommentDto subCommentDto) {
         return articleService.writeSubComment(subCommentDto);
     }
 
+    // 답글 수정
     @PatchMapping("subComment")
     @ResponseBody
     public String patchSubComment(SubCommentDto subCommentDto) {
         return articleService.updateSubComment(subCommentDto);
     }
 
+    // 답글 삭제
     @DeleteMapping("subComment")
     @ResponseBody
     public String deleteSubComment(@RequestParam(value = "id") Long id) {
         return articleService.deleteSubComment(id);
     }
 
+    // 댓글 좋아요/싫어요
     @PostMapping("commentLike")
     @ResponseBody
     public String postCommentLike(CommentLikeDto commentLikeDto) {
         return articleService.commentLike(commentLikeDto);
     }
 
+    // 댓글 좋아요/싫어요 수정
     @PatchMapping("commentLike")
     @ResponseBody
     public String patchCommentLike(CommentLikeDto commentLikeDto) {
         return articleService.updateCommentLike(commentLikeDto);
     }
 
+    // 댓글 좋아요/싫어요 취소
     @DeleteMapping("commentLike")
     @ResponseBody
     public String deleteCommentLike(CommentLikeDto commentLikeDto) {
         return articleService.deleteCommentLike(commentLikeDto);
     }
 
+    // 답글 좋아요/싫어요
     @PostMapping("subCommentLike")
     @ResponseBody
     public String postSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
         return articleService.subCommentLike(subCommentLikeDto);
     }
 
+    // 답글 좋아요/싫어요 수정
     @PatchMapping("subCommentLike")
     @ResponseBody
     public String patchSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
         return articleService.updateSubCommentLike(subCommentLikeDto);
     }
 
+    // 답글 좋아요/싫어요 취소
     @DeleteMapping("subCommentLike")
     @ResponseBody
     public String deleteSubCommentLike(SubCommentLikeDto subCommentLikeDto) {

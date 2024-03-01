@@ -44,6 +44,10 @@ public class ArticleService {
     @Autowired
     private SubCommentLikeRepository subCommentLikeRepository;
 
+    public Board getBoard(String code) {
+        return boardRepository.findById(code).get();
+    }
+
     public User getUser(String username) {
         return userRepository.findById(username).get();
     }
@@ -51,6 +55,7 @@ public class ArticleService {
     public Article getArticle(Long indexInBoard, String boardCode) {
         Article article = articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
 
+        // 게시글 불러올 때 조회수 증가
         if(article != null) {
             int view = article.getView();
             view += 1;
@@ -170,12 +175,15 @@ public class ArticleService {
 
         Article article = new Article();
 
+        // 작성할려는 게시판에 게시글이 있으면, 제일 최근 게시글의 인덱스에 +1을 한 인덱스를 현재 작성할려는 게시글에 set
         if(articleRepository.findTopByBoardCodeOrderByIndexInBoardDesc(articleDto.getBoardCode()) != null) {
             Article latestArticle = articleRepository.findTopByBoardCodeOrderByIndexInBoardDesc(articleDto.getBoardCode());
 
             Long latestIndexInBoard = latestArticle.getIndexInBoard();
             article.setIndexInBoard(latestIndexInBoard + 1);
-        } else {
+        }
+        // 작성할려는 게시판에 게시글이 없으면 해당 게시판의 첫 번째 인덱스(1) set
+        else {
             article.setIndexInBoard(1L);
         }
 
@@ -191,6 +199,7 @@ public class ArticleService {
 
         Article writedArticle = articleRepository.findById(article.getId()).get();
 
+        // 작성할려는 게시글의 id를 file에 set (file은 게시글 작성하는 페이지에서 등록 시점에 DB에 등록 됨)
         for (int fileId : fileIdArray) {
             File file = fileRepository.findById((long) fileId).get();
 
@@ -202,6 +211,7 @@ public class ArticleService {
             fileRepository.save(file);
         }
 
+        // 작성할려는 게시글의 id를 image에 set (image는 게시글 작성하는 페이지에서 등록 시점에 DB에 등록 됨)
         for (int imgId : imgIdArray) {
             Image image = imageRepository.findById((long) imgId).get();
 
@@ -224,13 +234,14 @@ public class ArticleService {
         List<Image> originalImages = imageRepository.findByArticleId(articleDto.getId());
 
         for (File originalFile : originalFiles) {
-            // 수정 할려는 게시글의 파일 인덱스 배열(fileIndexes)에서 원래 게시글의 파일목록 중 하나의 인덱스를 비교 했는데 아무것도 없을 때 == 파일을 삭제 했을 때
+            // 수정 할려는 게시글의 파일 인덱스 배열(fileIdArray)에서 원래 게시글의 파일 목록 중 하나의 인덱스를 비교 했는데 아무것도 없을 때 == 파일을 삭제 했을 때
             if (Arrays.stream(fileIdArray).noneMatch(x -> x == originalFile.getId())) {
                 fileRepository.deleteById(originalFile.getId());
             }
         }
 
         for (Image originalImage : originalImages) {
+            // 수정 할려는 게시글의 이미지 인덱스 배열(imgIdArray)에서 원래 게시글의 이미지 목록 중 하나의 인덱스를 비교 했는데 아무것도 없을 때 == 이미지를 삭제 했을 때
             if (Arrays.stream(imgIdArray).noneMatch(x -> x == originalImage.getId())) {
                 imageRepository.deleteById(originalImage.getId());
             }
@@ -238,6 +249,7 @@ public class ArticleService {
 
         Article article = articleRepository.findById(articleDto.getId()).get();
 
+        // 게시글 수정사항 set
         article.setTitle(articleDto.getTitle());
         article.setContent(articleDto.getContent());
         article.setModifiedAt(new Date());
@@ -246,6 +258,7 @@ public class ArticleService {
 
         Article newArticle = articleRepository.findById(article.getId()).get();
 
+        // 수정할려는 게시글의 id를 file에 set (file은 게시글 수정하는 페이지에서 등록 시점에 DB에 등록 됨)
         for (int fileId : fileIdArray) {
             File file = fileRepository.findById((long) fileId).get();
 
@@ -257,6 +270,7 @@ public class ArticleService {
             fileRepository.save(file);
         }
 
+        // 수정할려는 게시글의 id를 image에 set (image는 게시글 수정하는 페이지에서 등록 시점에 DB에 등록 됨)
         for (int imgId : imgIdArray) {
             Image image = imageRepository.findById((long) imgId).get();
 
