@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+#main .content-container {
+    margin: 5rem 0;
+}
+
+img {
+    height: 500px;
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+}
+
+.exercise-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 7.5rem;
+}
+
+.exercise-section {
+    width: 33vw;
+}
+
+.exercise-section ul {
+    margin-bottom: 5rem;
+}
+
+.exercise-section li {
+    font-size: 1rem;
+    margin-top: 1.25rem;
+}
+
+.img-container {
+    margin: 5rem 0;
+}
+
+.line {
+    margin-top: 1.75rem;
+    margin-bottom: 3rem;
+    border-bottom: 0.0625rem solid #4F4F4F;
+}
+
+.start-position,
+.exercise-movement,
+.breath-technique {
+    margin-top: 2.25rem;
+}
+
+.precaution {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.exercise-info-container h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.exercise-info-container .text {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}

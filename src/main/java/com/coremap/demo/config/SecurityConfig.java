@@ -33,10 +33,9 @@ public class SecurityConfig {
     @Autowired
     private HikariDataSource dataSource;
 
-
-    //JWT ADDED..
     @Autowired
     private UserRepository userRepository;
+    
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -81,7 +80,7 @@ public class SecurityConfig {
                     logout.logoutUrl("/logout");
                     logout.addLogoutHandler(customLogoutHandler());
                     logout.logoutSuccessHandler( customLogoutSuccessHandler() );
-                    //JWT Added
+                    // JWT 토큰 제거
                     logout.deleteCookies("JSESSIONID", JwtProperties.COOKIE_NAME);
                     logout.invalidateHttpSession(true);
                 }
@@ -167,28 +166,6 @@ public class SecurityConfig {
     public Oauth2JwtLoginSuccessHandler oauth2JwtLoginSuccessHandler(){
         return new Oauth2JwtLoginSuccessHandler();
     }
-
-//    @Bean
-//    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-//        InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
-//
-//        userDetailsManager.createUser(User.withUsername("user")
-//                .password(passwordEncoder.encode("1234"))
-//                .roles("USER")
-//                .build());
-//
-//        userDetailsManager.createUser(User.withUsername("member")
-//                .password(passwordEncoder.encode("1234"))
-//                .roles("MEMBER")
-//                .build());
-//
-//        userDetailsManager.createUser(User.withUsername("admin")
-//                .password(passwordEncoder.encode("1234"))
-//                .roles("ADMIN")
-//                .build());
-//
-//        return userDetailsManager;
-//    }
 
     // BCryptPasswordEncoder Bean 등록 - 패스워드 검증에 사용
     @Bean

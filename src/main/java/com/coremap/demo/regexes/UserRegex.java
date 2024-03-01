@@ -5,12 +5,10 @@ public enum UserRegex implements Regex {
     // public static final UserRegex EMAIL = new UserRegex("...");
     // 그래서 UserRegex.EMAIL.matches() 이런식으로 사용 가능함.
     EMAIL("^(?=.{4,50}$)([\\da-z_\\-.]{4,})@([\\da-z][\\da-z\\-]*[\\da-z]\\.)?([\\da-z][\\da-z\\-]*[\\da-z])\\.([a-z]{2,15}\\.)?([a-z]{2,3})$"),
-    PASSWORD("^([\\da-zA-Z`~!@#$%^&*()\\-_=+\\[{\\]}\\\\|;:'\",<.>/?]{4,50})$"),
+    PASSWORD("^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$"),
     NICKNAME("^([\\da-zA-Z가-힣]{2,10})$"),
     NAME("^([가-힣]{2,5})$"),
-    CONTACT_FIRST("^(010)$"),
-    CONTACT_SECOND("^([\\d]{3,4})$"),
-    CONTACT_THIRD("^([\\d]{4})$"), // alt + enter -> inject -> regexp로 해줘야 정규표현식으로 받아들임.
+    CONTACT("^01\\d{8,9}$"),
     ADDRESS_POSTAL("^(\\d{5})$"),
     ADDRESS_PRIMARY("^(?=.{5,100}$)([\\d가-힣])([\\d가-힣~()\\-;:'\",. ]*)([\\d가-힣])$"),
     ADDRESS_SECONDARY("^(?=.{0,100}$)([\\da-zA-Z가-힣~()\\-;:'\",. ]*)$")

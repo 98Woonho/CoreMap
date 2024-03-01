@@ -1,0 +1,76 @@
+@charset "UTF-8";
+
+#main .content-container {
+    margin: 5rem 0;
+    max-width: 800px;
+}
+
+#modifyForm {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: flex-start;
+
+    margin-top: 3rem;
+}
+
+.label {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: flex-start;
+
+    margin-top: 1.5rem;
+}
+
+.label .text {
+    font-size: 1.125rem;
+}
+
+.file-btn,
+.delete-btn {
+    background-color: #E9E9ED;
+    border: 0.0625rem solid #A5A5B1;
+    border-radius: 2px;
+}
+
+.files {
+    border: 0.0625rem solid #566573;
+    border-radius: 5px;
+    padding: 0.5rem;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.file-list {
+    flex: 1 1 0;
+    overflow: auto hidden;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.file-list .item {
+    color: white;
+    white-space: nowrap;
+    position: relative;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.ck-editor__editable_inline {
+    min-height: 20rem;
+}

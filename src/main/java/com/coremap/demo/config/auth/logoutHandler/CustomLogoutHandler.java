@@ -55,12 +55,6 @@ public class CustomLogoutHandler implements LogoutHandler {
                 .map(cookie -> cookie.getValue())
                 .orElse(null);
         Authentication authentication =  jwtTokenProvider.getAuthentication(token);
-        //----------------------------------------
-        //----------------------------------------
-        //REMEMBERME USER DELETE
-        //----------------------------------------
-        persistentTokenRepository.removeUserTokens(authentication.getName());
-        //----------------------------------------
 
         PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
         String provider =  principalDetails.getUserDto().getProvider();
@@ -90,9 +84,6 @@ public class CustomLogoutHandler implements LogoutHandler {
 
 
         }else if(provider!=null&&provider.equals("naver")){
-
-
-
             //AccessToken 추출
             String accessToken =  principalDetails.getAccessToken();
             String url ="https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id="+naverClientId+"&client_secret="+naverClientSecret+"&access_token="+accessToken+"&service_provider=NAVER";
@@ -106,18 +97,13 @@ public class CustomLogoutHandler implements LogoutHandler {
             //URL
             String url = "https://accounts.google.com/o/oauth2/revoke?token=" + accessToken;
             //Rest Request
-            ResponseEntity<String>resp =  restTemplate.exchange(url,HttpMethod.GET,null,String.class);
+            ResponseEntity<String>resp = restTemplate.exchange(url,HttpMethod.GET,null,String.class);
 
             System.out.println("[CustomLogoutHandler] logout() google resp : " + resp);
-
         }
-
-
-
         HttpSession session =  request.getSession(false);
         if(session!=null)
             session.invalidate();
-
     }
 
 }

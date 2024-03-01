@@ -29,10 +29,10 @@ public class EmailAuth {
     private String salt;
     @Column(nullable = false, columnDefinition = "DATETIME(6) DEFAULT NOW(6)")
     private Date createdAt;
-    @Column(nullable = false, columnDefinition = "DATETIME")
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     private Date expiresAt;
     @Column(nullable = false, name = "verified_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isVerified;
+    private Boolean isVerified;
 
 
     public static EmailAuthDto emailAuthEntityToDto(EmailAuth emailAuth) {
@@ -42,7 +42,7 @@ public class EmailAuth {
                 .salt(emailAuth.getSalt())
                 .createdAt(emailAuth.getCreatedAt())
                 .expiresAt(emailAuth.getExpiresAt())
-                .isVerified(emailAuth.isVerified())
+                .isVerified(emailAuth.getIsVerified())
                 .build();
     }
 }

@@ -1,7 +1,7 @@
 package com.coremap.demo.domain.service;
 
 
-import com.coremap.demo.config.auth.jwt.JwtTokenProvider;
+import com.coremap.demo.config.auth.PrincipalDetails;
 import com.coremap.demo.domain.dto.EmailAuthDto;
 import com.coremap.demo.domain.dto.UserDto;
 import com.coremap.demo.domain.entity.ContactCompany;
@@ -10,29 +10,25 @@ import com.coremap.demo.domain.entity.User;
 import com.coremap.demo.domain.repository.ContactCompanyRepository;
 import com.coremap.demo.domain.repository.EmailAuthRepository;
 import com.coremap.demo.domain.repository.UserRepository;
-import com.coremap.demo.properties.EmailAuthProperties;
-import com.coremap.demo.regexes.EmailAuthRegex;
 import com.coremap.demo.utils.CryptoUtil;
-import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserService {
@@ -49,18 +45,27 @@ public class UserService {
     private SpringTemplateEngine templateEngine;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
+
+    public User getUser(String username) {
+        return userRepository.findById(username).get();
+    }
 
     public List<ContactCompany> getAllContactCompanyList() {
         return contactCompanyRepository.findAll();
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public String sendJoinEmail(EmailAuthDto emailAuthDto) throws MessagingException {
-        List<User> getAllUserList = userRepository.findAll();
+    public List<User> getUserList(String name, String contact) {
+        return userRepository.findByNameAndContact(name, contact);
+    }
 
-        for(User user : getAllUserList) {
-            if(Objects.equals(user.getUsername(), emailAuthDto.getEmail())) {
+    @Transactional(rollbackFor = Exception.class)
+    public String sendJoinEmail(EmailAuthDto emailAuthDto, boolean resetPassword) throws MessagingException {
+        if (!resetPassword) {
+            if (userRepository.existsById(emailAuthDto.getEmail())) {
                 return "FAILURE_DUPLICATE_EMAIL";
             }
         }
@@ -86,6 +91,7 @@ public class UserService {
         mimemessageHelper.setTo(emailAuthDto.getEmail());
         mimemessageHelper.setSubject("[Coremap] 회원가입 인증번호");
         mimemessageHelper.setText(textHtml, true);
+        this.mailSender.send(message);
 
         EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
 
@@ -96,28 +102,118 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public String verifyJoinEmail(EmailAuthDto emailAuthDto) {
-        if (!EmailAuthRegex.EMAIL.matches(emailAuthDto.getEmail()) ||
-                !EmailAuthRegex.CODE.matches(emailAuthDto.getCode()) ||
-                !EmailAuthRegex.SALT.matches(emailAuthDto.getSalt())) {
-            return "FAILURE";
-        }
+        EmailAuth emailAuth = emailAuthRepository.findByEmailAndCodeAndSalt(emailAuthDto.getEmail(), emailAuthDto.getCode(), emailAuthDto.getSalt());
 
-        emailAuthDto = EmailAuth.emailAuthEntityToDto(emailAuthRepository.findByEmailAndCodeAndSalt(emailAuthDto.getEmail(), emailAuthDto.getCode(), emailAuthDto.getSalt()));
-
-
-        if (emailAuthDto == null) {
+        if (emailAuth == null) {
             return "FAILURE_INVALID_CODE";
         }
 
-        if (new Date().compareTo(emailAuthDto.getExpiresAt()) > 0) {
+        if (new Date().compareTo(emailAuth.getExpiresAt()) > 0) {
             return "FAILURE_EXPIRED";
         }
 
-        emailAuthDto.setVerified(true);
-
-        EmailAuth emailAuth = EmailAuthDto.emailAuthDtoToEntity(emailAuthDto);
+        emailAuth.setIsVerified(true);
 
         emailAuthRepository.save(emailAuth);
+
+        return "SUCCESS";
+    }
+
+    public String confirmDuplicateNickname(String nickname) {
+        List<User> userList = userRepository.findAll();
+
+        for (User user : userList) {
+            if (user.getNickname() != null) {
+                if (user.getNickname().equals(nickname)) {
+                    return "FAILURE_DUPLICATED_NICKNAME";
+                }
+            }
+        }
+        return "SUCCESS";
+    }
+
+    public String confirmEmptyUser(String username) {
+        List<User> userList = userRepository.findAll();
+
+        for (User user : userList) {
+            if (user.getUsername().equals(username)) {
+                return "SUCCESS";
+            }
+        }
+        return "FAILURE_EMPTY_USERNAME";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String join(UserDto userDto) {
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        ContactCompany contactCompany = contactCompanyRepository.findById(userDto.getContactCompanyCode()).get();
+
+        User user = User.builder()
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
+                .nickname(userDto.getNickname())
+                .name(userDto.getName())
+                .contactCompany(contactCompany)
+                .contact(userDto.getContact())
+                .addressPostal(userDto.getAddressPostal())
+                .addressPrimary(userDto.getAddressPrimary())
+                .addressSecondary(userDto.getAddressSecondary())
+                .role("ROLE_USER")
+                .isSuspended(false)
+                .registeredAt(new Date())
+                .build();
+
+        userRepository.save(user);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String resetPassword(UserDto userDto) {
+        User user = userRepository.findById(userDto.getUsername()).get();
+
+        if (passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
+            return "FAILURE_SAME_PASSWORD";
+        }
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(userDto.getPassword());
+
+        userRepository.save(user);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String modifyUser(UserDto userDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        User user = userRepository.findById(username).get();
+
+        ContactCompany contactCompany = contactCompanyRepository.findById(userDto.getContactCompanyCode()).get();
+
+
+        user.setNickname(userDto.getNickname());
+        user.setName(userDto.getName());
+        user.setContactCompany(contactCompany);
+        user.setContact(userDto.getContact());
+        user.setAddressPostal(userDto.getAddressPostal());
+        user.setAddressPrimary(userDto.getAddressPrimary());
+        user.setAddressSecondary(userDto.getAddressSecondary());
+
+        userRepository.save(user);
+
+        return "SUCCESS";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public String deleteUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        userRepository.deleteById(username);
 
         return "SUCCESS";
     }

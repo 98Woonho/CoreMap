@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>회원가입</title>
+
+    <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
+
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/user/findEmail.css">
+
+    <script defer src="/js/common.js"></script>
+    <script defer src="/js/user/findEmail.js"></script>
+
+</head>
+<body>
+
+<th:block th:replace="~{fragments/fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+
+<main id="main" class="content-container-wrapper">
+    <h1 class="title">이메일 찾기</h1>
+    <form id="findEmailForm" class="find-email-form"
+          th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}">
+        <div class="content-container find-email-container">
+            <label class="label name">
+            <span class="horizontal">
+                <span class="text">이름</span>
+                <span class="text name-warning"></span>
+            </span>
+                <input class="common-field" maxlength="50" name="name" placeholder="이름" type="text"
+                       th:data-regex="${userRegex.NAME.expression}">
+            </label>
+            <label class="label contact">
+            <span class="horizontal">
+                <span class="text">연락처</span>
+                <span class="text contact-warning"></span>
+            </span>
+                <input maxlength="20" name="contact" type="text" class="common-field big" placeholder="-을 제외한 전화번호"
+                       th:data-regex="${userRegex.CONTACT.expression}">
+            </label>
+            <input type="submit" value="이메일 찾기" class="common-btn find-email-btn">
+        </div>
+    </form>
+</main>
+
+<th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+
+</body>
+</html>

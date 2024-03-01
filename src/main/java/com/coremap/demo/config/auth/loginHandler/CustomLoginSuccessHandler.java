@@ -28,8 +28,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler  
         //--------------------------------------
         //JWT ADD
         //--------------------------------------
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
         // 쿠키 생성
         Cookie cookie = new Cookie(JwtProperties.COOKIE_NAME, tokenInfo.getAccessToken());
@@ -41,17 +39,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler  
 
         Collection<? extends GrantedAuthority> collection =  authentication.getAuthorities();
         collection.forEach( (role)->{
-            System.out.println("[CustomLoginSuccessHandler] onAuthenticationSuccess() role : " + role);
-            String role_str =  role.getAuthority();
 
             try {
-//                if (role_str.equals("ROLE_USER")) {
-//                    response.sendRedirect("/user");
-//                } else if (role_str.equals("ROLE_MEMBER")) {
-//                    response.sendRedirect("/member");
-//                } else if (role_str.equals("ROLE_ADMIN")) {
-//                    response.sendRedirect("/admin");
-//                }
                 response.sendRedirect("/");
             }catch(Exception e){
                 e.printStackTrace();

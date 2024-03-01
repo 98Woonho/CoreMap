@@ -20,16 +20,26 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 로그인 버튼을 누르면, post로 동작하게 되고 SpringSecurity에서 username을 넘겨주고 이 메서드가 실행이 됨.
-        System.out.println("[PrincipalDetailsService] loadUserByUsername() username :" + username);
         Optional<User> userOptional = userRepository.findById(username);
-        if(userOptional.isEmpty())
-            return null;
 
         //Entity -> Dto
-        UserDto dto = new UserDto();
-        dto.setUsername(userOptional.get().getUsername());
-        dto.setPassword(userOptional.get().getPassword());
-        dto.setRole(userOptional.get().getRole());
+        UserDto dto = UserDto.builder()
+                .username(userOptional.get().getUsername())
+                .password(userOptional.get().getPassword())
+                .nickname(userOptional.get().getNickname())
+                .name(userOptional.get().getName())
+                .contact(userOptional.get().getContact())
+                .addressPostal(userOptional.get().getAddressPostal())
+                .addressPrimary(userOptional.get().getAddressPrimary())
+                .addressSecondary(userOptional.get().getAddressSecondary())
+                .role(userOptional.get().getRole())
+                .isSuspended(userOptional.get().getIsSuspended())
+                .registeredAt(userOptional.get().getRegisteredAt())
+                .build();
+
+        if(userOptional.get().getContactCompany() != null) {
+            dto.setContactCompanyCode(userOptional.get().getContactCompany().getCode());
+        }
 
         return new PrincipalDetails(dto);
     }

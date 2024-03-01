@@ -7,7 +7,7 @@
 }
 
 a:link, a:visited {
-    color: #3498db;
+    color: white;
     text-decoration: none;
 }
 
@@ -34,12 +34,32 @@ body {
 }
 
 .content-container {
-    max-width: 1250px;
+    max-width: 1000px;
     width: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font: inherit;
+.big {
+    flex: 1;
+}
+
+h1, h2, h3, h4, h5, h6, .text {
+    color: white;
+}
+
+.center {
+    text-align: center;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 2.25rem;
+    margin-block: unset;
+    margin-inline: unset;
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 1.75rem;
     margin-block: unset;
     margin-inline: unset;
 }
@@ -78,27 +98,82 @@ button {
     height: 3.725rem;
 }
 
-#header > .menu {
+#header .menu {
     height: inherit;
 
+    gap: 1.75rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
 }
 
-#header .logo {
-    color: #eaecee;
-    font-weight: 500;
-    font-size: 1.75rem;
-}
-
 #main {
+    background-color: #2A292E;
     flex: 1;
 }
 
 #footer {
-    background-color: #d5d8dc;
+    background-color: #313237;
+    height: 7.5rem;
+}
+
+#footer > .content-container {
+    margin: auto 0;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#footer .content-container-left {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+}
+
+#footer .icon-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#footer .terms-policy-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    height: 100%;
+    margin-top: 0.35rem;
+}
+
+
+#footer .terms-policy-container .text {
+    white-space: nowrap;
+    color: #eaecee;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+#footer .terms-policy-container .link.privacy-policy {
+    border-right: 0.0625rem solid #eaecee;
+    box-sizing: border-box;
+    padding: 0 1.5rem;
+}
+
+#footer .terms-policy-container .link.terms {
+    margin-left: 1.5rem;
+}
+
+#footer .copyright {
+    color: #eaecee;
+    margin: unset;
+}
+
+#footer img {
+    height: 32px;
 }
 
 #loading {
@@ -154,7 +229,16 @@ button {
     }
 }
 
-.common-button {
+.horizontal {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+
+.common-btn {
     color: #eaecee;
     background-color: #202127;
     border: 0.0625rem solid #202127;
@@ -163,21 +247,23 @@ button {
     padding: 0.5rem 0.625rem;
 }
 
-.common-button:active {
-    background-color: #202127;
+.common-btn:active {
+    background-color: #212329;
+    border: 0.0625rem solid #212329;
 }
 
-.common-button:hover {
+.common-btn:hover {
+    background-color: #212329;
+    border: 0.0625rem solid #212329;
+}
+
+.common-btn:focus {
     border: 0.0625rem solid #262626;
 }
 
-.common-button:focus {
-    border: 0.0625rem solid #262626;
-}
-
-.common-button:disabled {
-    background-color: #2A292E;
-    border: 0.0625rem solid #17202a;
+.common-btn:disabled {
+    background-color: #7D7D7D;
+    border: 0.0625rem solid #7D7D7D;
     cursor: default;
 }
 
@@ -201,12 +287,152 @@ button {
     border: 0.0625rem solid #262626;
 }
 
+.common-field:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #202127 inset;
+    -webkit-text-fill-color: #eaecee;
+}
+
 .common-field:disabled {
     background-color: #2A292E;
     border: 0.0625rem solid #17202a;
 }
 
-.common-field:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px #202127 inset;
-    -webkit-text-fill-color: #eaecee;
+#dialog {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0.125rem);
+    background-color: #17202aa0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    transition-duration: 250ms;
+    transition-property: opacity;
+    transition-timing-function: ease;
+    z-index: 999;
+}
+
+#dialog.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#dialog > .modal {
+    top: calc(50% + 1rem);
+    left: 50%;
+    border-radius: 0.375rem;
+    box-shadow: 0 0 1rem 0.0625rem #17202a50;
+    overflow: hidden;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition-duration: 250ms;
+    transition-property: top;
+    transition-timing-function: ease;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#dialog.visible > .modal {
+    top: 50%;
+}
+
+
+#dialog .title {
+    background-color: #17202a;
+    color: #ffffff;
+    font-size: 1.125rem;
+    padding: 0.875rem 1.25rem;
+}
+
+#dialog .content {
+    background-color: #ffffff;
+    padding: 0.875rem 1.25rem;
+}
+
+#dialog .button-container {
+    background-color: #ffffff;
+    border-top: 0.0625rem solid #d5d8dc;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#dialog .button {
+    cursor: pointer;
+    flex: 1 1 0;
+    padding: 0.625rem 1.25rem;
+    text-align: center;
+    user-select: none;
+    white-space: nowrap;
+}
+
+#dialog .button:active {
+    background-color: #eaecee;
+}
+
+#dialog .button:hover {
+    color: #3498db;
+}
+
+
+#dialog .button + .button {
+    border-left: 0.0625rem solid #d5d8dc;
+}
+
+
+
+
+#addressFindClose {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0.25rem);
+    background-color: #17202aa0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    transition-duration: 250ms;
+    transition-property: opacity;
+    transition-timing-function: ease;
+    z-index: 9;
+}
+
+#addressFindClose.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#addressFindClose  .close {
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 2.5rem;
+    cursor: pointer;
+    position: absolute;
+}
+
+#addressFindClose  .modal {
+    top: calc(50% + 1rem);
+    left: 50%;
+    width: 25rem;
+    height: 30rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem 0.0625rem #17202a50;
+    overflow: hidden;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition-duration: 250ms;
+    transition-property: top;
+    transition-timing-function: ease;
+}
+
+#addressFindClose.visible .modal {
+    top: 50%;
 }

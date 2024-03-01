@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-@Table(name="contact_companies")
+@Table(name="contact_company")
 public class ContactCompany {
     @Id
     @Column(nullable = false, columnDefinition = "VARCHAR(5)")

@@ -79,7 +79,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if(user!=null)
         {
-
             return authentication;
         }
         return null; // 유저가 없으면 NULL

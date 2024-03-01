@@ -17,23 +17,20 @@
 
 <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
 
-<main class="content-container-wrapper" id="main" th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}">
+<main class="content-container-wrapper" id="main">
     <div class="content-container">
-        <h1 class="title">로그인</h1>
+        <h1 class="title center">로그인</h1>
         <form action="/user/login" method="post" class="login-form" id="loginForm">
             <label class="label">
-                <span class="text">이메일</span>
-                <input type="email" maxlength="50" placeholder="이메일(user@sample.com)" name="email" th:data-regex="${userRegex.EMAIL.expression}" class="common-field">
+                <p class="text">이메일</p>
+                <input type="email" maxlength="50" placeholder="이메일(user@sample.com)" name="username" th:value="${username}" class="common-field">
             </label>
             <label class="label">
-                <span class="text">비밀번호</span>
-                <input type="password" maxlength="50" placeholder="비밀번호" name="password" th:data-regex="${userRegex.PASSWORD.expression}" class="common-field">
+                <p class="text">비밀번호</p>
+                <input type="password" maxlength="50" placeholder="비밀번호" name="password" class="common-field">
             </label>
-            <label class="row-label">
-                <input type="checkbox" name="remember" class="remember">
-                <span class="text">다음부터 이메일을 기억합니다.</span>
-            </label>
-            <input type="submit" value="로그인" class="common-button">
+            <span th:if="${error}" class="exception" th:text="${exception}"></span>
+            <input type="submit" value="로그인" class="common-btn">
             <ul class="menu">
                 <li class="item">
                     <span class="text">아직 계정이 없으신가요?</span>
@@ -45,13 +42,24 @@
                 </li>
                 <li class="item">
                     <span class="text">비밀번호를 잊어버리셨나요?</span>
-                    <a href="/user/resetPassword" class="link">비밀번호 재설정하기</a>
+                    <a href="/user/resetPasswordStep1" class="link">비밀번호 재설정하기</a>
                 </li>
             </ul>
+            <div class="simple-login-container">
+                <h2>간편 로그인</h2>
+                <div class="icon-container">
+                    <a href="/oauth2/authorization/kakao" class="kakao-btn">
+                        <img src="/images/login/kakao.png" alt="">
+                    </a>
+                    <a href="/oauth2/authorization/naver" class="naver-btn">
+                        <img src="/images/login/naver.png" alt="">
+                    </a>
+                    <a href="/oauth2/authorization/google" class="google-btn">
+                        <img src="/images/login/google.png" alt="">
+                    </a>
+                </div>
+            </div>
         </form>
-        <a href="/oauth2/authorization/kakao" class="btn btn-warning w-100 mb-2">카카오 로그인</a><br/>
-        <a href="/oauth2/authorization/naver" class="btn btn-success w-100 mb-2">네이버 로그인</a><br/>
-        <a href="/oauth2/authorization/google" class="btn w-100 mb-2">구글 로그인</a><br/>
     </div>
 </main>
 

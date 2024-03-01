@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="article-status" th:content="${article != null}">
+    <meta name="user-status" th:content="${#authentication.getPrincipal() != 'anonymousUser'}">
+    <meta name="info-status" th:if="${user != null && (user.role != 'ROLE_ADMIN')}" th:content="${!(user.nickname == null || user.name == null || user.contactCompany.code == null || user.contact == null || user.addressPostal == null || user.addressPrimary == null || user.addressSecondary == null)}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
+
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/article/read.css">
+
+    <script defer src="/js/article/read.js"></script>
+</head>
+<body>
+
+<th:block th:if="${article != null}">
+    <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+</th:block>
+
+<main id="main" class="content-container-wrapper" th:if="${article != null}">
+    <div class="content-container">
+        <h1 class="title" th:text="${board.text}"></h1>
+        <table class="table" id="articleTable" th:data-id="${article.id}" th:data-code="${board.code}">
+            <thead>
+            <tr>
+                <th>제목</th>
+                <td class="full" colspan="3" th:text="${article.title}"></td>
+            </tr>
+            <tr>
+                <th>작성자</th>
+                <td class="half" th:text="${article.user.nickname}"></td>
+                <th>조회수</th>
+                <td class="half" th:text="${article.view}"></td>
+            </tr>
+            <tr>
+                <th>작성 일시</th>
+                <td class="half" th:text="${article.writtenAt}"></td>
+                <th th:if="${article.modifiedAt != null}">수정 일시</th>
+                <td class="half" th:if="${article.modifiedAt != null}" th:text="${article.modifiedAt}"></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="4" th:utext="${article.content}"></td>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr>
+                <th>첨부 파일</th>
+                <td class="file-empty" colspan="3" th:if="${fileList == null || fileList.size() == 0}">첨부 파일이 없습니다.</td>
+                <td class="file-wrapper" colspan="3" th:if="${fileList != null && fileList.size() > 0}">
+                    <ul class="file-list">
+                        <li class="item" th:each="file : ${fileList}">
+                            <a class="link" th:href="@{/article/file (id=${file.id})}">
+                                <img src="/images/article/read.file.icon.png" alt="" class="icon">
+                                <span class="name" th:text="${file.name}"></span>
+                            </a>
+                            <span class="size">(<th:block
+                                    th:text="${T(java.lang.Math).floor(file.size) / 1024.00 * 100 / 100}"></th:block>KB)</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="bottom-button-container">
+                        <!-- #request.getParameter('a') : 주소창에서 a라는 속성의 값을 가져옴 -->
+                        <a href="#" class="common-btn"
+                           th:href="@{/board/list (code=${board.code}, page=${page})}"
+                           th:if="${criterion == null || keyword == null}">목록</a>
+                        <a href="#" class="common-btn"
+                           th:href="@{/board/list (code=${board.code}, page=${page}, criterion = ${criterion}, keyword = ${keyword})}"
+                           th:if="${criterion != null && keyword != null}">목록</a>
+                        <span class="spring"></span>
+                        <a class="common-btn" rel="modify" sec:authorize="isAuthenticated()"
+                           th:if="${(#authentication.principal.userDto.username == article.user.username) || user.role == 'ROLE_ADMIN'}"
+                           th:href="@{/article/modify(index=${article.indexInBoard}, code=${board.code})}">수정</a>
+                        <div class="common-btn delete-btn" sec:authorize="isAuthenticated()"
+                             th:if="${(#authentication.principal.userDto.username == article.user.username) || user.role == 'ROLE_ADMIN'}">
+                            삭제
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <form id="commentForm" class="comment-form" th:if="${board.code != 'notice'}"
+              th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+            <label class="label">
+                <span class="text">
+                    <span class="left">댓글 (<span class="count" th:text="${commentList.size() + subCommentList.size()}"></span>)</span>
+                </span>
+                <span class="horizontal">
+                    <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                              class="common-field big" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                    <input type="submit" value="댓글 쓰기" class="common-btn write-comment-btn">
+                </span>
+            </label>
+        </form>
+        <table class="comment-table" id="commentTable">
+            <thead class="loading">
+            <tr>
+                <td>댓글을 불러오고 있습니다...</td>
+            </tr>
+            </thead>
+            <thead class="error">
+            <tr>
+                <td>댓글을 불러오지 못하였습니다. 잠시 후 다시 불러오기를 클릭해 주세요.</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="comment : ${commentList}">
+                <td>
+                    <div class="comment" th:data-id="${comment.id}">
+                        <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}"
+                                  th:each="commentLike : ${commentLikeList}">
+                            <th:block
+                                    th:if="${comment.id == commentLike.comment.id && #authentication.principal.userDto.username == commentLike.user.username}"
+                                    th:with="isLike=${commentLike.isLike}">
+                                <input type="hidden" class="is-like" th:value="${isLike}">
+                            </th:block>
+                        </th:block>
+                        <div class="head">
+                            <span class="nickname" th:text="${comment.user.nickname}"></span>
+                            <span class="written-at" th:text="${comment.writtenAt}"></span>
+                            <span class="modified" th:if="${comment.modifiedAt != null}">(수정됨)</span>
+                            <span th:if="${article.user.username == comment.user.username}">- 작성자</span>
+                            <span class="spring"></span>
+                            <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.principal.userDto.username == comment.user.username || #authentication.principal.userDto.username == article.user.username || user.role == 'ROLE_ADMIN')}">
+                                <span class="action modify">수정</span>
+                                <span class="action delete">삭제</span>
+                            </th:block>
+                            <span class="action modify-cancel">수정 취소</span>
+                        </div>
+                        <div class="body">
+                            <span class="content" th:text="${comment.content}"></span>
+                            <form id="modifyForm" class="modify-form"
+                                  th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                                          class="common-field"
+                                          th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                                <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
+                            </form>
+                        </div>
+                        <div class="foot" th:each="commentLikeCount : ${commentLikeCountList}"
+                             th:if="${comment.id == commentLikeCount.commentId}">
+                            <span class="vote vote-up">
+                                <img alt="👍" class="icon" src="/images/comment/vote.up.png">
+                                <span class="value" th:text="${commentLikeCount.likeCount}"></span>
+                                </span>
+                            <span class="vote vote-down">
+                                <img alt="👎" class="icon" src="/images/comment/vote.down.png">
+                                <span class="value" th:text="${commentLikeCount.dislikeCount}"></span>
+                            </span>
+                            <span class="spring"></span>
+                            <span class="action reply">답글 달기</span>
+                            <span class="action reply-cancel">답글 달기 취소</span>
+                        </div>
+                        <form id="replyForm" class="reply-form"
+                              th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+                            <label class="label">
+                                <textarea class="common-field" maxlength="1000" name="content"
+                                          placeholder="답글을 입력해 주세요."
+                                          th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                            </label>
+                            <input class="common-btn" type="submit" value="답글 달기">
+                        </form>
+                    </div>
+                    <th:block th:each="subComment : ${subCommentList}" th:if="${comment.id == subComment.comment.id}">
+                        <div class="comment sub" th:data-id="${subComment.id}">
+                            <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}"
+                                      th:each="subCommentLike : ${subCommentLikeList}">
+                                <th:block
+                                        th:if="${subComment.id == subCommentLike.subComment.id && #authentication.principal.userDto.username == subCommentLike.user.username}"
+                                        th:with="isLike=${subCommentLike.isLike}">
+                                    <input type="hidden" class="is-like" th:value="${isLike}">
+                                </th:block>
+                            </th:block>
+                            <div class="head">
+                                <span class="nickname" th:text="${subComment.user.nickname}"></span>
+                                <span class="written-at" th:text="${subComment.writtenAt}"></span>
+                                <span class="modified" th:if="${subComment.modifiedAt != null}">(수정됨)</span>
+                                <span th:if="${article.user.username == subComment.user.username}">- 작성자</span>
+                                <span class="spring"></span>
+                                <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.principal.userDto.username == subComment.user.username || #authentication.principal.userDto.username == article.user.username || user.role == 'ROLE_ADMIN')}">
+                                    <span class="action modify">수정</span>
+                                    <span class="action delete">삭제</span>
+                                </th:block>
+                                <span class="action modify-cancel">수정 취소</span>
+                            </div>
+                            <div class="body">
+                                <span class="content" th:text="${subComment.content}"></span>
+                                <form id="subCommentModifyForm" class="modify-form sub-comment-modify-form"
+                                      th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
+                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
+                                          class="common-field"
+                                          th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                                    <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
+                                </form>
+                            </div>
+                            <div class="foot" th:each="subCommentLikeCount : ${subCommentLikeCountList}"
+                                 th:if="${subComment.id == subCommentLikeCount.subCommentId}">
+                                <span class="vote vote-up">
+                                    <img alt="👍" class="icon" src="/images/comment/vote.up.png">
+                                    <span class="value" th:text="${subCommentLikeCount.likeCount}"></span>
+                                </span>
+                                <span class="vote vote-down">
+                                    <img alt="👎" class="icon" src="/images/comment/vote.down.png">
+                                    <span class="value" th:text="${subCommentLikeCount.dislikeCount}"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <input hidden class="current-nickname" type="hidden"
+           th:value="${#authentication.getPrincipal() != 'anonymousUser' ? user.nickname : ''}">
+</main>
+
+<th:block th:if="${article != null}">
+    <th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+</th:block>
+
+</body>
+</html>

@@ -49,13 +49,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         );
         System.out.println("[JWT 인증필터] JwtAuthenticationFilter.attemptAuthentication...authenticationToken : " + authenticationToken);
 
-
         //Token 정보를 TokenInfo(Table) 에 저장한다.
 
-
         return authenticationManager.authenticate(authenticationToken);
-
-
     }
 
     /**

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
+
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/article/write.css">
+
+    <!-- ckeditor -->
+    <link rel="stylesheet" href="/css/article/ckeditor.css">
+    <script src="/js/article/ckeditor/ckeditor.js"></script>
+
+    <script defer src="/js/article/write.js"></script>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+
+<main id="main" class="content-container-wrapper">
+    <div class="content-container">
+        <h1 class="title">게시글 작성 -
+            <th:block th:text="${board.text}"></th:block>
+        </h1>
+        <form class="write-form" id="writeForm">
+            <input type="hidden" th:value="${board.code}" name="code">
+            <label class="label">
+                <span class="text title">제목</span>
+                <input autofocus type="text" class="common-field" placeholder="제목을 입력 해주세요" name="title">
+            </label>
+            <label class="label">
+                <span class="text">내용</span>
+                <textarea maxlength="10000" placeholder="내용을 입력해 주세요" name="content"
+                          rows="15"></textarea>
+            </label>
+            <div class="label file-wrapper">
+                <input hidden name="file" type="file">
+                <span class="text">첨부파일</span>
+                <div class="files">
+                    <button class="file-btn" name="fileAdd" title="첨부파일 추가">파일추가</button>
+                    <ul class="file-list"></ul>
+                </div>
+            </div>
+            <div class="button-container">
+                <a th:href="@{/board/list (code = ${board.code})}" class="link common-btn">돌아가기</a>
+                <span class="spring"></span>
+                <input type="submit" value="작성하기" class="common-btn">
+            </div>
+        </form>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+
+</body>
+</html>

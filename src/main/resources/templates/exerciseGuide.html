@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>코어맵 운동 가이드</title>
+
+    <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
+
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/exerciseGuide.css">
+</head>
+<body>
+
+<th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
+
+
+<main id="main" class="content-container-wrapper">
+    <div th:if="${name == null}" class="content-container">
+        <h1 class="center">코어맵 운동 가이드</h1>
+        <div class="exercise-container">
+            <section class="exercise-section">
+                <ul>
+                    <h2>팔</h2>
+                    <li>
+                        <a href="/exerciseGuide?name=barbellBicepsCurl" class="link">바벨 바이셉스 컬</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=cableTricepsPushDown" class="link">케이블 트라이셉스 푸쉬 다운</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=dumbbellBicepsCurl" class="link">덤벨 바이셉스 컬</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=dumbbellWristCurl" class="link">덤벨 리스트 컬</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=dumbbellHammerCurl" class="link">덤벨 해머 컬</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=lyingBarbellTricepsExtension" class="link">라잉 바벨 트라이셉스 익스텐션</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=dumbbellTricepsExtension" class="link">덤벨 트라이셉스 익스텐션</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=reverseBarbellWristCurl" class="link">리버스 바벨 리스트 컬</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=closeGripBenchPress" class="link">클로즈 그립 벤치 프레스</a>
+                    </li>
+                </ul>
+                <ul>
+                    <h2>등</h2>
+                    <li>
+                        <a href="/exerciseGuide?name=lopeArmPullDown" class="link">로프 암 풀 다운</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=backLatPullDown" class="link">백 랫 풀 다운</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=barbellRow" class="link">바벨 로우</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=deadLift" class="link">데드 리프트</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=latPullDown" class="link">랫 풀 다운</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=pullUp" class="link">풀 업</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=seatedCableRow" class="link">시티드 케이블 로우</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=T-BarRow" class="link">티 바 로우</a>
+                    </li>
+                </ul>
+            </section>
+            <section class="exercise-section">
+                <ul>
+                    <h2>가슴</h2>
+                    <li>
+                        <a href="/exerciseGuide?name=benchPress" class="link">벤치 프레스</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=chestPressMachine" class="link">체스트 프레스 머신</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=dips" class="link">딥스</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=dumbbellBenchPress" class="link">덤벨 벤치 프레스</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=inclineBenchPress" class="link">인클라인 벤치 프레스</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=pushUp" class="link">푸쉬 업</a>
+                    </li>
+                </ul>
+                <ul>
+                    <h2>코어</h2>
+                    <li>
+                        <a href="/exerciseGuide?name=hangingLegRaise" class="link">행잉 레그 레이즈</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=legRaise" class="link">레그 레이즈</a>
+                    </li>
+                </ul>
+            </section>
+            <section class="exercise-section">
+                <ul>
+                    <h2>하체</h2>
+                    <li>
+                        <a href="/exerciseGuide?name=legCurl" class="link">레그 컬</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=legExtension" class="link">레그 익스텐션</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=legPress" class="link">레그 프레스</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=squat" class="link">스쿼트</a>
+                    </li>
+                </ul>
+                <ul>
+                    <h2>어깨</h2>
+                    <li>
+                        <a href="/exerciseGuide?name=dumbbellShoulderPress" class="link">덤벨 숄더 프레스</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=overheadPress" class="link">오버 헤드 프레스</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=pecDeckRearDelt" class="link">팩 덱 리어 델트</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=sideLateralRaise" class="link">사이드 레터럴 레이즈</a>
+                    </li>
+                    <li>
+                        <a href="/exerciseGuide?name=smithMachineOverheadPress" class="link">스미스 머신 오버 헤드 프레스</a>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <div th:if="${name != null}" class="content-container">
+        <div class="img-container center">
+            <img th:src="@{'/images/workout/' + ${exercise.part} + '/' + ${exercise.name} + '.jpg'}" alt="">
+        </div>
+        <div class="exercise-info-container">
+            <h1 class="title" th:text="${exercise.nameKR}"></h1>
+            <div class="line"></div>
+            <h2>운동 가이드</h2>
+            <div class="start-position">
+                <h3>시작 자세</h3>
+                <p class="text" th:text="${exercise.startPosition1}"></p>
+                <p class="text" th:text="${exercise.startPosition2}"></p>
+                <p class="text" th:text="${exercise.startPosition3}"></p>
+                <p class="text" th:text="${exercise.startPosition4}"></p>
+                <p class="text" th:text="${exercise.startPosition5}"></p>
+            </div>
+            <div class="exercise-movement">
+                <h3>운동 동작</h3>
+                <p class="text" th:text="${exercise.exerciseMovement1}"></p>
+                <p class="text" th:text="${exercise.exerciseMovement2}"></p>
+                <p class="text" th:text="${exercise.exerciseMovement3}"></p>
+                <p class="text" th:text="${exercise.exerciseMovement4}"></p>
+                <p class="text" th:text="${exercise.exerciseMovement5}"></p>
+            </div>
+            <div class="breath-technique">
+                <h3>호흡법</h3>
+                <p class="text" th:text="${exercise.breathTechnique}"></p>
+            </div>
+            <div class="precaution">
+                <h2 style="margin-bottom: 0.5rem;">주의사항</h2>
+                <p class="text" th:text="${exercise.precaution1}"></p>
+                <p class="text" th:text="${exercise.precaution2}"></p>
+                <p class="text" th:text="${exercise.precaution3}"></p>
+                <p class="text" th:text="${exercise.precaution4}"></p>
+                <p class="text" th:text="${exercise.precaution5}"></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>
+
+</body>
+</html>
