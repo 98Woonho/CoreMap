@@ -28,7 +28,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         super(authenticationManager);
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        System.out.println("[JWT 인증필터] JwtAuthenticationFilter 생성자 authenticationManager " + authenticationManager);
     }
 
     /**
@@ -47,10 +46,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 request.getParameter("password"),
                 new ArrayList<>()
         );
-        System.out.println("[JWT 인증필터] JwtAuthenticationFilter.attemptAuthentication...authenticationToken : " + authenticationToken);
 
         //Token 정보를 TokenInfo(Table) 에 저장한다.
-
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -65,10 +62,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             FilterChain chain,
             Authentication authResult
     ) throws IOException, IOException {
-
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-//        String token = JwtUtils.createToken(principalDetails);
-
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authResult);
         // 쿠키 생성
         Cookie cookie = new Cookie(JwtProperties.COOKIE_NAME, tokenInfo.getAccessToken());
@@ -76,7 +69,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        System.out.println("[JWT 인증필터] JwtAuthenticationFilter.successfulAuthentication...TokenInfo : " + tokenInfo);
         response.sendRedirect("/");
     }
 
@@ -86,8 +78,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             HttpServletResponse response,
             AuthenticationException failed
     ) throws IOException {
-        System.out.println("JwtAuthenticationFilter.unsuccessfulAuthentication...");
-
         response.sendRedirect("/login");
     }
 }

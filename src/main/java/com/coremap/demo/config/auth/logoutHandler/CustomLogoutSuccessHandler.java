@@ -29,8 +29,6 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException, ServletException {
-        System.out.println("[CustomLogoutSuccessHandler] onLogoutSuccess()");
-
         //----------------------------------------
         //JWT
         //----------------------------------------

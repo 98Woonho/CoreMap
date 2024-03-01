@@ -44,7 +44,6 @@ public class CustomLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication auth) {
-        System.out.println("[CustomLogoutHandler] logout()");
 
         //----------------------------------------
         //JWT
@@ -58,7 +57,6 @@ public class CustomLogoutHandler implements LogoutHandler {
 
         PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
         String provider =  principalDetails.getUserDto().getProvider();
-        System.out.println("[CustomLogoutHandler] logout() provider : " + provider);
 
         if(provider!=null&&provider.equals("kakao")){
 
@@ -79,8 +77,6 @@ public class CustomLogoutHandler implements LogoutHandler {
 
             //Restamplate에 HttpEntity등록
             ResponseEntity<String> resp =  restTemplate.exchange(url, HttpMethod.POST,entity,String.class);
-            System.out.println("[CustomLogoutHandler] logout() resp "+resp);
-            System.out.println("[CustomLogoutHandler] logout() resp.getBody() "+resp.getBody());
 
 
         }else if(provider!=null&&provider.equals("naver")){
@@ -98,8 +94,6 @@ public class CustomLogoutHandler implements LogoutHandler {
             String url = "https://accounts.google.com/o/oauth2/revoke?token=" + accessToken;
             //Rest Request
             ResponseEntity<String>resp = restTemplate.exchange(url,HttpMethod.GET,null,String.class);
-
-            System.out.println("[CustomLogoutHandler] logout() google resp : " + resp);
         }
         HttpSession session =  request.getSession(false);
         if(session!=null)

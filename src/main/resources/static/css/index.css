@@ -51,6 +51,7 @@ section:not(:first-child):not(:last-child) {
 }
 
 .section-text-container-1 {
+    width: 100%;
     position: absolute;
 }
 
