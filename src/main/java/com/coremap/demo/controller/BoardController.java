@@ -1,10 +1,9 @@
 package com.coremap.demo.controller;
 
-import com.coremap.demo.config.auth.PrincipalDetails;
 import com.coremap.demo.domain.entity.Article;
 import com.coremap.demo.domain.entity.Board;
 import com.coremap.demo.domain.entity.User;
-import com.coremap.demo.domain.service.BoardService;
+import com.coremap.demo.service.BoardService;
 import com.coremap.demo.domain.vo.PageVo;
 import com.coremap.demo.domain.vo.SearchVo;
 import lombok.extern.slf4j.Slf4j;

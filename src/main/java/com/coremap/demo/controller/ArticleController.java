@@ -2,7 +2,7 @@ package com.coremap.demo.controller;
 
 import com.coremap.demo.domain.dto.*;
 import com.coremap.demo.domain.entity.*;
-import com.coremap.demo.domain.service.ArticleService;
+import com.coremap.demo.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
