@@ -46,11 +46,14 @@ comments.forEach(comment => {
             return false;
         }
 
-        if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-            e.preventDefault();
-            alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-            return false;
+        if(document.head.querySelector('[name="info-status"]') != null) {
+            if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+                        e.preventDefault();
+                        alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
+                        return false;
+            }
         }
+
 
         comment.classList.add('replying');
     }
@@ -570,10 +573,12 @@ commentForm.onsubmit = function (e) {
         return false;
     }
 
-    if (document.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-        e.preventDefault();
-        alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-        return false;
+    if (document.head.querySelector('[name="info-status"]') !== null) {
+        if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
+            e.preventDefault();
+            alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
+            return false;
+        }
     }
 
 

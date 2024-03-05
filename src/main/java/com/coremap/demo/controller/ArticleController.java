@@ -2,11 +2,7 @@ package com.coremap.demo.controller;
 
 import com.coremap.demo.domain.dto.*;
 import com.coremap.demo.domain.entity.*;
-import com.coremap.demo.domain.repository.UserRepository;
 import com.coremap.demo.domain.service.ArticleService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
