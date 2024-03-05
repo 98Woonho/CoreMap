@@ -1,4 +1,4 @@
-package com.coremap.demo.domain.service;
+package com.coremap.demo.service;
 
 
 import com.coremap.demo.config.auth.PrincipalDetails;

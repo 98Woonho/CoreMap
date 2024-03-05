@@ -4,7 +4,7 @@ import com.coremap.demo.domain.dto.EmailAuthDto;
 import com.coremap.demo.domain.dto.UserDto;
 import com.coremap.demo.domain.entity.ContactCompany;
 import com.coremap.demo.domain.entity.User;
-import com.coremap.demo.domain.service.UserService;
+import com.coremap.demo.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

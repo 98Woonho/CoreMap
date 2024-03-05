@@ -22,17 +22,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Autowired
-    private HikariDataSource dataSource;
-
     @Autowired
     private UserRepository userRepository;
     
@@ -52,14 +46,6 @@ public class SecurityConfig {
         //요청 URL별 접근 제한
         http.authorizeHttpRequests(
                 authorize->{
-//                    authorize.requestMatchers("/js/**","/css/**","/image/**","/templates","/productimage/**").permitAll();
-//                    authorize.requestMatchers("/login","/user/**").permitAll();
-//                    authorize.requestMatchers("/join").hasRole("ANONYMOUS");
-//                    authorize.requestMatchers("/").hasAnyRole("USER", "SELLER", "ADMIN");
-//                    authorize.requestMatchers("/imageboard/add").hasRole("SELLER");
-//                    authorize.requestMatchers("/imageboard/list", "/imageboard/read").permitAll();
-//                    authorize.requestMatchers("/cart/**").permitAll();
-
                     authorize.requestMatchers("/**").permitAll();
                     authorize.anyRequest().authenticated();
                 }
@@ -95,17 +81,6 @@ public class SecurityConfig {
                 }
         );
 
-        //RememberMe
-        http.rememberMe(
-                rm->{
-                    rm.key("rememberMeKey");
-                    rm.rememberMeParameter("remember-me");
-                    rm.alwaysRemember(false);
-                    rm.tokenValiditySeconds(3600);  //60*60
-                    rm.tokenRepository(tokenRepository());
-                }
-        );
-
         //Oauth2
         http.oauth2Login(
                 oauth2->{
@@ -131,15 +106,6 @@ public class SecurityConfig {
 
         return http.build();
 }
-
-    //REMEMBER ME 처리 BEAN
-    @Bean
-    public PersistentTokenRepository tokenRepository(){
-        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
-        //repo.setCreateTableOnStartup(true);
-        repo.setDataSource(dataSource);
-        return repo;
-    }
 
 
     //CUSTOMLOGOUTSUCCESS BEAN

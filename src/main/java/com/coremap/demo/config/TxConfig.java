@@ -33,17 +33,4 @@ public class TxConfig {
 
         return transactionManager;
     }
-
-    //-----------------------------------
-    // 기본 DataSourceTransactionmanager
-    //-----------------------------------
-//    @Bean(name="dataSourceTransactionManager")
-//    public DataSourceTransactionManager dataSourceTransactionManager() {
-//        return new DataSourceTransactionManager(dataSource);
-//    }
-
-
-
-
-
 }

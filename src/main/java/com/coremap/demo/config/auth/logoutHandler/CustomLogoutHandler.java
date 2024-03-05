@@ -39,9 +39,6 @@ public class CustomLogoutHandler implements LogoutHandler {
     @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
     private String naverClientSecret;
 
-    @Autowired
-    private PersistentTokenRepository persistentTokenRepository;
-
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication auth) {
 
