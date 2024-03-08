@@ -49,7 +49,7 @@ joinForm['emailSend'].onclick = function (e) {
                 alert('입력하신 이메일로 인증번호가 포함된 메일을 전송하였습니다. 해당 인증번호는 5분간만 유효하니 유의해 주세요.');
             } else if (res.data.result === 'FAILURE_DUPLICATE_EMAIL') {
                 loading.hide();
-                alert('해당 이메일은 이미 사용 중입니다. 잠시 후 다시 시도해 주세요.');
+                alert('해당 이메일은 이미}} 사용 중입니다. 잠시 후 다시 시도해 주세요.');
             }
         })
         .catch(err => {
@@ -275,7 +275,6 @@ joinForm.onsubmit = function (e) {
     }
 
     if (!joinForm['emailCode'].hasAttribute('disabled')) {
-        console.log("hi");
         alert('인증번호 확인 버튼을 통해 인증번호를 확인해 주세요.');
         return false;
     }
@@ -395,7 +394,7 @@ joinForm.onsubmit = function (e) {
         .then(res => {
             if (res.data === 'SUCCESS') {
                 alert('회원가입이 완료 되었습니다.');
-                location.href = "/user/login"
+                location.href = "/user/login";
             }
         })
         .catch(err => {

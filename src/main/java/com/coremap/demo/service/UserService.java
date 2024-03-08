@@ -1,7 +1,6 @@
 package com.coremap.demo.service;
 
 
-import com.coremap.demo.config.auth.PrincipalDetails;
 import com.coremap.demo.domain.dto.EmailAuthDto;
 import com.coremap.demo.domain.dto.UserDto;
 import com.coremap.demo.domain.entity.ContactCompany;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -118,7 +116,7 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public String verifyJoinEmail(EmailAuthDto emailAuthDto) {
+    public String verifyCode(EmailAuthDto emailAuthDto) {
         EmailAuth emailAuth = emailAuthRepository.findByEmailAndCodeAndSalt(emailAuthDto.getEmail(), emailAuthDto.getCode(), emailAuthDto.getSalt());
 
         if (emailAuth == null) {

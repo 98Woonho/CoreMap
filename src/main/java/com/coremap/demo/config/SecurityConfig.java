@@ -105,7 +105,7 @@ public class SecurityConfig {
         );
 
         return http.build();
-}
+    }
 
 
     //CUSTOMLOGOUTSUCCESS BEAN

@@ -19,13 +19,13 @@
 
 <main class="content-container-wrapper" id="main">
     <div class="content-container">
-        <h1 class="title center">로그인</h1>
+        <h1 class="center">로그인</h1>
         <form action="/user/login" method="post" class="login-form" id="loginForm">
-            <label class="label">
+            <label>
                 <p class="text">이메일</p>
                 <input type="email" maxlength="50" placeholder="이메일(user@sample.com)" name="username" th:value="${username}" class="common-field">
             </label>
-            <label class="label">
+            <label>
                 <p class="text">비밀번호</p>
                 <input type="password" maxlength="50" placeholder="비밀번호" name="password" class="common-field">
             </label>
@@ -48,13 +48,13 @@
             <div class="simple-login-container">
                 <h2>간편 로그인</h2>
                 <div class="icon-container">
-                    <a href="/oauth2/authorization/kakao" class="kakao-btn">
+                    <a href="/oauth2/authorization/kakao">
                         <img src="/images/login/kakao.png" alt="">
                     </a>
-                    <a href="/oauth2/authorization/naver" class="naver-btn">
+                    <a href="/oauth2/authorization/naver">
                         <img src="/images/login/naver.png" alt="">
                     </a>
-                    <a href="/oauth2/authorization/google" class="google-btn">
+                    <a href="/oauth2/authorization/google">
                         <img src="/images/login/google.png" alt="">
                     </a>
                 </div>

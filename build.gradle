@@ -44,8 +44,6 @@ dependencies {
 
 	//ORM_MYBATIS
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 
 	//ORM_JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -69,9 +67,6 @@ dependencies {
 
 	//LANG3
 	implementation 'org.apache.commons:commons-lang3:3.14.0'
-
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
