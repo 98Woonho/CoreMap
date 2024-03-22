@@ -31,7 +31,7 @@
                 <span class="text">이름</span>
                 <span class="text name-warning"></span>
             </span>
-                <input class="common-field" maxlength="50" name="name" placeholder="이름" type="text"
+                <input class="common-input" maxlength="50" name="name" placeholder="이름" type="text"
                        th:data-regex="${userRegex.NAME.expression}">
             </label>
             <label class="label contact">
@@ -39,7 +39,7 @@
                 <span class="text">연락처</span>
                 <span class="text contact-warning"></span>
             </span>
-                <input maxlength="20" name="contact" type="text" class="common-field big" placeholder="-을 제외한 전화번호"
+                <input maxlength="20" name="contact" type="text" class="common-input flex-grow-1" placeholder="-을 제외한 전화번호"
                        th:data-regex="${userRegex.CONTACT.expression}">
             </label>
             <input type="submit" value="이메일 찾기" class="common-btn find-email-btn">

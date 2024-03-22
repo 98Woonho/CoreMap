@@ -121,7 +121,7 @@
         <form action="./list" method="get" id="searchForm" class="search-form">
             <input hidden name="code" type="hidden" th:value="${board.code}">
             <label title="검색 조건" class="label">
-                <select name="criterion" class="common-field">
+                <select name="criterion" class="common-input">
                     <option th:selected="${searching == true && search.criterion.equals('content')}"
                             value="content">내용
                     </option>
@@ -133,7 +133,7 @@
                 </select>
             </label>
             <label title="검색어" class="label keyword">
-                <input class="common-field" maxlength="50" name="keyword" placeholder="검색어를 입력해 주세요." type="text"
+                <input class="common-input" maxlength="50" name="keyword" placeholder="검색어를 입력해 주세요." type="text"
                        th:value="${searching == true ? search.keyword : ''}">
             </label>
             <input type="submit" value="검색" class="common-btn">

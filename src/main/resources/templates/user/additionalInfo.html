@@ -41,7 +41,7 @@
                         <span class="text nickname-warning"></span>
                     </span>
                 <span class="horizontal">
-                        <input class="big common-field" maxlength="10" name="nickname" placeholder="닉네임" type="text" th:data-regex="${userRegex.NICKNAME.expression}">
+                        <input class="flex-grow-1 common-input" maxlength="10" name="nickname" placeholder="닉네임" type="text" th:data-regex="${userRegex.NICKNAME.expression}">
                         <input type="button" name="confirmDuplication" value="중복확인" class="common-btn">
                     </span>
             </label>
@@ -51,7 +51,7 @@
                         <span class="text">이름</span>
                         <span class="text name-warning"></span>
                     </span>
-                <input class="common-field" maxlength="50" name="name" placeholder="이름" type="text"
+                <input class="common-input" maxlength="50" name="name" placeholder="이름" type="text"
                        th:data-regex="${userRegex.NAME.expression}">
             </label>
 
@@ -61,13 +61,13 @@
                         <span class="text contact-warning"></span>
                     </span>
                 <span class="horizontal contact">
-                        <select name="contactCompany" class="common-field">
+                        <select name="contactCompany" class="common-input">
                         <option disabled hidden selected value="-1">통신사</option>
                         <option th:each="contactCompany : ${contactCompanyList}"
                                 th:value="${contactCompany.getCode()}"
                                 th:text="${contactCompany.getText()}"></option>
                         </select>
-                        <input maxlength="20" name="contact" type="text" class="common-field big" placeholder="-을 제외한 전화번호"
+                        <input maxlength="20" name="contact" type="text" class="common-input flex-grow-1" placeholder="-을 제외한 전화번호"
                                th:data-regex="${userRegex.CONTACT.expression}">
                     </span>
             </label>
@@ -79,14 +79,14 @@
                     </span>
                 <span class="horizontal">
                     <input type="text" maxlength="5" name="addressPostal" placeholder="우편번호"
-                           class="common-field big" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
+                           class="common-input flex-grow-1" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
                     <input type="button" name="addressFind" class="common-btn" value="주소 찾기">
                     </span>
                 <input readonly type="text" maxlength="100" name="addressPrimary"
-                       placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)" class="common-field"
+                       placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)" class="common-input"
                        th:data-regex="${userRegex.ADDRESS_PRIMARY.expression}">
                 <input type="text" maxlength="100" name="addressSecondary" placeholder="상세 주소(건물명, 동, 호수 등)"
-                       class="common-field" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
+                       class="common-input" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
             </label>
 
             <span class="text warning">* 개인 정보를 모두 입력하지 않을 시, 사이트 이용에 제한이 발생할 수 있습니다.<br>* 마이페이지 - 개인정보확인/수정 에서도 추가정보 작성 및 등록이 가능합니다.</span>

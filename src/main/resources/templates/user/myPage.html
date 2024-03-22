@@ -68,7 +68,7 @@
                         <div class="layout-1">
                             <p class="text">닉네임</p>
                         </div>
-                        <input class="big common-field" maxlength="10" name="nickname" placeholder="닉네임" th:attr="value=${user.nickname != null} ? ${user.nickname} : null"
+                        <input class="flex-grow-1 common-input" maxlength="10" name="nickname" placeholder="닉네임" th:attr="value=${user.nickname != null} ? ${user.nickname} : null"
                                type="text"
                                th:data-regex="${userRegex.NICKNAME.expression}">
                         <input disabled type="button" name="confirmDuplication" value="중복확인" class="common-btn">
@@ -81,7 +81,7 @@
                         <div class="layout-1">
                             <p class="text">이름</p>
                         </div>
-                        <input class="common-field" maxlength="50" name="name" placeholder="이름" th:attr="value=${user.name != null} ? ${user.name} : null" type="text"
+                        <input class="common-input" maxlength="50" name="name" placeholder="이름" th:attr="value=${user.name != null} ? ${user.name} : null" type="text"
                                th:data-regex="${userRegex.NAME.expression}">
                         <span class="text name-warning"></span>
                     </span>
@@ -93,14 +93,14 @@
                             <p class="text">연락처</p>
                         </div>
                         <span class="horizontal contact">
-                            <select name="contactCompany" class="common-field">
+                            <select name="contactCompany" class="common-input">
                                 <option th:if="${user.contactCompany != null}" disabled hidden selected th:value="${user.contactCompany.code}" th:text="${user.contactCompany.text}"></option>
                                 <option th:if="${user.contactCompany == null}" disabled hidden selected value="-1">통신사</option>
                                 <option th:each="contactCompany : ${contactCompanyList}"
                                 th:value="${contactCompany.getCode()}"
                                 th:text="${contactCompany.getText()}"></option>
                             </select>
-                            <input maxlength="20" name="contact" type="text" class="common-field big" placeholder="-을 제외한 전화번호"
+                            <input maxlength="20" name="contact" type="text" class="common-input flex-grow-1" placeholder="-을 제외한 전화번호"
                                    th:attr="value=${user.contact != null} ? ${user.contact} : null"
                                th:data-regex="${userRegex.CONTACT.expression}">
                         </span>
@@ -116,14 +116,14 @@
                         <div class="address-container">
                             <span class="horizontal">
                                 <input type="text" maxlength="5" name="addressPostal" placeholder="우편번호" th:attr="value=${user.addressPostal != null} ? ${user.addressPostal} : null"
-                                   class="common-field big" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
+                                   class="common-input flex-grow-1" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
                                 <input type="button" class="common-btn address-find-btn" name="addressFind" value="주소 찾기">
                             </span>
                             <input readonly type="text" maxlength="100" name="addressPrimary" placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)"
-                                   th:attr="value=${user.addressPrimary != null} ? ${user.addressPrimary} : null"class="common-field"
+                                   th:attr="value=${user.addressPrimary != null} ? ${user.addressPrimary} : null"class="common-input"
                                th:data-regex="${userRegex.ADDRESS_PRIMARY.expression}">
                             <input type="text" maxlength="100" name="addressSecondary" placeholder="상세 주소(건물명, 동, 호수 등)" th:attr="value=${user.addressSecondary != null} ? ${user.addressSecondary} : null"
-                                   class="common-field" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
+                                   class="common-input" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
                         </div>
                     </span>
                     </label>
