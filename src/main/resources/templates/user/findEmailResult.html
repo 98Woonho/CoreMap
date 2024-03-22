@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="/css/user/findEmailResult.css">
 
     <script defer src="/js/common.js"></script>
-    <script defer src="/js/user/findEmailResult.js"></script>
 
 </head>
 <body>
@@ -22,14 +21,18 @@
 <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
 
 <main class="content-container-wrapper" id="main">
-    <h1 class="title">이메일 조회 결과</h1>
-    <div class="content-container find-email-result-container">
-        <label class="label" th:each="user : ${userList}">
-            <input type="radio" name="username" th:value="${user.username}">
-            <span class="text" th:text="${user.username}"></span>
-        </label>
+    <div class="content-container">
+        <h1>이메일 조회 결과</h1>
+        <form action="/user/login" method="get" id="moveLoginForm">
+            <div class="email-info-container">
+                <div class="email-info-box" th:each="user : ${userList}">
+                    <input type="radio" name="username" th:value="${user.username}">
+                    <p th:text="${user.username}"></p>
+                </div>
+            </div>
+            <button class="common-btn">로그인하러 가기</button>
+        </form>
     </div>
-    <button class="common-btn login-btn">로그인하러 가기</button>
 </main>
 
 <th:block th:replace="~{fragments/fragments.html :: footer}"></th:block>

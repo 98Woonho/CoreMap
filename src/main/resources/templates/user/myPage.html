@@ -24,7 +24,7 @@
 <th:block th:replace="~{fragments/fragments.html :: common}"></th:block>
 <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
 
-<div id="addressFindClose">
+<div id="addressFind">
     <img alt="X"
          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAoElEQVR4nO2WUQqAIBBE57TzVZ3DSxf9FASJueusBTnQp/seplPAyMg9CcAEfaZj9mMIYAWwCOHnzNm6YHkDrpRwwxUSzfAWCRncIyGHWyTC4DUS4fCSRDd4TqI7/Fqt2/FEVPe3BXjZ9ohvRzG5d95NgoUDFy7BitMeJkHDVZNL0HHPZRJsKJlmCQoazi1BYb2aJRjQ7SaJ9PZv+ci/sgM32VIN2RJOpwAAAABJRU5ErkJggg=="
          class="close" rel="close">
@@ -33,122 +33,107 @@
 
 <main id="main" class="content-container-wrapper">
     <div class="content-container">
-        <h1 class="title center">마이페이지</h1>
+        <h1>마이페이지</h1>
         <div class="my-page-container">
             <div class="link-container">
-                <a href="/user/myPage?function=modify" th:class="${function == 'modify'} ? 'selected' : ''"
-                   class="link user-confirm-modify-link">개인정보확인/수정</a>
-                <a href="/user/myPage?function=secession" th:class="${function == 'secession'} ? 'selected' : ''"
-                   class="link user-secession-link">회원탈퇴</a>
+                <a href="/user/myPage?function=modify"
+                   th:class="${function == 'modify'} ? 'selected' : ''">개인정보확인/수정</a>
+                <a href="/user/myPage?function=secession"
+                   th:class="${function == 'secession'} ? 'selected' : ''">회원탈퇴</a>
             </div>
-            <div class="function-container"
-                 th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}">
-                <form th:if="${function == 'modify'}" id="modifyForm" class="modify-form">
-                    <input hidden type="text" name="currentNickname" th:value="${user.nickname}">
-                    <label class="label email">
-                    <span class="horizontal">
-                        <div class="layout-1">
-                            <p class="text">이메일</p>
-                        </div>
-                        <p class="text" th:text="${user.username}"></p>
-                    </span>
-                    </label>
+            <form th:if="${function == 'modify'}" id="modifyForm" class="modify-form flex-grow-1"
+                  th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}">
+                <input hidden type="text" name="currentNickname" th:value="${user.nickname}">
+                <div class="info-box">
+                    <p class="info">이메일</p>
+                    <p th:text="${user.username}"></p>
+                </div>
 
-                    <label class="label password">
-                    <span class="horizontal">
-                        <div class="layout-1">
-                             <p class="text">비밀번호변경</p>
-                        </div>
-                        <a href="/user/resetPasswordStep1" class="link">비밀번호 재설정하기</a>
-                    </span>
-                    </label>
+                <div class="info-box">
+                    <p class="info">비밀번호변경</p>
+                    <a href="/user/resetPasswordStep1" class="common-btn">비밀번호 재설정하기</a>
+                </div>
 
-                    <label class="label nickname">
-                    <span class="horizontal">
-                        <div class="layout-1">
-                            <p class="text">닉네임</p>
-                        </div>
-                        <input class="big common-field" maxlength="10" name="nickname" placeholder="닉네임" th:attr="value=${user.nickname != null} ? ${user.nickname} : null"
-                               type="text"
-                               th:data-regex="${userRegex.NICKNAME.expression}">
-                        <input disabled type="button" name="confirmDuplication" value="중복확인" class="common-btn">
-                        <span class="text nickname-warning"></span>
-                    </span>
-                    </label>
+                <div class="info-box">
+                    <p class="info">닉네임</p>
+                    <input class="common-input" maxlength="10" name="nickname" placeholder="닉네임"
+                           th:attr="value=${user.nickname != null} ? ${user.nickname} : null"
+                           type="text"
+                           th:data-regex="${userRegex.NICKNAME.expression}">
+                    <button type="button" name="confirmDuplicationBtn" class="common-btn">중복 확인</button>
+                    <p class="warning" id="nicknameWarning"></p>
+                </div>
 
-                    <label class="label name">
-                    <span class="horizontal">
-                        <div class="layout-1">
-                            <p class="text">이름</p>
-                        </div>
-                        <input class="common-field" maxlength="50" name="name" placeholder="이름" th:attr="value=${user.name != null} ? ${user.name} : null" type="text"
-                               th:data-regex="${userRegex.NAME.expression}">
-                        <span class="text name-warning"></span>
-                    </span>
-                    </label>
+                <div class="info-box">
+                    <p class="info">이름</p>
+                    <input class="common-input" maxlength="50" name="name" placeholder="이름"
+                           th:attr="value=${user.name != null} ? ${user.name} : null" type="text"
+                           th:data-regex="${userRegex.NAME.expression}">
+                    <p class="warning" id="nameWarning"></p>
+                </div>
 
-                    <label class="label contact">
-                    <span class="horizontal">
-                        <div class="layout-1">
-                            <p class="text">연락처</p>
-                        </div>
-                        <span class="horizontal contact">
-                            <select name="contactCompany" class="common-field">
-                                <option th:if="${user.contactCompany != null}" disabled hidden selected th:value="${user.contactCompany.code}" th:text="${user.contactCompany.text}"></option>
-                                <option th:if="${user.contactCompany == null}" disabled hidden selected value="-1">통신사</option>
-                                <option th:each="contactCompany : ${contactCompanyList}"
+                <div class="info-box">
+                    <p class="info">연락처</p>
+                    <select name="contactCompany" class="common-input">
+                        <option th:if="${user.contactCompany != null}" disabled hidden selected
+                                th:value="${user.contactCompany.code}"
+                                th:text="${user.contactCompany.text}"></option>
+                        <option th:if="${user.contactCompany == null}" disabled hidden selected
+                                value="-1">통신사
+                        </option>
+                        <option th:each="contactCompany : ${contactCompanyList}"
                                 th:value="${contactCompany.getCode()}"
                                 th:text="${contactCompany.getText()}"></option>
-                            </select>
-                            <input maxlength="20" name="contact" type="text" class="common-field big" placeholder="-을 제외한 전화번호"
-                                   th:attr="value=${user.contact != null} ? ${user.contact} : null"
-                               th:data-regex="${userRegex.CONTACT.expression}">
-                        </span>
-                        <span class="text contact-warning"></span>
-                    </span>
-                    </label>
+                    </select>
+                    <input maxlength="20" name="contact" type="text" class="common-input"
+                           placeholder="-을 제외한 전화번호"
+                           th:attr="value=${user.contact != null} ? ${user.contact} : null"
+                           th:data-regex="${userRegex.CONTACT.expression}">
+                    <p class="warning" id="contactWarning"></p>
+                </div>
 
-                    <label class="label address">
-                    <span class="horizontal">
-                        <div class="layout-1">
-                            <p class="text">주소</p>
+                <div class="info-box">
+                    <p class="info">주소</p>
+                    <div class="address-container">
+                        <div class="address-postal-box">
+                            <input type="text" maxlength="5" name="addressPostal" placeholder="우편번호"
+                                   th:attr="value=${user.addressPostal != null} ? ${user.addressPostal} : null"
+                                   class="common-input"
+                                   th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
+                            <button type="button" class="common-btn" id="addressFindBtn" name="addressFind">주소 찾기</button>
                         </div>
-                        <div class="address-container">
-                            <span class="horizontal">
-                                <input type="text" maxlength="5" name="addressPostal" placeholder="우편번호" th:attr="value=${user.addressPostal != null} ? ${user.addressPostal} : null"
-                                   class="common-field big" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
-                                <input type="button" class="common-btn address-find-btn" name="addressFind" value="주소 찾기">
-                            </span>
-                            <input readonly type="text" maxlength="100" name="addressPrimary" placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)"
-                                   th:attr="value=${user.addressPrimary != null} ? ${user.addressPrimary} : null"class="common-field"
+                        <input readonly type="text" maxlength="100" name="addressPrimary"
+                               placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)"
+                               th:attr="value=${user.addressPrimary != null} ? ${user.addressPrimary} : null"
+                               class="common-input"
                                th:data-regex="${userRegex.ADDRESS_PRIMARY.expression}">
-                            <input type="text" maxlength="100" name="addressSecondary" placeholder="상세 주소(건물명, 동, 호수 등)" th:attr="value=${user.addressSecondary != null} ? ${user.addressSecondary} : null"
-                                   class="common-field" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
-                        </div>
-                    </span>
-                    </label>
-                    <p class="text warning">* 개인 정보를 모두 입력하지 않을 시, 사이트 이용에 제한이 발생할 수 있습니다.</p>
-                    <input disabled type="submit" value="개인정보수정" class="common-btn modify-btn">
-                </form>
-
-
-                <form th:if="${function == 'secession'}" id="secessionForm" class="secession-form">
-                    <div class="secession-text-container">
-                        <h2>회원 탈퇴 확인 안내</h2>
-                        안녕하세요, <span class="text" th:text="${user.name}"></span>님. <br>
-                        귀하의 회원 탈퇴 요청을 받았습니다. 귀하께서 소중한 회원으로서 보낸 시간에 감사드립니다. <br>
-                        다음 사항에 유의하시기 바랍니다. <br>
-                        - 회원 탈퇴는 1시간 내에 공식적으로 완료 됩니다.
-                        - 회원 탈퇴 시, 작성한 게시글이나 댓글은 모두 삭제 됩니다.
-                        - 회원 전용 기능 및 혜택은 탈퇴 후에는 더 이상 이용할 수 없습니다. <br>
-                        탈퇴와 관련하여 궁금한 사항이 있으시면 언제든지 고객지원팀에 연락 주시기 바랍니다. <br>
-                        탈퇴를 원하시면 오른쪽 하단의 회원탈퇴 버튼을 클릭해 주시기 바랍니다.
+                        <input type="text" maxlength="100" name="addressSecondary" placeholder="상세 주소(건물명, 동, 호수 등)"
+                               th:attr="value=${user.addressSecondary != null} ? ${user.addressSecondary} : null"
+                               class="common-input" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
                     </div>
+                </div>
+                <p class="precautions">* 개인 정보를 모두 입력하지 않을 시, 사이트 이용에 제한이 발생할 수 있습니다.</p>
+                <button disabled class="common-btn modify-btn" id="modifyBtn">개인정보 수정</button>
+            </form>
 
-                    <input type="submit" value="회원탈퇴" class="common-btn secession-btn">
-                </form>
-            </div>
+
+            <form th:if="${function == 'secession'}" id="secessionForm" class="secession-form flex-grow-1">
+                <div class="secession-text-container">
+                    <h2>회원 탈퇴 확인 안내</h2>
+                    안녕하세요, <span th:text="${user.name}"></span>님. <br>
+                    귀하의 회원 탈퇴 요청을 받았습니다. 귀하께서 소중한 회원으로서 보낸 시간에 감사드립니다. <br>
+                    다음 사항에 유의하시기 바랍니다. <br>
+                    - 회원 탈퇴는 1시간 내에 공식적으로 완료 됩니다.
+                    - 회원 탈퇴 시, 작성한 게시글이나 댓글은 모두 삭제 됩니다.
+                    - 회원 전용 기능 및 혜택은 탈퇴 후에는 더 이상 이용할 수 없습니다. <br>
+                    탈퇴와 관련하여 궁금한 사항이 있으시면 언제든지 고객지원팀에 연락 주시기 바랍니다. <br>
+                    탈퇴를 원하시면 오른쪽 하단의 회원탈퇴 버튼을 클릭해 주시기 바랍니다.
+                </div>
+
+                <button type="submit" class="common-btn secession-btn">회원탈퇴</button>
+            </form>
         </div>
+    </div>
     </div>
 </main>
 

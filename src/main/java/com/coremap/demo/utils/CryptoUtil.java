@@ -11,15 +11,6 @@ public class CryptoUtil {
         return CryptoUtil.hashSha512(input, StandardCharsets.UTF_8, null);
     }
 
-    public static String hashSha512(String input, Charset charset) {
-        return CryptoUtil.hashSha512(input, charset, null);
-    }
-
-    public static String hashSha512(String input, String fallback) {
-        return CryptoUtil.hashSha512(input, StandardCharsets.UTF_8, fallback);
-    }
-
-
     public static String hashSha512(String input, Charset charset, String fallback) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");

@@ -22,6 +22,7 @@ writeForm['fileAdd'].onclick = function(e) {
     writeForm['file'].click();
 }
 
+const fileList = document.getElementById('fileList');
 // 첨부파일이 추가 되었을 때의 함수
 writeForm['file'].onchange = function () {
     const file = writeForm['file'].files[0];
@@ -29,10 +30,9 @@ writeForm['file'].onchange = function () {
         return false;
     }
 
-    const fileList = writeForm.querySelector('.file-list');
     const item = new DOMParser().parseFromString(`
             <li class="item">
-                <span class="name" title="${file['name']}">${file['name']}</span>
+                <span title="${file['name']}">${file['name']}</span>
                 <button class="delete-btn">삭제</button>
             </li>`, 'text/html').querySelector('.item');
     const deleteBtn = item.querySelector('.delete-btn');
@@ -84,7 +84,6 @@ writeForm.onsubmit = function(e) {
         formData.append('imgId', parseInt(imgId));
     })
 
-    const fileList = writeForm.querySelector('.file-list');
     const fileItems = fileList.querySelectorAll('.item');
 
     for (const fileItem of fileItems) {

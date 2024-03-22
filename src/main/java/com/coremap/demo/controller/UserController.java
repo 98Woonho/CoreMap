@@ -73,12 +73,14 @@ public class UserController {
     @PatchMapping(value = "sendMail")
     @ResponseBody
     public String patchSendMail(EmailAuthDto emailAuthDto) {
-        return this.userService.verifyJoinEmail(emailAuthDto);
+        return this.userService.verifyCode(emailAuthDto);
     }
 
     @GetMapping("findEmail")
-    public void getFindEmail() {
+    public void getFindEmail(Model model) {
+        List<ContactCompany> contactCompanyList = userService.getAllContactCompanyList();
 
+        model.addAttribute("contactCompanyList", contactCompanyList);
     }
 
     @GetMapping("findEmailResult")

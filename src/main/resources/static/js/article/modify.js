@@ -1,5 +1,5 @@
-if (document.head.querySelector(':scope > meta[name="_allowed-status"]').getAttribute('content') === 'false') {
-    alert('해당 게시판에 게시글을 작성할 권한이 없습니다');
+if (document.head.querySelector('meta[name="_allowed-status"]').getAttribute('content') === 'false') {
+    alert('게시글을 수정할 권한이 없습니다');
     if (history.length > 1) {
         history.back();
     } else {
@@ -46,10 +46,10 @@ modifyForm['file'].onchange = function () {
         return false;
     }
 
-    const fileList = modifyForm.querySelector('.file-list');
+    const fileList = document.getElementById('fileList');
     const item = new DOMParser().parseFromString(`
             <li class="item">
-                <span class="name" title="${file['name']}">${file['name']}</span>
+                <span title="${file['name']}">${file['name']}</span>
                 <button class="delete-btn">삭제</button>
             </li>`, 'text/html').querySelector('.item');
     const deleteBtn = item.querySelector('.delete-btn');
@@ -101,7 +101,7 @@ modifyForm.onsubmit = function(e) {
         formData.append('imgId', parseInt(imgId));
     })
 
-    const fileList = modifyForm.querySelector('.file-list');
+    const fileList = document.getElementById('fileList');
     const fileItems = fileList.querySelectorAll('.item');
 
     for (const fileItem of fileItems) {

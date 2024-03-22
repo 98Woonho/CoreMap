@@ -240,9 +240,7 @@ public class ArticleController {
         String username = authentication.getName();
         String role = authentication.getAuthorities().toString();
 
-        if (!article.getUser().getUsername().equals(username) && !role.equals("ROLE_ADMIN")) {
-            article = null;
-        } else {
+        if (article.getUser().getUsername().equals(username) || role.equals("ROLE_ADMIN")) {
             Board board = Arrays.stream(boards)
                     .filter(x -> x.getCode().equals(code))
                     .findFirst()
@@ -251,6 +249,8 @@ public class ArticleController {
             List<File> fileList = this.articleService.getFileList(article.getId());
             model.addAttribute("board", board);
             model.addAttribute("fileList", fileList);
+        } else {
+            article = null;
         }
         model.addAttribute("article", article);
     }

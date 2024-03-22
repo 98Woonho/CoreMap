@@ -1,4 +1,4 @@
-const writeBtn = document.querySelector('.write-btn');
+const writeBtn = document.getElementById('writeBtn');
 
 writeBtn.addEventListener('click', function(e) {
     if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
