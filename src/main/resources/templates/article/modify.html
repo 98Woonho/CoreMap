@@ -24,7 +24,6 @@
 <th:block th:replace="~{fragments/fragments.html :: header}"></th:block>
 
 <main id="main" class="content-container-wrapper">
-
     <div class="content-container">
         <h1>게시글 수정 -
             <th:block th:text="${board.text}"></th:block>
@@ -33,22 +32,21 @@
             <input hidden type="hidden" name="indexInBoard" th:value="${article.indexInBoard}">
             <input type="hidden" th:value="${article.id}" name="id">
             <input type="hidden" th:value="${board.code}" name="code">
+
             <label for="title">제목</label>
             <input autofocus type="text" id="title" class="common-input" placeholder="제목을 입력 해주세요" name="title"
                    th:value="${article.title}">
 
             <label for="content">내용</label>
-            <textarea id="content" maxlength="10000" placeholder="내용을 입력해 주세요" name="content"
-                      rows="15" th:text="${article.content}"></textarea>
-
+            <textarea id="content" maxlength="10000" placeholder="내용을 입력해 주세요" name="content" rows="15" th:text="${article.content}"></textarea>
 
             <input hidden name="file" type="file">
             <label>첨부파일</label>
             <div class="files">
-                <button class="file-btn" name="fileAdd" title="첨부파일 추가">파일추가</button>
+                <button type="button" class="file-btn" name="fileAdd" title="첨부파일 추가">파일추가</button>
                 <ul class="file-list" id="fileList">
                     <li class="item" th:each="file : ${fileList}" th:data-id="${file.id}">
-                        <span class="name" th:title="${file.name}" th:text="${file.name}"></span>
+                        <span th:title="${file.name}" th:text="${file.name}"></span>
                         <button class="delete-btn">삭제</button>
                     </li>
                 </ul>
@@ -56,8 +54,8 @@
             <div class="button-container">
                 <a th:href="@{/article/read (index = ${article.indexInBoard}, code = ${board.code})}"
                    class="common-btn">돌아가기</a>
-                <span class="spring"></span>
-                <button type="submit" class="common-btn">작성하기</button>
+                <span class="flex-grow-1"></span>
+                <button class="common-btn">작성하기</button>
             </div>
         </form>
     </div>

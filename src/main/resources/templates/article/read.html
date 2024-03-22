@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/flew-grow-1-security">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -85,7 +85,7 @@
                            th:if="${criterion != null && keyword != null}">목록</a>
                         <span class="flex-grow-1"></span>
                         <a class="common-btn" rel="modify" sec:authorize="isAuthenticated()"
-                           th:if="${(#authentication.principal.userDto.username == article.user.username) || user.role == 'ROLE_ADMIN'}"
+                           th:if="${(#authentication.principal.userDto.username == article.user.username)}"
                            th:href="@{/article/modify(index=${article.indexInBoard}, code=${board.code})}">수정</a>
                         <button class="common-btn" id="deleteBtn" sec:authorize="isAuthenticated()"
                                 th:if="${(#authentication.principal.userDto.username == article.user.username) || user.role == 'ROLE_ADMIN'}">

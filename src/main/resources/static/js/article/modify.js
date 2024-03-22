@@ -1,5 +1,5 @@
 if (document.head.querySelector('meta[name="_allowed-status"]').getAttribute('content') === 'false') {
-    alert('해당 게시판에 게시글을 작성할 권한이 없습니다');
+    alert('게시글을 수정할 권한이 없습니다');
     if (history.length > 1) {
         history.back();
     } else {
@@ -46,7 +46,7 @@ modifyForm['file'].onchange = function () {
         return false;
     }
 
-    const fileList = modifyForm.querySelector('.file-list');
+    const fileList = document.getElementById('fileList');
     const item = new DOMParser().parseFromString(`
             <li class="item">
                 <span title="${file['name']}">${file['name']}</span>

@@ -59,7 +59,7 @@
         <li th:each="board : ${boardList}">
             <a th:href="@{/board/list (code=${board.code})}" class="link" th:text="${board.text}"></a>
         </li>
-        <li class="spring"></li>
+        <li class="flex-grow-1"></li>
         <li>
             <a href="/exerciseGuide">ExerciseGuide</a>
         </li>
@@ -89,7 +89,7 @@
             </a>
             <p class="copyright">Copyright ⓒ 2023 Coremap Inc.</p>
         </div>
-        <div class="spring"></div>
+        <div class="flex-grow-1"></div>
         <div class="content-container-right">
             <div class="icon-container">
                 <a class="link" href="/">

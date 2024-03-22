@@ -55,6 +55,10 @@ tbody td {
     background-color: #202127;
 }
 
+tbody tr {
+    height: 30px;
+}
+
 tbody tr td:not(:nth-of-type(2)) {
     text-align: center;
     white-space: nowrap;
@@ -72,7 +76,7 @@ tbody tr.empty td {
 tfoot .page-button-container {
     position: relative;
 
-    align-items: stretch;
+    align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -82,7 +86,7 @@ tfoot .page-button-container {
     flex: 1;
 }
 
-.page-button-container a.common-button {
+.page-button-container .write-btn {
     top: 0;
     right: 0;
     color: inherit;
@@ -91,9 +95,13 @@ tfoot .page-button-container {
 }
 
 .page-button-container .button {
+    height: 30px;
     background-color: #202127;
     padding: 0.625rem 0.875rem;
-    text-decoration: none;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .page-button-container .button:hover {

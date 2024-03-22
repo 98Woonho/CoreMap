@@ -23,8 +23,8 @@
 
 <main id="main" class="content-container-wrapper">
     <div class="content-container">
-        <h1 class="title" th:text="${board.text}"></h1>
-        <table class="list-table" id="listTable">
+        <h1 th:text="${board.text}"></h1>
+        <table id="listTable">
             <thead>
             <tr>
                 <th>번호</th>
@@ -59,7 +59,7 @@
             <tr>
                 <td colspan="5">
                     <div class="page-button-container">
-                        <div class="spring"></div>
+                        <div class="flex-grow-1"></div>
                         <th:block th:if="${searching == false}">
                             <a class="button"
                                th:href="@{/board/list (code=${board.code}, page = ${page.pageFrom - page.pageButtonCount})}"
@@ -105,8 +105,8 @@
                                th:href="@{/board/list (code=${board.code}, page = ${page.pageTo + 1}, criterion = ${search.criterion}, keyword = ${search.keyword})}"
                                th:if="${page.pageTo < page.maxPage}">&gt;&gt;</a>
                         </th:block>
-                        <div class="spring"></div>
-                        <a class="common-btn write-btn"
+                        <div class="flex-grow-1"></div>
+                        <a class="common-btn write-btn" id="writeBtn"
                            th:href="@{/article/write (code = ${board.code})}" th:if="${user == null ? (board.isAdminWrite == true ? false : true) : (#authentication.principal.userDto.role == 'ROLE_USER' ? (board.isAdminWrite == true ? false : true) : true)}">
                             글쓰기</a>
                     </div>
