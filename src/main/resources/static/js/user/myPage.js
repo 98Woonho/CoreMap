@@ -1,5 +1,5 @@
 const modifyForm = document.getElementById('modifyForm'); // 마이페이지 - 개인정보확인/수정 form
-const addressFindClose = document.getElementById('addressFindClose'); // 주소 찾기 창 close
+const addressFind = document.getElementById('addressFind'); // 주소 찾기 창 close
 
 if(modifyForm) {
     // 주소 찾기 버튼 클릭 함수
@@ -11,20 +11,20 @@ if(modifyForm) {
             oncomplete: function (data) {
                 modifyForm['addressPostal'].value = data['zonecode'];
                 modifyForm['addressPrimary'].value = data['address'];
-                addressFindClose.classList.remove('visible');
+                addressFind.classList.remove('visible');
                 modifyForm['addressSecondary'].focus();
                 modifyForm['addressSecondary'].select();
             }
-        }).embed(addressFindClose.querySelector('.modal'))
-        addressFindClose.classList.add('visible');
+        }).embed(addressFind.querySelector('.modal'))
+        addressFind.classList.add('visible');
     }
 
     // 주소 찾기 창 close 클릭 함수
-    addressFindClose.querySelector('[rel="close"]').onclick = function () {
-        addressFindClose.classList.remove('visible');
+    addressFind.querySelector('[rel="close"]').onclick = function () {
+        addressFind.classList.remove('visible');
     }
 
-    const modifyBtn = modifyForm.querySelector('.modify-btn'); // 수정 버튼
+    const modifyBtn = document.getElementById('modifyBtn'); // 수정 버튼
     const inputs = modifyForm.querySelectorAll('input');
 
     modifyForm['contactCompany'].addEventListener('change', function() {
@@ -37,32 +37,8 @@ if(modifyForm) {
         })
     })
 
-    modifyForm['nickname'].addEventListener('input', function() {
-        if (modifyForm['nickname'].value === modifyForm['currentNickname'].value) {
-            modifyForm['confirmDuplication'].setAttribute('disabled', '');
-        } else {
-            modifyForm['confirmDuplication'].removeAttribute('disabled');
-        }
-    })
-
-    const nicknameWarning = modifyForm.querySelector('.nickname-warning'); // 닉네임 경고 문구
-
-    modifyForm['nickname'].addEventListener('blur', function () {
-        if (modifyForm['nickname'].value === '') {
-            nicknameWarning.innerText = "닉네임을 입력해 주세요.";
-            nicknameWarning.style.color = '#ED5353';
-        } else if (!new RegExp(modifyForm['nickname'].dataset.regex).test(modifyForm['nickname'].value)) {
-            nicknameWarning.innerText = "10자 이내 또는 올바른 닉네임을 입력해 주세요.";
-            nicknameWarning.style.color = '#ED5353';
-        }
-
-        if (new RegExp(modifyForm['nickname'].dataset.regex).test(modifyForm['nickname'].value)) {
-            nicknameWarning.innerText = "";
-        }
-    })
-
     // 닉네임 중복 확인 버튼 클릭 함수
-    modifyForm['confirmDuplication'].onclick = function (e) {
+    modifyForm['confirmDuplicationBtn'].onclick = function (e) {
         e.preventDefault();
 
         if (modifyForm['nickname'].value === '') {
@@ -89,9 +65,32 @@ if(modifyForm) {
             })
     }
 
+    modifyForm['nickname'].addEventListener('input', function() {
+        if (modifyForm['nickname'].value === modifyForm['currentNickname'].value) {
+            modifyForm['confirmDuplication'].setAttribute('disabled', '');
+        } else {
+            modifyForm['confirmDuplication'].removeAttribute('disabled');
+        }
+    })
 
-    const nameWarning = modifyForm.querySelector('.name-warning'); // 이름 경고 문구
 
+    const nicknameWarning = document.getElementById('nicknameWarning'); // 닉네임 경고 문구
+    modifyForm['nickname'].addEventListener('blur', function () {
+        if (modifyForm['nickname'].value === '') {
+            nicknameWarning.innerText = "닉네임을 입력해 주세요.";
+            nicknameWarning.style.color = '#ED5353';
+        } else if (!new RegExp(modifyForm['nickname'].dataset.regex).test(modifyForm['nickname'].value)) {
+            nicknameWarning.innerText = "10자 이내 또는 올바른 닉네임을 입력해 주세요.";
+            nicknameWarning.style.color = '#ED5353';
+        }
+
+        if (new RegExp(modifyForm['nickname'].dataset.regex).test(modifyForm['nickname'].value)) {
+            nicknameWarning.innerText = "";
+        }
+    })
+
+
+    const nameWarning = document.getElementById('nameWarning'); // 이름 경고 문구
     modifyForm['name'].addEventListener('blur', function () {
         if (modifyForm['name'].value === '') {
             nameWarning.innerText = "이름을 입력해 주세요.";
@@ -106,7 +105,7 @@ if(modifyForm) {
         }
     })
 
-    const contactWarning = modifyForm.querySelector('.contact-warning'); // 연락처 경고 문구
+    const contactWarning = document.getElementById('contactWarning'); // 연락처 경고 문구
 
     modifyForm['contactCompany'].addEventListener('blur', function () {
         if (modifyForm['contactCompany'].value === '-1') {

@@ -23,9 +23,9 @@
         <div class="admin-page-container">
             <div class="link-container">
                 <a href="/admin/adminPage?function=menu1" th:class="${function == 'menu1'} ? 'selected' : ''"
-                   class="link user-confirm-modify-link">관리자 메뉴1</a>
+                   class="user-confirm-modify-link">관리자 메뉴1</a>
                 <a href="/admin/adminPage?function=menu2" th:class="${function == 'menu2'} ? 'selected' : ''"
-                   class="link user-secession-link">관리자 메뉴2</a>
+                   class="user-secession-link">관리자 메뉴2</a>
             </div>
             <div class="function-container"
                  th:with="userRegex = ${T(com.coremap.demo.regexes.UserRegex)}">

@@ -1,51 +1,50 @@
 const additionalInfoForm = document.getElementById('additionalInfoForm'); // 추가 정보 입력 form
-const addressFindClose = document.getElementById('addressFindClose'); // 주소 찾기 창 close
+const addressFind = document.getElementById('addressFind');
 
 // 주소 찾기 버튼 클릭 함수
-additionalInfoForm['addressFind'].onclick = function () {
-    // 다음 주소 API
+additionalInfoForm['addressFindBtn'].addEventListener('click', function (e) {
+    e.preventDefault();
+
     new daum.Postcode({
         width: '100%',
         height: '100%',
         oncomplete: function (data) {
             additionalInfoForm['addressPostal'].value = data['zonecode'];
             additionalInfoForm['addressPrimary'].value = data['address'];
-            addressFindClose.classList.remove('visible');
+            addressFind.classList.remove('visible');
             additionalInfoForm['addressSecondary'].focus();
             additionalInfoForm['addressSecondary'].select();
         }
-    }).embed(addressFindClose.querySelector(':scope > .modal'))
-    addressFindClose.classList.add('visible');
-}
+    }).embed(addressFind.querySelector(':scope > .modal'))
+    addressFind.classList.add('visible');
+})
 
 // 주소 찾기 창 close 클릭 함수
-addressFindClose.querySelector('[rel="close"]').onclick = function () {
-    addressFindClose.classList.remove('visible');
+addressFind.querySelector('[rel="close"]').onclick = function () {
+    addressFind.classList.remove('visible');
 }
 
 // 닉네임 중복 확인 버튼 클릭 함수
-additionalInfoForm['confirmDuplication'].onclick = function (e) {
+additionalInfoForm['confirmDuplicationBtn'].onclick = function (e) {
     e.preventDefault();
 
-    const nickname = additionalInfoForm['nickname'];
-
-    if (nickname.value === '') {
+    if (additionalInfoForm['nickname'].value === '') {
         alert('닉네임을 입력해 주세요.');
         return false;
     }
 
-    if (!new RegExp(nickname.dataset.regex).test(nickname.value)) {
+    if (!new RegExp(additionalInfoForm['nickname'].dataset.regex).test(additionalInfoForm['nickname'].value)) {
         alert('10자 이내 또는 올바른 닉네임을 입력해 주세요.');
         return false;
     }
 
-    axios.get("/user/confirmDuplication?nickname=" + nickname.value)
+    axios.get("/user/confirmDuplication?nickname=" + additionalInfoForm['nickname'].value)
         .then(res => {
             if (res.data === 'FAILURE_DUPLICATED_NICKNAME') {
                 alert("이미 존재하는 닉네임 입니다. 다른 닉네임을 입력해 주세요.");
             } else if (res.data === 'SUCCESS') {
                 alert("사용 가능한 닉네임 입니다.");
-                nickname.classList.add("confirmed");
+                additionalInfoForm['nickname'].classList.add("confirmed");
             }
         })
         .catch(err => {
@@ -53,8 +52,7 @@ additionalInfoForm['confirmDuplication'].onclick = function (e) {
         })
 }
 
-const nicknameWarning = additionalInfoForm.querySelector('.nickname-warning'); // 닉네임 경고 문구
-
+const nicknameWarning = document.getElementById('nicknameWarning'); // 닉네임 경고 문구
 additionalInfoForm['nickname'].addEventListener('blur', function () {
     if (additionalInfoForm['nickname'].value === '') {
         nicknameWarning.innerText = "닉네임을 입력해 주세요.";
@@ -69,8 +67,7 @@ additionalInfoForm['nickname'].addEventListener('blur', function () {
     }
 })
 
-const nameWarning = additionalInfoForm.querySelector('.name-warning'); // 이름 경고 문구
-
+const nameWarning = document.getElementById('nameWarning'); // 이름 경고 문구
 additionalInfoForm['name'].addEventListener('blur', function () {
     if (additionalInfoForm['name'].value === '') {
         nameWarning.innerText = "이름을 입력해 주세요.";
@@ -85,8 +82,7 @@ additionalInfoForm['name'].addEventListener('blur', function () {
     }
 })
 
-const contactWarning = additionalInfoForm.querySelector('.contact-warning'); // 연락처 경고 문구
-
+const contactWarning = document.getElementById('contactWarning'); // 연락처 경고 문구
 additionalInfoForm['contactCompany'].addEventListener('blur', function () {
     if (additionalInfoForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";
@@ -118,7 +114,7 @@ additionalInfoForm['contact'].addEventListener('blur', function () {
 })
 
 // 추가 정보 입력 submit 함수
-additionalInfoForm.onsubmit = function(e) {
+additionalInfoForm.onsubmit = function (e) {
     e.preventDefault();
 
     if (additionalInfoForm['nickname'].value === "") {

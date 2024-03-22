@@ -1,16 +1,21 @@
 @charset "UTF-8";
 
 #main .content-container {
-    margin: 5rem 0;
-}
+    padding: 5rem 0;
 
-.label {
-    align-items: flex-start;
     display: flex;
+    align-items: center;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 1rem 3rem;
-    border-bottom: 0.0625rem solid #202127;
+}
+
+.my-page-container {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 .my-page-container {
@@ -24,8 +29,6 @@
 .link-container {
     display: flex;
     flex-direction: column;
-    width: 15%;
-    font-size: 0;
 }
 
 .link-container a {
@@ -34,35 +37,28 @@
     display: inline-block;
     border-bottom-left-radius: 0.375rem;
     border-top-left-radius: 0.375rem;
-    padding: 12px;
-    height: 40px;
-    font-size: 16px;
+    padding: 8px;
 }
 
 .link-container a.selected {
     background-color: #202127;
 }
 
-.function-container {
-    width: 85%;
+#modifyForm {
+    border: 0.0625rem solid #202127;
 }
 
-.modify-form {
-    border-top: 0.0625rem solid #202127;
-    border-left: 0.0625rem solid #202127;
-    border-right: 0.0625rem solid #202127;
+.info-box {
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 0.0625rem solid #202127;
 }
 
-.modify-form > label.address > .common-field {
-    width: 300px;
-}
-
-.modify-form > label.password a {
-    color: #eaecee;
-    background-color: #202127;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    padding: 0.5rem 0.625rem;
+.info {
+    width: 130px;
 }
 
 .address-container {
@@ -72,22 +68,30 @@
     gap: 0.5rem;
 }
 
+.address-postal-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.warning:empty {
+    margin: 0;
+}
+
 .warning {
-    margin-top: 1rem;
-    float: left;
+    margin-left: 0.75rem;
+}
+
+.precautions {
+    margin: 0.75rem 0 0 0.75rem;
 }
 
 .modify-btn {
-    margin-top: 3rem;
+    margin: 0 0.75rem 0.75rem 0;
     float: right;
 }
 
-.layout-1 {
-    width: 130px;
-}
-
-.secession-text-container {
-    color: white;
+#secessionForm {
     white-space: pre-line;
     padding: 2rem 3rem;
     border: 0.0625rem solid #202127;

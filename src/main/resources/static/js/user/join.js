@@ -1,26 +1,27 @@
 const joinForm = document.getElementById('joinForm'); // 회원가입 form
-const addressFindClose = document.getElementById('addressFindClose'); // 주소 찾기 창 close
+const addressFind = document.getElementById('addressFind');
 
 // 주소 찾기 버튼 클릭 함수
-joinForm['addressFindBtn'].onclick = function () {
-    // 다음 주소 API
+joinForm['addressFindBtn'].onclick = function (e) {
+    e.preventDefault();
+
     new daum.Postcode({
         width: '100%',
         height: '100%',
         oncomplete: function (data) {
             joinForm['addressPostal'].value = data['zonecode'];
             joinForm['addressPrimary'].value = data['address'];
-            addressFindClose.classList.remove('visible');
+            addressFind.classList.remove('visible');
             joinForm['addressSecondary'].focus();
             joinForm['addressSecondary'].select();
         }
-    }).embed(addressFindClose.querySelector('.modal'))
-    addressFindClose.classList.add('visible');
+    }).embed(addressFind.querySelector(':scope > .modal'))
+    addressFind.classList.add('visible');
 }
 
 // 주소 찾기 창 close 클릭 함수
-addressFindClose.querySelector('[rel="close"]').onclick = function () {
-    addressFindClose.classList.remove('visible');
+addressFind.querySelector('[rel="close"]').onclick = function () {
+    addressFind.classList.remove('visible');
 }
 
 // 이메일 인증번호 발송 onclick 함수

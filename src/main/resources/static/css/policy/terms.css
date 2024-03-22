@@ -2,10 +2,12 @@
 
 #main .content-container {
     margin: 5rem 0;
-}
 
-.margin-left {
-    margin-left: 0.75rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 5rem;
+    justify-content: flex-start;
 }
 
 .bold {
@@ -15,7 +17,6 @@
 
 .terms-container {
     border-top: 0.175rem solid #575757;
-    margin-top: 5rem;
 }
 
 .terms-container li {
@@ -24,12 +25,13 @@
 
 .terms-btn {
     width: 100%;
+    color: inherit;
+    background-color: #2A292E;
 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 1rem 0;
-    cursor: pointer;
 }
 
 .terms-btn .icon {
@@ -37,6 +39,7 @@
 }
 
 .terms-content {
+    padding: 0 0.5rem;
     background-color: #212329;
     max-height: 0;
     overflow: hidden;

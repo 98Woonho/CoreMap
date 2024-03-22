@@ -77,8 +77,10 @@ public class UserController {
     }
 
     @GetMapping("findEmail")
-    public void getFindEmail() {
+    public void getFindEmail(Model model) {
+        List<ContactCompany> contactCompanyList = userService.getAllContactCompanyList();
 
+        model.addAttribute("contactCompanyList", contactCompanyList);
     }
 
     @GetMapping("findEmailResult")
