@@ -36,18 +36,13 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler  
 
 
         Collection<? extends GrantedAuthority> collection =  authentication.getAuthorities();
-        collection.forEach( (role)->{
-
+        collection.forEach((role)->{
             try {
                 response.sendRedirect("/");
             }catch(Exception e){
                 e.printStackTrace();
             }
-
         });
-
-
     }
-
 }
 

@@ -38,12 +38,9 @@ dependencies {
 	//SpringSecuirty+Thymeleaf
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
-	//DBCONN BASIC
+	//DB CONNECT BASIC
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-
-	//ORM_MYBATIS
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 
 	//ORM_JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
