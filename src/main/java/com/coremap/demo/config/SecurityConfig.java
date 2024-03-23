@@ -12,7 +12,6 @@ import com.coremap.demo.config.auth.loginHandler.Oauth2JwtLoginSuccessHandler;
 import com.coremap.demo.config.auth.logoutHandler.CustomLogoutHandler;
 import com.coremap.demo.config.auth.logoutHandler.CustomLogoutSuccessHandler;
 import com.coremap.demo.domain.repository.UserRepository;
-import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +41,6 @@ public class SecurityConfig {
                 (config)->{ config.disable(); }
         );
 
-
         //요청 URL별 접근 제한
         http.authorizeHttpRequests(
                 authorize->{
@@ -50,6 +48,7 @@ public class SecurityConfig {
                     authorize.anyRequest().authenticated();
                 }
         );
+
         //로그인
         http.formLogin(login->{
             login.permitAll();
@@ -71,7 +70,6 @@ public class SecurityConfig {
                     logout.invalidateHttpSession(true);
                 }
         );
-        //Session
 
         //예외처리
         http.exceptionHandling(
