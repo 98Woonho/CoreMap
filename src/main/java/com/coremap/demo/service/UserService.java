@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -70,8 +72,8 @@ public class UserService {
 
         String code = RandomStringUtils.randomNumeric(6);
         emailAuthDto.setCode(code);
-        emailAuthDto.setCreatedAt(new Date()); // 이메일이 보내졌을 때의 시간
-        emailAuthDto.setExpiresAt(DateUtils.addMinutes(emailAuthDto.getCreatedAt(), 5)); // 이메일을 보내고 난 뒤 5분 후의 시간
+        emailAuthDto.setCreatedAt(LocalDateTime.now()); // 이메일이 보내졌을 때의 시간
+        emailAuthDto.setExpiresAt(emailAuthDto.getCreatedAt().plus(5, ChronoUnit.MINUTES)); // 이메일을 보내고 난 뒤 5분 후의 시간
         emailAuthDto.setVerified(false);
 
         String salt = CryptoUtil.hashSha512(String.format("%s%s%f%f",
@@ -123,7 +125,7 @@ public class UserService {
             return "FAILURE_INVALID_CODE";
         }
 
-        if (new Date().compareTo(emailAuth.getExpiresAt()) > 0) {
+        if (LocalDateTime.now().isAfter(emailAuth.getExpiresAt())) {
             return "FAILURE_EXPIRED";
         }
 
@@ -175,7 +177,7 @@ public class UserService {
                 .addressSecondary(userDto.getAddressSecondary())
                 .role("ROLE_USER")
                 .isSuspended(false)
-                .registeredAt(new Date())
+                .registeredAt(LocalDateTime.now())
                 .build();
 
         userRepository.save(user);

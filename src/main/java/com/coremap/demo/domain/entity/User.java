@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -33,7 +34,7 @@ public class User {
     @Column(name = "suspended_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isSuspended;
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
-    private Date registeredAt;
+    private LocalDateTime registeredAt;
 
 //    public static UserDto entityToDto(User user){
 //        UserDto dto = UserDto.builder()

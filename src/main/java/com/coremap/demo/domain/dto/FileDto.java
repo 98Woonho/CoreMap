@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -22,7 +23,7 @@ public class FileDto {
     private Long articleId;
     private Long articleIndex;
     private String username;
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     public FileDto(MultipartFile file) throws IOException {
         super();

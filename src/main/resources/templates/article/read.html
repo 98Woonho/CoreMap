@@ -5,9 +5,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="article-status" th:content="${article != null}">
-    <meta name="user-status" th:content="${#authentication.getPrincipal() != 'anonymousUser'}">
-    <meta name="info-status" th:if="${user != null && (user.role != 'ROLE_ADMIN')}"
-          th:content="${!(user.nickname == null || user.name == null || user.contactCompany.code == null || user.contact == null || user.addressPostal == null || user.addressPrimary == null || user.addressSecondary == null)}">
+    <meta name="user-status" th:content="${#authentication.principal != 'anonymousUser'}">
+    <meta name="info-status" th:if="${#authentication.principal != 'anonymousUser' && #authentication.principal.userDto.role != 'ROLE_ADMIN'}"
+          th:content="${!(#authentication.principal.userDto.nickname == null || #authentication.principal.userDto.name == null || #authentication.principal.userDto.contactCompany.code == null || #authentication.principal.userDto.contact == null || #authentication.principal.userDto.addressPostal == null || #authentication.principal.userDto.addressPrimary == null || #authentication.principal.userDto.addressSecondary == null)}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
@@ -75,8 +75,7 @@
             <tfoot>
             <tr>
                 <td colspan="4">
-                    <div class="bottom-button-container">
-                        <!-- #request.getParameter('a') : 주소창에서 a라는 속성의 값을 가져옴 -->
+                    <div class="bottom-button-container" th:with="isAuth = ${#authentication.principal != 'anonymousUser' && (#authentication.principal.userDto.username == article.user.username || #authentication.principal.userDto.role == 'ROLE_ADMIN')}">
                         <a href="#" class="common-btn"
                            th:href="@{/board/list (code=${board.code}, page=${page})}"
                            th:if="${criterion == null || keyword == null}">목록</a>
@@ -84,11 +83,9 @@
                            th:href="@{/board/list (code=${board.code}, page=${page}, criterion = ${criterion}, keyword = ${keyword})}"
                            th:if="${criterion != null && keyword != null}">목록</a>
                         <span class="flex-grow-1"></span>
-                        <a class="common-btn" rel="modify" sec:authorize="isAuthenticated()"
-                           th:if="${(#authentication.principal.userDto.username == article.user.username)}"
+                        <a class="common-btn" th:if="${isAuth}"
                            th:href="@{/article/modify(index=${article.indexInBoard}, code=${board.code})}">수정</a>
-                        <button class="common-btn" id="deleteBtn" sec:authorize="isAuthenticated()"
-                                th:if="${(#authentication.principal.userDto.username == article.user.username) || user.role == 'ROLE_ADMIN'}">
+                        <button class="common-btn" id="deleteBtn" th:if="${isAuth}">
                             삭제
                         </button>
                     </div>
@@ -98,7 +95,8 @@
         </table>
         <form id="commentForm" th:if="${board.code != 'notice'}"
               th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
-            <p class="comment-count">댓글 (<span th:text="${commentList.size()}"></span>)</p>
+            <input hidden name="articleId" type="hidden" th:value="${article.getId()}">
+            <p class="comment-count">댓글 (<span class="count"></span>)</p>
             <span class="horizontal gap-1">
                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
                           class="common-input flex-grow-1"
@@ -137,7 +135,7 @@
                                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
                                           class="common-input"
                                           th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
-                                <button value="댓글 수정" class="common-btn modify-comment-btn"></button>
+                                <button class="common-btn modify-comment-btn">댓글 수정</button>
                             </form>
                         </div>
                         <div class="foot">
@@ -160,7 +158,7 @@
                                           placeholder="답글을 입력해 주세요."
                                           th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                             </label>
-                            <input class="common-btn" type="submit" value="답글 달기">
+                            <button class="common-btn">답글 달기</button>
                         </form>
                     </div>
                 </td>

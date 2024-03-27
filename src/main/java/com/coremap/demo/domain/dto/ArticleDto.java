@@ -20,7 +20,7 @@ public class ArticleDto {
     private String content;
     private int view;
     private LocalDateTime writtenAt;
-    private Date modifiedAt;
+    private LocalDateTime modifiedAt;
     private String boardCode;
     private Long indexInBoard;
 }

@@ -36,27 +36,41 @@ public class ArticleService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private SubCommentRepository subCommentRepository;
-
-    @Autowired
     private CommentLikeRepository commentLikeRepository;
 
-    @Autowired
-    private SubCommentLikeRepository subCommentLikeRepository;
+    public User getUser(String username) {
+        return userRepository.findById(username).get();
+    }
 
     public Board getBoard(String code) {
         return boardRepository.findById(code).get();
     }
 
-    public User getUser(String username) {
-        return userRepository.findById(username).get();
+    public int getLikeCount(Long commentId, Boolean status) {
+
+
+        return commentLikeRepository.findAllByCommentIdAndLikeStatus(commentId, status).size();
+    }
+
+    public int getDislikeCount(Long commentId, Boolean status) {
+        return commentLikeRepository.findAllByCommentIdAndLikeStatus(commentId, status).size();
+    }
+
+    public int getLikeStatus(Long commentId, String username) {
+        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(commentId, username);
+
+        if(commentLike == null) {
+            return 0;
+        }
+
+        return commentLike.getLikeStatus() ? 1 : -1;
     }
 
     public Article getArticle(Long indexInBoard, String boardCode) {
         Article article = articleRepository.findByIndexInBoardAndBoardCode(indexInBoard, boardCode);
 
         // 게시글 불러올 때 조회수 증가
-        if(article != null) {
+        if (article != null) {
             int view = article.getView();
             view += 1;
 
@@ -81,46 +95,9 @@ public class ArticleService {
         return boardList.toArray(new Board[0]);
     }
 
-    public List<Comment> getCommentList(Long id) {
-        return commentRepository.findByArticleId(id);
+    public List<Comment> getCommentList(Long articleId) {
+        return commentRepository.findByArticleId(articleId);
     }
-
-    public List<SubComment> getSubCommentList(Long id) {
-        return subCommentRepository.findByCommentArticleId(id);
-    }
-
-    public List<CommentLike> getCommentLikeList(Long id) {
-        return commentLikeRepository.findByCommentArticleId(id);
-    }
-
-    public int getLikeCount(Long id, boolean isLike) {
-        List<CommentLike> likeList = commentLikeRepository.findByCommentIdAndIsLikeIs(id, isLike);
-
-        return likeList.size();
-    }
-
-    public int getSubCommentLikeCount(Long id, boolean isLike) {
-        List<SubCommentLike> likeList = subCommentLikeRepository.findBySubCommentIdAndIsLikeIs(id, isLike);
-
-        return likeList.size();
-    }
-
-    public int getDislikeCount(Long id, boolean isLike) {
-        List<CommentLike> likeList = commentLikeRepository.findByCommentIdAndIsLikeIs(id, isLike);
-
-        return likeList.size();
-    }
-
-    public int getSubCommentDislikeCount(Long id, boolean isLike) {
-        List<SubCommentLike> likeList = subCommentLikeRepository.findBySubCommentIdAndIsLikeIs(id, isLike);
-
-        return likeList.size();
-    }
-
-    public List<SubCommentLike> getSubCommentLikeList(Long id) {
-        return subCommentLikeRepository.findBySubCommentCommentArticleId(id);
-    }
-
 
     @Transactional(rollbackFor = Exception.class)
     public Image uploadImage(ImageDto imageDto) {
@@ -128,7 +105,7 @@ public class ArticleService {
         String username = authentication.getName();
 
         User user = userRepository.findById(username).get();
-        imageDto.setCreatedAt(new Date());
+        imageDto.setCreatedAt(LocalDateTime.now());
 
         Image image = new Image();
         image.setType(imageDto.getType());
@@ -151,7 +128,7 @@ public class ArticleService {
         String username = authentication.getName();
 
         User user = userRepository.findById(username).get();
-        fileDto.setCreatedAt(new Date());
+        fileDto.setCreatedAt(LocalDateTime.now());
 
         File file = new File();
         file.setType(fileDto.getType());
@@ -176,7 +153,7 @@ public class ArticleService {
         Article article = new Article();
 
         // 작성할려는 게시판에 게시글이 있으면, 제일 최근 게시글의 인덱스에 +1을 한 인덱스를 현재 작성할려는 게시글에 set
-        if(articleRepository.findTopByBoardCodeOrderByIndexInBoardDesc(articleDto.getBoardCode()) != null) {
+        if (articleRepository.findTopByBoardCodeOrderByIndexInBoardDesc(articleDto.getBoardCode()) != null) {
             Article latestArticle = articleRepository.findTopByBoardCodeOrderByIndexInBoardDesc(articleDto.getBoardCode());
 
             Long latestIndexInBoard = latestArticle.getIndexInBoard();
@@ -189,7 +166,7 @@ public class ArticleService {
 
         article.setUser(user);
         article.setView(0);
-        article.setWrittenAt(new Date());
+        article.setWrittenAt(LocalDateTime.now());
         article.setModifiedAt(null);
         article.setTitle(articleDto.getTitle());
         article.setContent(articleDto.getContent());
@@ -252,7 +229,7 @@ public class ArticleService {
         // 게시글 수정사항 set
         article.setTitle(articleDto.getTitle());
         article.setContent(articleDto.getContent());
-        article.setModifiedAt(new Date());
+        article.setModifiedAt(LocalDateTime.now());
 
         articleRepository.save(article);
 
@@ -305,15 +282,18 @@ public class ArticleService {
         comment.setContent(commentDto.getContent());
         comment.setArticle(article);
         comment.setUser(user);
-        comment.setWrittenAt(new Date());
+        comment.setWrittenAt(LocalDateTime.now());
+        comment.setIsDeleted(false);
+
+        if(commentDto.getCommentId() != null) {
+            Comment parentComment = commentRepository.findById(commentDto.getCommentId()).get();
+
+            comment.setComment(parentComment);
+        } else {
+            comment.setComment(null);
+        }
 
         commentRepository.save(comment);
-
-        CommentLike commentLike = new CommentLike();
-        commentLike.setUser(user);
-        commentLike.setComment(comment);
-        
-        commentLikeRepository.save(commentLike);
 
         return "SUCCESS";
     }
@@ -323,7 +303,7 @@ public class ArticleService {
         Comment comment = commentRepository.findById(commentDto.getId()).get();
 
         comment.setContent(commentDto.getContent());
-        comment.setModifiedAt(new Date());
+        comment.setModifiedAt(LocalDateTime.now());
 
         commentRepository.save(comment);
 
@@ -333,51 +313,6 @@ public class ArticleService {
     @Transactional(rollbackFor = Exception.class)
     public String deleteComment(Long id) {
         commentRepository.deleteById(id);
-
-        return "SUCCESS";
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public String writeSubComment(SubCommentDto subCommentDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User user = userRepository.findById(username).get();
-
-        Comment comment = commentRepository.findById(subCommentDto.getCommentId()).get();
-
-        SubComment subComment = new SubComment();
-        subComment.setContent(subCommentDto.getContent());
-        subComment.setComment(comment);
-        subComment.setUser(user);
-        subComment.setWrittenAt(new Date());
-
-        subCommentRepository.save(subComment);
-
-        SubCommentLike subCommentLike = new SubCommentLike();
-        subCommentLike.setUser(user);
-        subCommentLike.setSubComment(subComment);
-
-        subCommentLikeRepository.save(subCommentLike);
-
-        return "SUCCESS";
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public String updateSubComment(SubCommentDto subCommentDto) {
-        SubComment subComment = subCommentRepository.findById(subCommentDto.getId()).get();
-
-        subComment.setContent(subCommentDto.getContent());
-        subComment.setModifiedAt(new Date());
-
-        subCommentRepository.save(subComment);
-
-        return "SUCCESS";
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public String deleteSubComment(Long id) {
-        subCommentRepository.deleteById(id);
 
         return "SUCCESS";
     }
@@ -395,100 +330,45 @@ public class ArticleService {
         commentLike.setComment(comment);
         commentLike.setUser(user);
 
-        commentLike.setIsLike(commentLikeDto.getIsLike().equals("true"));
+        commentLike.setLikeStatus(commentLikeDto.getIsLike().equals("true"));
 
         commentLikeRepository.save(commentLike);
 
         return "SUCCESS";
     }
 
+    // 댓글 좋아요 기능
     @Transactional(rollbackFor = Exception.class)
-    public String updateCommentLike(CommentLikeDto commentLikeDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+    public String updateCommentLike(Long commentId, Boolean status, UserDto userDto) {
+        // commentIndex & user.email로 가져온 CommentLikeEntity가 없고(null 이고),
+        // status 가 true라면 좋아요로 INSERT,
+        // status 가 false 라면, 싫어요로 INSERT,
+        // status 가 null 이라면, 논리적 오류
 
-        User user = userRepository.findById(username).get();
+        // commentIndex & user.email로 가져온 CommentLikeEntity가 있고(null이 아니고),
+        // status 가 true라면 좋아요로 수정,
+        // status 가 false 라면, 싫어요로 수정,
+        // status 가 null 이라면, DELETE
 
-        Comment comment = commentRepository.findById(commentLikeDto.getCommentId()).get();
+        Comment comment = commentRepository.findById(commentId).get();
 
-        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(comment.getId(), user.getUsername());
+        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(commentId, userDto.getUsername());
 
-        commentLike.setIsLike(commentLikeDto.getIsLike().equals("true"));
+        User user = userRepository.findById(userDto.getUsername()).get();
 
-        return "SUCCESS";
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public String deleteCommentLike(CommentLikeDto commentLikeDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User user = userRepository.findById(username).get();
-
-        Comment comment = commentRepository.findById(commentLikeDto.getCommentId()).get();
-
-        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(comment.getId(), user.getUsername());
-
-        commentLike.setIsLike(null);
+        if (commentLike == null) {
+            commentLike.setUser(user);
+            commentLike.setComment(comment);
+            commentLike.setLikeStatus(status);
+        } else {
+            if (status == null) {
+                commentLikeRepository.deleteByCommentIdAndUserUsername(commentId, user.getUsername());
+                return "SUCCESS";
+            }
+            commentLike.setLikeStatus(status);
+        }
 
         commentLikeRepository.save(commentLike);
-
-        return "SUCCESS";
-    }
-
-
-
-    
-    @Transactional(rollbackFor = Exception.class)
-    public String subCommentLike(SubCommentLikeDto subCommentLikeDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User user = userRepository.findById(username).get();
-
-        SubComment subComment = subCommentRepository.findById(subCommentLikeDto.getSubCommentId()).get();
-
-        SubCommentLike subCommentLike = new SubCommentLike();
-        subCommentLike.setSubComment(subComment);
-        subCommentLike.setUser(user);
-
-        subCommentLike.setIsLike(subCommentLikeDto.getIsLike().equals("true"));
-
-        subCommentLikeRepository.save(subCommentLike);
-
-        return "SUCCESS";
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public String updateSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User user = userRepository.findById(username).get();
-
-        SubComment subComment = subCommentRepository.findById(subCommentLikeDto.getSubCommentId()).get();
-
-        SubCommentLike subCommentLike = subCommentLikeRepository.findBySubCommentIdAndUserUsername(subComment.getId(), user.getUsername());
-
-        subCommentLike.setIsLike(subCommentLikeDto.getIsLike().equals("true"));
-
-        return "SUCCESS";
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public String deleteSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User user = userRepository.findById(username).get();
-
-        SubComment subComment = subCommentRepository.findById(subCommentLikeDto.getSubCommentId()).get();
-
-        SubCommentLike subCommentLike = subCommentLikeRepository. findBySubCommentIdAndUserUsername(subComment.getId(), user.getUsername());
-
-        subCommentLike.setIsLike(null);
-
-        subCommentLikeRepository.save(subCommentLike);
 
         return "SUCCESS";
     }
