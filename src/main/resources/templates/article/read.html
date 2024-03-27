@@ -98,10 +98,10 @@
         </table>
         <form id="commentForm" th:if="${board.code != 'notice'}"
               th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
-            <p class="comment-count">댓글 (<span th:text="${commentList.size() + subCommentList.size()}"></span>)</p>
+            <p class="comment-count">댓글 (<span th:text="${commentList.size()}"></span>)</p>
             <span class="horizontal gap-1">
                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
-                              class="common-input flex-grow-1"
+                          class="common-input flex-grow-1"
                           th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                 <button type="submit" class="common-btn">댓글 쓰기</button>
             </span>
@@ -120,47 +120,34 @@
             <tbody>
             <tr th:each="comment : ${commentList}">
                 <td>
-                    <div class="comment" th:data-id="${comment.id}">
-                        <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}"
-                                  th:each="commentLike : ${commentLikeList}">
-                            <th:block
-                                    th:if="${comment.id == commentLike.comment.id && #authentication.principal.userDto.username == commentLike.user.username}"
-                                    th:with="isLike=${commentLike.isLike}">
-                                <input type="hidden" class="is-like" th:value="${isLike}">
-                            </th:block>
-                        </th:block>
+                    <div class="comment">
                         <div class="head">
-                            <span class="nickname" th:text="${comment.user.nickname}"></span>
-                            <span class="written-at" th:text="${comment.writtenAt}"></span>
+                            <span class="nickname">닉네임</span>
+                            <span class="written-at">2024-03-27 14:01:15.657</span>
                             <span class="modified" th:if="${comment.modifiedAt != null}">(수정됨)</span>
-                            <span th:if="${article.user.username == comment.user.username}">- 작성자</span>
                             <span class="flex-grow-1"></span>
-                            <th:block
-                                    th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.principal.userDto.username == comment.user.username || #authentication.principal.userDto.username == article.user.username || user.role == 'ROLE_ADMIN')}">
-                                <span class="pointer modify">수정</span>
-                                <span class="pointer delete">삭제</span>
-                            </th:block>
+                            <span class="pointer modify">수정</span>
+                            <span class="pointer delete">삭제</span>
                             <span class="pointer modify-cancel">수정 취소</span>
                         </div>
                         <div class="body">
-                            <span class="content" th:text="${comment.content}"></span>
+                            <span class="content">댓글 내용</span>
                             <form id="modifyForm" class="modify-form"
                                   th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
                                 <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
                                           class="common-input"
                                           th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
-                                <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
+                                <button value="댓글 수정" class="common-btn modify-comment-btn"></button>
                             </form>
                         </div>
-                        <div class="foot" th:each="commentLikeCount : ${commentLikeCountList}"
-                             th:if="${comment.id == commentLikeCount.commentId}">
+                        <div class="foot">
                             <span class="vote vote-up">
                                 <img alt="👍" class="icon" src="/images/comment/vote.up.png">
-                                <span class="value" th:text="${commentLikeCount.likeCount}"></span>
+                                <span class="value">173</span>
                                 </span>
                             <span class="vote vote-down">
                                 <img alt="👎" class="icon" src="/images/comment/vote.down.png">
-                                <span class="value" th:text="${commentLikeCount.dislikeCount}"></span>
+                                <span class="value">133</span>
                             </span>
                             <span class="flex-grow-1"></span>
                             <p class="pointer reply">답글 달기</p>
@@ -176,53 +163,6 @@
                             <input class="common-btn" type="submit" value="답글 달기">
                         </form>
                     </div>
-                    <th:block th:each="subComment : ${subCommentList}" th:if="${comment.id == subComment.comment.id}">
-                        <div class="comment sub" th:data-id="${subComment.id}">
-                            <th:block th:if="${#authentication.getPrincipal() != 'anonymousUser'}"
-                                      th:each="subCommentLike : ${subCommentLikeList}">
-                                <th:block
-                                        th:if="${subComment.id == subCommentLike.subComment.id && #authentication.principal.userDto.username == subCommentLike.user.username}"
-                                        th:with="isLike=${subCommentLike.isLike}">
-                                    <input type="hidden" class="is-like" th:value="${isLike}">
-                                </th:block>
-                            </th:block>
-                            <div class="head">
-                                <span class="nickname" th:text="${subComment.user.nickname}"></span>
-                                <span class="written-at" th:text="${subComment.writtenAt}"></span>
-                                <span class="modified" th:if="${subComment.modifiedAt != null}">(수정됨)</span>
-                                <span th:if="${article.user.username == subComment.user.username}">- 작성자</span>
-                                <span class="flew-grow-1"></span>
-                                <th:block
-                                        th:if="${#authentication.getPrincipal() != 'anonymousUser' && (#authentication.principal.userDto.username == subComment.user.username || #authentication.principal.userDto.username == article.user.username || user.role == 'ROLE_ADMIN')}">
-                                    <span class="flex-grow-1"></span>
-                                    <span class="pointer modify">수정</span>
-                                    <span class="pointer delete">삭제</span>
-                                </th:block>
-                                <span class="pointer modify-cancel">수정 취소</span>
-                            </div>
-                            <div class="body">
-                                <span class="content" th:text="${subComment.content}"></span>
-                                <form id="subCommentModifyForm" class="modify-form sub-comment-modify-form"
-                                      th:with="commentRegex = ${T(com.coremap.demo.regexes.CommentRegex)}">
-                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."
-                                          class="common-input"
-                                          th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
-                                    <input type="submit" value="댓글 수정" class="common-btn modify-comment-btn">
-                                </form>
-                            </div>
-                            <div class="foot" th:each="subCommentLikeCount : ${subCommentLikeCountList}"
-                                 th:if="${subComment.id == subCommentLikeCount.subCommentId}">
-                                <span class="vote vote-up">
-                                    <img alt="👍" class="icon" src="/images/comment/vote.up.png">
-                                    <span class="value" th:text="${subCommentLikeCount.likeCount}"></span>
-                                </span>
-                                <span class="vote vote-down">
-                                    <img alt="👎" class="icon" src="/images/comment/vote.down.png">
-                                    <span class="value" th:text="${subCommentLikeCount.dislikeCount}"></span>
-                                </span>
-                            </div>
-                        </div>
-                    </th:block>
                 </td>
             </tr>
             </tbody>
