@@ -44,27 +44,27 @@ comment.alterLike = function (commentId, status) {
         formData.append('status', status);
     }
 
-    axios.put('/article/commentLike')
+    axios.put('/article/commentLike', formData)
         .then(res => {
-            // const commentEl = commentTable.querySelector(`.comment[data-index="${commentId}"]`);
-            // const upVoteEl = commentEl.querySelector('.vote-up');
-            // const downVoteEl = commentEl.querySelector('.vote-down');
-            // upVoteEl.querySelector('.value').innerText = responseObject['likeCount'];
-            // downVoteEl.querySelector('.value').innerText = responseObject['dislikeCount'];
-            // switch (responseObject['likeStatus']) {
-            //     case 0:
-            //         upVoteEl.classList.remove('selected');
-            //         downVoteEl.classList.remove('selected');
-            //         break;
-            //     case 1:
-            //         upVoteEl.classList.add('selected');
-            //         downVoteEl.classList.remove('selected');
-            //         break;
-            //     case -1:
-            //         upVoteEl.classList.remove('selected');
-            //         downVoteEl.classList.add('selected');
-            //         break;
-            // }
+            const commentEl = commentTable.querySelector(`.comment[data-index="${commentId}"]`);
+            const upVoteEl = commentEl.querySelector('.vote-up');
+            const downVoteEl = commentEl.querySelector('.vote-down');
+            upVoteEl.querySelector('.value').innerText = res.data.likeCount;
+            downVoteEl.querySelector('.value').innerText = res.data.dislikeCount;
+            switch (res.data.likeStatus) {
+                case 0:
+                    upVoteEl.classList.remove('selected');
+                    downVoteEl.classList.remove('selected');
+                    break;
+                case 1:
+                    upVoteEl.classList.add('selected');
+                    downVoteEl.classList.remove('selected');
+                    break;
+                case -1:
+                    upVoteEl.classList.remove('selected');
+                    downVoteEl.classList.add('selected');
+                    break;
+            }
         })
         .catch(err => {
             alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
@@ -92,10 +92,10 @@ comment.append = function (allComments, targetComment) {
                 ${typeof targetComment['content'] === 'string' && targetComment['isMine'] === true ? '<span class="pointer modify-cancel">수정 취소</span>' : ''}
                     </div>
                         <div class="body">
-                            <span class="content">${typeof targetComment['content'] === 'string' ? targetComment['content'] : '삭제된 댓글입니다.'}</span>
+                            <p class="content">${typeof targetComment['content'] === 'string' ? targetComment['content'] : '삭제된 댓글입니다.'}</p>
                             ${typeof targetComment['content'] === 'string' ? `
                             <form class="modify-form">
-                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."  class="common-field"></textarea>
+                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."  class="common-input"></textarea>
                                 <button class="common-btn modify-comment-btn">댓글 수정</button>
                             </form>` : ''}
                         </div>
@@ -105,7 +105,7 @@ comment.append = function (allComments, targetComment) {
                                 <img alt="👍" class="icon" src="/images/comment/vote.up.png">
                                 <span class="value">${targetComment['likeCount']}</span>
                             </span>
-                            <span class="vote ${targetComment['likeStatus'] === -1 ? 'selected' : ''}" rel="vote" data-vote="down">
+                            <span class="vote vote-down ${targetComment['likeStatus'] === -1 ? 'selected' : ''}">
                                 <img alt="👎" class="icon" src="/images/comment/vote.down.png">
                                 <span class="value">${targetComment['dislikeCount']}</span>
                             </span> 
@@ -125,7 +125,7 @@ comment.append = function (allComments, targetComment) {
     if (replyForm) {
         // 답글 달기 눌렀을 때
         commentEl.querySelector('.reply').addEventListener('click', function () {
-            const userStatus = document.head.querySelector('meta[name="_user-status"]').getAttribute('content');
+            const userStatus = document.head.querySelector('meta[name="user-status"]').getAttribute('content');
             if (userStatus !== 'true') {
                 dialog.show({
                     title: '경고',
@@ -189,7 +189,7 @@ comment.append = function (allComments, targetComment) {
 
         // voteDown 눌렀을 때
         voteDown.addEventListener('click', function () {
-            const userStatus = document.head.querySelector('meta[name="_user-status"]').getAttribute('content');
+            const userStatus = document.head.querySelector('meta[name="user-status"]').getAttribute('content');
             if (userStatus !== 'true') {
                 alert('로그인 후 이용할 수 있습니다.');
                 return false;
@@ -206,10 +206,8 @@ comment.append = function (allComments, targetComment) {
         // 댓글 삭제 버튼 눌렀을 때
         deleteEl.addEventListener('click', function () {
             if (confirm('정말로 댓글을 삭제 하시겠습니까?')) {
-                const formData = new FormData();
-                formData.append('index', targetComment['id'])
 
-                axios.delete('/article/comment')
+                axios.delete(`/article/comment?id=${targetComment['id']}`)
                     .then(res => {
                         comment.load();
                     })
@@ -241,7 +239,7 @@ comment.append = function (allComments, targetComment) {
                 alert('댓글을 입력해 주세요.');
                 return false;
             }
-            if (!!new RegExp(modifyForm['content'].dataset.regex).test(modifyForm['content'].value)) {
+            if (!new RegExp(modifyForm['content'].dataset.regex).test(modifyForm['content'].value)) {
                 alert('올바른 댓글을 입력해 주세요.');
                 return false;
             }
@@ -283,10 +281,8 @@ comment.append = function (allComments, targetComment) {
 comment.load = function () {
     axios.get(`/article/comment?articleId=${commentForm['articleId'].value}`)
         .then(res => {
-            console.log(res.data);
             const comments = res.data;
             for (const commentObject of comments.filter(x => typeof x['commentId'] !== 'number')) { // 대댓글이 아닌 것만!
-                console.log(commentObject);
                 comment.append(comments, commentObject);
             }
             commentForm.querySelector('.count').innerText = comments.length;

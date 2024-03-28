@@ -6,8 +6,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta name="article-status" th:content="${article != null}">
     <meta name="user-status" th:content="${#authentication.principal != 'anonymousUser'}">
-    <meta name="info-status" th:if="${#authentication.principal != 'anonymousUser' && #authentication.principal.userDto.role != 'ROLE_ADMIN'}"
-          th:content="${!(#authentication.principal.userDto.nickname == null || #authentication.principal.userDto.name == null || #authentication.principal.userDto.contactCompany.code == null || #authentication.principal.userDto.contact == null || #authentication.principal.userDto.addressPostal == null || #authentication.principal.userDto.addressPrimary == null || #authentication.principal.userDto.addressSecondary == null)}">
+    <meta name="info-status" th:if="${#authentication.principal != 'anonymousUser' && #authentication.principal.role != 'ROLE_ADMIN'}"
+          th:content="${!(#authentication.principal.nickname == null || #authentication.principal.name == null || #authentication.principal.contactCompanyCode == null || #authentication.principal.contact == null || #authentication.principal.addressPostal == null || #authentication.principal.addressPrimary == null || #authentication.principal.addressSecondary == null)}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
@@ -75,7 +75,7 @@
             <tfoot>
             <tr>
                 <td colspan="4">
-                    <div class="bottom-button-container" th:with="isAuth = ${#authentication.principal != 'anonymousUser' && (#authentication.principal.userDto.username == article.user.username || #authentication.principal.userDto.role == 'ROLE_ADMIN')}">
+                    <div class="bottom-button-container" th:with="isAuth = ${#authentication.principal != 'anonymousUser' && (#authentication.principal.username == article.user.username || #authentication.principal.role == 'ROLE_ADMIN')}">
                         <a href="#" class="common-btn"
                            th:href="@{/board/list (code=${board.code}, page=${page})}"
                            th:if="${criterion == null || keyword == null}">목록</a>

@@ -36,10 +36,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     public Map<String, Object> getAttributes() {
         return null;
     }
-    @Override
-    public String getName() {
-        return null;
-    }
     //OAUTH2---------------------------------------
 
     // 유저의 권한 목록
@@ -55,16 +51,48 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return collection;
     }
 
-    // 비밀번호
+    // username
+    @Override
+    public String getUsername() {
+        return userDto.getUsername();
+    }
+
+    // password
     @Override
     public String getPassword() {
         return userDto.getPassword();
     }
 
-    // PK(username) 값
-    @Override
-    public String getUsername() {
-        return userDto.getUsername();
+    public String getNickname() {
+        return userDto.getNickname();
+    }
+
+    public String getName() {
+        return userDto.getName();
+    }
+
+    public String getContactCompanyCode() {
+        return userDto.getContactCompanyCode();
+    }
+
+    public String getContact() {
+        return userDto.getContact();
+    }
+
+    public String getAddressPostal() {
+        return userDto.getAddressPostal();
+    }
+
+    public String getAddressPrimary() {
+        return userDto.getAddressPrimary();
+    }
+
+    public String getAddressSecondary() {
+        return userDto.getAddressSecondary();
+    }
+
+    public String getRole() {
+        return userDto.getRole();
     }
 
     // 계정 만료 여부

@@ -38,10 +38,6 @@ public class ArticleService {
     @Autowired
     private CommentLikeRepository commentLikeRepository;
 
-    public User getUser(String username) {
-        return userRepository.findById(username).get();
-    }
-
     public Board getBoard(String code) {
         return boardRepository.findById(code).get();
     }
@@ -57,6 +53,10 @@ public class ArticleService {
     }
 
     public int getLikeStatus(Long commentId, String username) {
+        if(username == null) {
+            return 0;
+        }
+
         CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(commentId, username);
 
         if(commentLike == null) {
@@ -339,7 +339,7 @@ public class ArticleService {
 
     // 댓글 좋아요 기능
     @Transactional(rollbackFor = Exception.class)
-    public String updateCommentLike(Long commentId, Boolean status, UserDto userDto) {
+    public String updateCommentLike(Long commentId, Boolean status, String username) {
         // commentIndex & user.email로 가져온 CommentLikeEntity가 없고(null 이고),
         // status 가 true라면 좋아요로 INSERT,
         // status 가 false 라면, 싫어요로 INSERT,
@@ -352,23 +352,27 @@ public class ArticleService {
 
         Comment comment = commentRepository.findById(commentId).get();
 
-        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(commentId, userDto.getUsername());
+        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserUsername(commentId, username);
 
-        User user = userRepository.findById(userDto.getUsername()).get();
+        User user = userRepository.findById(username).get();
 
         if (commentLike == null) {
-            commentLike.setUser(user);
-            commentLike.setComment(comment);
-            commentLike.setLikeStatus(status);
+            CommentLike newCommentLike = new CommentLike();
+            
+            newCommentLike.setUser(user);
+            newCommentLike.setComment(comment);
+            newCommentLike.setLikeStatus(status);
+
+            commentLikeRepository.save(newCommentLike);
         } else {
             if (status == null) {
                 commentLikeRepository.deleteByCommentIdAndUserUsername(commentId, user.getUsername());
                 return "SUCCESS";
             }
             commentLike.setLikeStatus(status);
-        }
 
-        commentLikeRepository.save(commentLike);
+            commentLikeRepository.save(commentLike);
+        }
 
         return "SUCCESS";
     }

@@ -161,17 +161,13 @@ public class ArticleController {
 
     // 게시글 수정 view
     @GetMapping("modify")
-    public void getModify(@RequestParam(value = "index") Long index,
+    public void getModify(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                          @RequestParam(value = "index") Long index,
                           @RequestParam(value = "code") String code,
                           Model model) {
         Board[] boards = this.articleService.getBoards();
         Article article = this.articleService.getArticle(index, code);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        String role = authentication.getAuthorities().toString();
-
-        if (article.getUser().getUsername().equals(username) || role.equals("ROLE_ADMIN")) {
+        if (article.getUser().getUsername().equals(principalDetails.getUsername()) || principalDetails.getRole().equals("ROLE_ADMIN")) {
             Board board = Arrays.stream(boards)
                     .filter(x -> x.getCode().equals(code))
                     .findFirst()
@@ -203,11 +199,10 @@ public class ArticleController {
         return articleService.modify(articleDto, fileIdArray, imgIdArray);
     }
 
+    // 댓글 불러오기
     @GetMapping("comment")
     @ResponseBody
     public String getComment(@RequestParam(value = "articleId") Long articleId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        UserDto userDto = principalDetails.getUserDto();
-
         List<Comment> commentList = articleService.getCommentList(articleId);
 
         JSONArray responseArray = new JSONArray();
@@ -215,28 +210,32 @@ public class ArticleController {
             JSONObject commentObject = new JSONObject();
 
             commentObject.put("id", comment.getId());
-            commentObject.put("articleId", comment.getArticle().getIndexInBoard());
+            commentObject.put("articleId", comment.getArticle().getId());
             commentObject.put("username", comment.getUser().getUsername());
             commentObject.put("nickname", comment.getUser().getNickname());
             commentObject.put("commentId", comment.getComment() != null ? comment.getComment().getId() : null);
 
+            // 직렬화 오류 해결용 formatter
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
             if (comment.getModifiedAt() == null) {
                 // 수정 안 했으면 최초 작성 일시
-                commentObject.put("at", comment.getWrittenAt());
+                commentObject.put("at", comment.getWrittenAt().format(formatter));
                 commentObject.put("isModified", false);
             } else {
                 // 수정 했으면 수정 일시
-                commentObject.put("at", comment.getModifiedAt());
+                commentObject.put("at", comment.getModifiedAt().format(formatter));
                 commentObject.put("isModified", true);
             }
 
             // 댓글 자기가 쓴 건지 안 쓴 건지
-            commentObject.put("isMine", principalDetails != null && (userDto.getUsername().equals(comment.getUser().getUsername()) || userDto.getRole().equals("ROLE_ADMIN")));
+            commentObject.put("isMine", principalDetails != null && (principalDetails.getUsername().equals(comment.getUser().getUsername()) || principalDetails.getRole().equals("ROLE_ADMIN")));
+
             if (!comment.getIsDeleted()) {
                 commentObject.put("content", comment.getContent());
                 int likeCount = articleService.getLikeCount(comment.getId(), true);
                 int dislikeCount = articleService.getDislikeCount(comment.getId(), false);
-                int likeStatus = articleService.getLikeStatus(comment.getId(), userDto.getUsername());
+                int likeStatus = articleService.getLikeStatus(comment.getId(), principalDetails != null ? principalDetails.getUsername() : null);
 
                 commentObject.put("likeCount", likeCount);
                 commentObject.put("dislikeCount", dislikeCount);
@@ -275,16 +274,14 @@ public class ArticleController {
     public String putCommentLike(@RequestParam(value = "commentId") Long commentId,
                                  @RequestParam(value = "status", required = false) Boolean status,
                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        UserDto userDto = principalDetails.getUserDto();
-
-        String result = articleService.updateCommentLike(commentId, status, userDto);
+        String result = articleService.updateCommentLike(commentId, status, principalDetails.getUsername());
         JSONObject responseObject = new JSONObject();
 
         responseObject.put("result", result.toLowerCase());
         if (result.equals("SUCCESS")) {
             int likeCount = articleService.getLikeCount(commentId, true);
             int dislikeCount = articleService.getDislikeCount(commentId, false);
-            int likeStatus = articleService.getLikeStatus(commentId, userDto.getUsername());
+            int likeStatus = articleService.getLikeStatus(commentId, principalDetails.getUsername());
 
             responseObject.put("likeCount", likeCount);
             responseObject.put("dislikeCount", dislikeCount);
