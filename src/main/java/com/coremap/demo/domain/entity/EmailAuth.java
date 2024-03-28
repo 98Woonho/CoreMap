@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -27,10 +28,10 @@ public class EmailAuth {
     @Id
     @Column(nullable = false, columnDefinition = "VARCHAR(128)")
     private String salt;
-    @Column(nullable = false, columnDefinition = "DATETIME(6) DEFAULT NOW(6)")
-    private Date createdAt;
-    @Column(nullable = false, columnDefinition = "DATETIME(6)")
-    private Date expiresAt;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDateTime expiresAt;
     @Column(nullable = false, name = "verified_flag", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isVerified;
 

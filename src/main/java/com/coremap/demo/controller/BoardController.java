@@ -50,17 +50,6 @@ public class BoardController {
                     ? this.boardService.getArticles(board, pageVo, search)
                     : this.boardService.getArticles(board, pageVo);
 
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-            if(principal != "anonymousUser") {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-                String username = authentication.getName();
-
-                User user = boardService.getUser(username);
-                model.addAttribute("user", user);
-            }
-
             model.addAttribute("articleList", articleList);
             model.addAttribute("page", pageVo);
             model.addAttribute("searching", searching);

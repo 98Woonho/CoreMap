@@ -167,7 +167,7 @@ figure img {
 }
 
 .comment .head {
-    background-color: #17202a;
+    background-color: #566573;
     border-radius: 0.375rem;
     color: #ffffff;
     padding: 0.375rem 0.75rem;
@@ -180,7 +180,7 @@ figure img {
 }
 
 .comment.mine .head {
-    background-color: #5dade2;
+    background-color: #17202a;
 }
 
 .head .nickname {
@@ -243,11 +243,6 @@ figure img {
 
 .modify-form textarea {
     flex: 1;
-}
-
-.modify-form textarea:hover,
-.modify-form textarea:focus {
-    border: 0.0625rem solid #566573;
 }
 
 .comment.deleted .body {

@@ -5,8 +5,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="user-status" th:content="${#authentication.getPrincipal() != 'anonymousUser'}">
-    <meta name="info-status" th:if="${user != null && (user.role != 'ROLE_ADMIN')}" th:content="${!(user.nickname == null || user.name == null || user.contactCompany.code == null || user.contact == null || user.addressPostal == null || user.addressPrimary == null || user.addressSecondary == null)}">
+    <meta name="user-status" th:content="${#authentication.principal != 'anonymousUser'}">
+    <meta name="info-status" th:if="${#authentication.principal != 'anonymousUser' && #authentication.principal.role != 'ROLE_ADMIN'}"
+          th:content="${!(#authentication.principal.nickname == null || #authentication.principal.name == null || #authentication.principal.contactCompanyCode == null || #authentication.principal.contact == null || #authentication.principal.addressPostal == null || #authentication.principal.addressPrimary == null || #authentication.principal.addressSecondary == null)}">
     <title>코어맵 운동 가이드</title>
 
     <th:block th:insert="~{fragments/fragments.html :: headCdns}"></th:block>
@@ -51,7 +52,7 @@
                        th:if="${searching == true}"></a>
                 </td>
                 <td th:text="${article.user.nickname}"></td>
-                <td th:text="${#dates.format(article.writtenAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#temporals.format(article.writtenAt, 'yyyy-MM-dd HH:mm')}"></td>
                 <td th:text="${article.view}"></td>
             </tr>
             </tbody>

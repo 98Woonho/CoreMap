@@ -1,13 +1,16 @@
 package com.coremap.demo.controller;
 
+import com.coremap.demo.config.auth.PrincipalDetails;
 import com.coremap.demo.domain.dto.*;
 import com.coremap.demo.domain.entity.*;
 import com.coremap.demo.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -133,76 +137,9 @@ public class ArticleController {
                         @RequestParam(value = "keyword", required = false) String keyword,
                         @RequestParam(value = "code") String code,
                         Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if(principal != "anonymousUser") {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            String username = authentication.getName();
-
-            User user = articleService.getUser(username);
-            model.addAttribute("user", user);
-        }
-
-        Board[] boards = articleService.getBoards();
-
         Article article = articleService.getArticle(index, code);
 
-        if(article != null) {
-            List<Comment> commentList = articleService.getCommentList(article.getId());
-
-            List<SubComment> subCommentList = articleService.getSubCommentList(article.getId());
-
-            List<CommentLike> commentLikeList = articleService.getCommentLikeList(article.getId());
-
-            List<Map<String, Object>> commentLikeCountList = new ArrayList<>();
-            List<Long> existingCommentIdList = new ArrayList<>();
-
-            // 게시글에 있는 각 댓글의 좋아요/싫어요 개수를 가져옴.
-            for(CommentLike commentLike : commentLikeList) {
-                Long commentId = commentLike.getComment().getId();
-
-                if (existingCommentIdList.contains(commentId)) {
-                    continue;
-                }
-
-                int likeCount = articleService.getLikeCount(commentLike.getComment().getId(), true);
-                int dislikeCount = articleService.getDislikeCount(commentLike.getComment().getId(), false);
-
-                Map<String, Object> commentLikeCount = new HashMap<>();
-
-                commentLikeCount.put("commentId", commentLike.getComment().getId());
-                commentLikeCount.put("likeCount", likeCount);
-                commentLikeCount.put("dislikeCount", dislikeCount);
-                commentLikeCountList.add(commentLikeCount);
-                existingCommentIdList.add(commentId);
-            }
-
-            List<SubCommentLike> subCommentLikeList = articleService.getSubCommentLikeList(article.getId());
-
-            List<Map<String, Object>> subCommentLikeCountList = new ArrayList<>();
-            List<Long> existingSubCommentIdList = new ArrayList<>();
-
-            // 게시글에 있는 각 답글의 좋아요/싫어요 개수를 가져옴.
-            for(SubCommentLike subCommentLike : subCommentLikeList) {
-                Long subCommentId = subCommentLike.getSubComment().getId();
-
-                if (existingSubCommentIdList.contains(subCommentId)) {
-                    continue;
-                }
-
-                int likeCount = articleService.getSubCommentLikeCount(subCommentLike.getSubComment().getId(), true);
-                int dislikeCount = articleService.getSubCommentDislikeCount(subCommentLike.getSubComment().getId(), false);
-
-                Map<String, Object> subCommentLikeCount = new HashMap<>();
-
-                subCommentLikeCount.put("subCommentId", subCommentLike.getSubComment().getId());
-                subCommentLikeCount.put("likeCount", likeCount);
-                subCommentLikeCount.put("dislikeCount", dislikeCount);
-                subCommentLikeCountList.add(subCommentLikeCount);
-                existingSubCommentIdList.add(subCommentId);
-            }
-
+        if (article != null) {
             Board board = articleService.getBoard(code);
             List<File> fileList = this.articleService.getFileList(article.getId());
 
@@ -212,12 +149,6 @@ public class ArticleController {
             model.addAttribute("criterion", criterion);
             model.addAttribute("keyword", keyword);
             model.addAttribute("article", article);
-            model.addAttribute("commentList", commentList);
-            model.addAttribute("subCommentList", subCommentList);
-            model.addAttribute("commentLikeList", commentLikeList);
-            model.addAttribute("commentLikeCountList", commentLikeCountList);
-            model.addAttribute("subCommentLikeList", subCommentLikeList);
-            model.addAttribute("subCommentLikeCountList", subCommentLikeCountList);
         }
     }
 
@@ -230,17 +161,13 @@ public class ArticleController {
 
     // 게시글 수정 view
     @GetMapping("modify")
-    public void getModify(@RequestParam(value = "index") Long index,
+    public void getModify(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                          @RequestParam(value = "index") Long index,
                           @RequestParam(value = "code") String code,
                           Model model) {
         Board[] boards = this.articleService.getBoards();
         Article article = this.articleService.getArticle(index, code);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        String role = authentication.getAuthorities().toString();
-
-        if (article.getUser().getUsername().equals(username) || role.equals("ROLE_ADMIN")) {
+        if (article.getUser().getUsername().equals(principalDetails.getUsername()) || principalDetails.getRole().equals("ROLE_ADMIN")) {
             Board board = Arrays.stream(boards)
                     .filter(x -> x.getCode().equals(code))
                     .findFirst()
@@ -272,6 +199,54 @@ public class ArticleController {
         return articleService.modify(articleDto, fileIdArray, imgIdArray);
     }
 
+    // 댓글 불러오기
+    @GetMapping("comment")
+    @ResponseBody
+    public String getComment(@RequestParam(value = "articleId") Long articleId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<Comment> commentList = articleService.getCommentList(articleId);
+
+        JSONArray responseArray = new JSONArray();
+        for (Comment comment : commentList) {
+            JSONObject commentObject = new JSONObject();
+
+            commentObject.put("id", comment.getId());
+            commentObject.put("articleId", comment.getArticle().getId());
+            commentObject.put("username", comment.getUser().getUsername());
+            commentObject.put("nickname", comment.getUser().getNickname());
+            commentObject.put("commentId", comment.getComment() != null ? comment.getComment().getId() : null);
+
+            // 직렬화 오류 해결용 formatter
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            if (comment.getModifiedAt() == null) {
+                // 수정 안 했으면 최초 작성 일시
+                commentObject.put("at", comment.getWrittenAt().format(formatter));
+                commentObject.put("isModified", false);
+            } else {
+                // 수정 했으면 수정 일시
+                commentObject.put("at", comment.getModifiedAt().format(formatter));
+                commentObject.put("isModified", true);
+            }
+
+            // 댓글 자기가 쓴 건지 안 쓴 건지
+            commentObject.put("isMine", principalDetails != null && (principalDetails.getUsername().equals(comment.getUser().getUsername()) || principalDetails.getRole().equals("ROLE_ADMIN")));
+
+            if (!comment.getIsDeleted()) {
+                commentObject.put("content", comment.getContent());
+                int likeCount = articleService.getLikeCount(comment.getId(), true);
+                int dislikeCount = articleService.getDislikeCount(comment.getId(), false);
+                int likeStatus = articleService.getLikeStatus(comment.getId(), principalDetails != null ? principalDetails.getUsername() : null);
+
+                commentObject.put("likeCount", likeCount);
+                commentObject.put("dislikeCount", dislikeCount);
+                commentObject.put("likeStatus", likeStatus);
+            }
+            responseArray.add(commentObject);
+        }
+
+        return responseArray.toString();
+    }
+
     // 댓글 작성
     @PostMapping("comment")
     @ResponseBody
@@ -293,66 +268,25 @@ public class ArticleController {
         return articleService.deleteComment(id);
     }
 
-    // 답글 작성
-    @PostMapping("subComment")
-    @ResponseBody
-    public String postSubComment(SubCommentDto subCommentDto) {
-        return articleService.writeSubComment(subCommentDto);
-    }
-
-    // 답글 수정
-    @PatchMapping("subComment")
-    @ResponseBody
-    public String patchSubComment(SubCommentDto subCommentDto) {
-        return articleService.updateSubComment(subCommentDto);
-    }
-
-    // 답글 삭제
-    @DeleteMapping("subComment")
-    @ResponseBody
-    public String deleteSubComment(@RequestParam(value = "id") Long id) {
-        return articleService.deleteSubComment(id);
-    }
-
-    // 댓글 좋아요/싫어요
-    @PostMapping("commentLike")
-    @ResponseBody
-    public String postCommentLike(CommentLikeDto commentLikeDto) {
-        return articleService.commentLike(commentLikeDto);
-    }
-
     // 댓글 좋아요/싫어요 수정
-    @PatchMapping("commentLike")
+    @PutMapping("commentLike")
     @ResponseBody
-    public String patchCommentLike(CommentLikeDto commentLikeDto) {
-        return articleService.updateCommentLike(commentLikeDto);
-    }
+    public String putCommentLike(@RequestParam(value = "commentId") Long commentId,
+                                 @RequestParam(value = "status", required = false) Boolean status,
+                                 @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String result = articleService.updateCommentLike(commentId, status, principalDetails.getUsername());
+        JSONObject responseObject = new JSONObject();
 
-    // 댓글 좋아요/싫어요 취소
-    @DeleteMapping("commentLike")
-    @ResponseBody
-    public String deleteCommentLike(CommentLikeDto commentLikeDto) {
-        return articleService.deleteCommentLike(commentLikeDto);
-    }
+        responseObject.put("result", result.toLowerCase());
+        if (result.equals("SUCCESS")) {
+            int likeCount = articleService.getLikeCount(commentId, true);
+            int dislikeCount = articleService.getDislikeCount(commentId, false);
+            int likeStatus = articleService.getLikeStatus(commentId, principalDetails.getUsername());
 
-    // 답글 좋아요/싫어요
-    @PostMapping("subCommentLike")
-    @ResponseBody
-    public String postSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
-        return articleService.subCommentLike(subCommentLikeDto);
-    }
-
-    // 답글 좋아요/싫어요 수정
-    @PatchMapping("subCommentLike")
-    @ResponseBody
-    public String patchSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
-        return articleService.updateSubCommentLike(subCommentLikeDto);
-    }
-
-    // 답글 좋아요/싫어요 취소
-    @DeleteMapping("subCommentLike")
-    @ResponseBody
-    public String deleteSubCommentLike(SubCommentLikeDto subCommentLikeDto) {
-        return articleService.deleteSubCommentLike(subCommentLikeDto);
+            responseObject.put("likeCount", likeCount);
+            responseObject.put("dislikeCount", dislikeCount);
+            responseObject.put("likeStatus", likeStatus);
+        }
+        return responseObject.toString();
     }
 }

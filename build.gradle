@@ -64,6 +64,10 @@ dependencies {
 
 	//LANG3
 	implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+	//LocalDateTime 역직렬화 의존성
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 tasks.named('test') {

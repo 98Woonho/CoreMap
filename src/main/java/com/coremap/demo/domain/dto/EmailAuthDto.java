@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -16,8 +17,8 @@ public class EmailAuthDto {
     private String email;
     private String code;
     private String salt;
-    private Date createdAt;
-    private Date expiresAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime expiresAt;
     private boolean isVerified;
 
     public static EmailAuth emailAuthDtoToEntity(EmailAuthDto emailAuthDto) {
