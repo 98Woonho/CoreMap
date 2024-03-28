@@ -202,11 +202,7 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public String modifyUser(UserDto userDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = authentication.getName();
-
+    public String modifyUser(UserDto userDto, String username) {
         User user = userRepository.findById(username).get();
 
         ContactCompany contactCompany = contactCompanyRepository.findById(userDto.getContactCompanyCode()).get();
@@ -226,10 +222,7 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public String deleteUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
+    public String deleteUser(String username) {
         userRepository.deleteById(username);
 
         return "SUCCESS";

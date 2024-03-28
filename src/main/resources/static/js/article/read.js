@@ -82,7 +82,7 @@ comment.append = function (allComments, targetComment) {
                             data-index="${targetComment['id']}">
             <div class="head">
                 <span class="nickname">${targetComment['nickname']}</span>
-                <span class="written-at" rel="writtenAt">
+                <span class="written-at">
                       ${targetComment['at']}
                       ${targetComment['isModified'] === true ? '(수정됨)' : ''}
                 </span>
@@ -127,11 +127,7 @@ comment.append = function (allComments, targetComment) {
         commentEl.querySelector('.reply').addEventListener('click', function () {
             const userStatus = document.head.querySelector('meta[name="user-status"]').getAttribute('content');
             if (userStatus !== 'true') {
-                dialog.show({
-                    title: '경고',
-                    content: '로그인 후 이용할 수 있습니다.',
-                    buttons: [dialog.createButton('확인', dialog.hide)]
-                });
+                alert('로그인 후 이용할 수 있습니다.');
                 return false;
             }
             commentEl.classList.add('replying');
@@ -160,11 +156,14 @@ comment.append = function (allComments, targetComment) {
             formData.append('commentId', targetComment['id']); // 어느 댓글의 대댓글인가에 대한 인덱스
             formData.append('content', replyForm['content'].value);
 
+            loading.show();
             axios.post('/article/comment', formData)
                 .then(res => {
+                    loading.hide();
                     comment.load();
                 })
                 .catch(err => {
+                    loading.hide();
                     alert('알 수 없는 이유로 답글을 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
                 })
         }
@@ -206,12 +205,14 @@ comment.append = function (allComments, targetComment) {
         // 댓글 삭제 버튼 눌렀을 때
         deleteEl.addEventListener('click', function () {
             if (confirm('정말로 댓글을 삭제 하시겠습니까?')) {
-
+                loading.show();
                 axios.delete(`/article/comment?id=${targetComment['id']}`)
                     .then(res => {
+                        loading.hide();
                         comment.load();
                     })
                     .catch(err => {
+                        loading.hide();
                         alert('알 수 없는 이유로 답글을 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
                     })
             }
@@ -248,12 +249,15 @@ comment.append = function (allComments, targetComment) {
             formData.append('id', targetComment['id']);
             formData.append('content', modifyForm['content'].value);
 
+            loading.show();
             axios.patch('/article/comment', formData)
                 .then(res => {
+                    loading.hide();
                     commentEl.querySelector('.content').innerText = modifyForm['content'].value;
                     commentEl.classList.remove('modifying');
                 })
                 .catch(err => {
+                    loading.hide();
                     alert('알 수 없는 이유로 댓글을 수정하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
                 })
 
@@ -294,7 +298,6 @@ comment.load = function () {
     commentForm.querySelector('.count').innerText = '0';
     // 댓글 불러오기를 했을 때, 이미 있는 댓글은 안 불러오고 remove
     commentTable.querySelector('tbody').innerHTML = '';
-    commentTable.classList.remove('error');
 }
 
 if (commentForm) {
@@ -314,12 +317,15 @@ if (commentForm) {
             return false;
         }
 
+        loading.show();
+
         const formData = new FormData();
         formData.append('articleId', commentForm['articleId'].value);
         formData.append('content', commentForm['content'].value);
 
         axios.post('/article/comment', formData)
             .then(res => {
+                loading.hide();
                 commentForm['content'].value = '';
                 commentForm['content'].focus();
                 comment.load();

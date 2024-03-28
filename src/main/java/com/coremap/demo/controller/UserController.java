@@ -1,5 +1,6 @@
 package com.coremap.demo.controller;
 
+import com.coremap.demo.config.auth.PrincipalDetails;
 import com.coremap.demo.domain.dto.EmailAuthDto;
 import com.coremap.demo.domain.dto.UserDto;
 import com.coremap.demo.domain.entity.ContactCompany;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -115,11 +117,9 @@ public class UserController {
     }
 
     @GetMapping("myPage")
-    public void getMyPage(@RequestParam(value = "function", required = false) String function, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User user = userService.getUser(username);
+    public void getMyPage(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                          @RequestParam(value = "function", required = false) String function, Model model) {
+        User user = userService.getUser(principalDetails.getUsername());
 
         List<ContactCompany> contactCompanyList = userService.getAllContactCompanyList();
 
@@ -130,14 +130,14 @@ public class UserController {
 
     @PatchMapping("modify")
     @ResponseBody
-    public String patchModify(UserDto userDto) {
-        return userService.modifyUser(userDto);
+    public String patchModify(@AuthenticationPrincipal PrincipalDetails principalDetails, UserDto userDto) {
+        return userService.modifyUser(userDto, principalDetails.getUsername());
     }
 
     @DeleteMapping("myPage")
     @ResponseBody
-    public String deleteMyPage(HttpServletRequest request, HttpServletResponse response) {
-        String result = userService.deleteUser();
+    public String deleteMyPage(@AuthenticationPrincipal PrincipalDetails principalDetails, HttpServletRequest request, HttpServletResponse response) {
+        String result = userService.deleteUser(principalDetails.getUsername());
 
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie : cookies) {
@@ -145,12 +145,13 @@ public class UserController {
             cookie.setPath("/");
             response.addCookie(cookie);
         }
-
         return result;
     }
 
     @GetMapping("secessionCompletion")
-    public void getSecessionCompletion() {}
+    public void getSecessionCompletion() {
+
+    }
 
     @GetMapping("additionalInfo")
     public void getAdditionalInfo(Model model) {
@@ -161,7 +162,7 @@ public class UserController {
 
     @PatchMapping("additionalInfo")
     @ResponseBody
-    public String patchAdditionalInfo(UserDto userDto) {
-        return userService.modifyUser(userDto);
+    public String patchAdditionalInfo(@AuthenticationPrincipal PrincipalDetails principalDetails, UserDto userDto) {
+        return userService.modifyUser(userDto, principalDetails.getUsername());
     }
 }
