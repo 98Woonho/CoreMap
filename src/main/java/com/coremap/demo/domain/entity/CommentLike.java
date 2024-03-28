@@ -23,5 +23,6 @@ public class CommentLike {
     @ManyToOne
     @JoinColumn(name="user_username", foreignKey = @ForeignKey(name="fk_comment_like_user_username", foreignKeyDefinition = "FOREIGN KEY(user_username) REFERENCES user(username) ON DELETE CASCADE ON UPDATE CASCADE"))
     private User user;
-    private Boolean isLike;
+
+    private Boolean likeStatus;
 }

@@ -6,6 +6,7 @@ if (document.head.querySelector('[name="article-status"]').getAttribute('content
 const articleTable = document.getElementById('articleTable'); // 게시글 상세 table
 const commentForm = document.getElementById('commentForm'); // 댓글 form
 
+
 const deleteBtn = document.getElementById('deleteBtn');
 if (deleteBtn) {
     // 게시글 삭제 버튼 클릭 함수
@@ -13,11 +14,11 @@ if (deleteBtn) {
         e.preventDefault();
 
         if (confirm('정말로 게시글을 삭제할까요? 게시글에 작성된 댓글이 함께 삭제되며 이는 되돌릴 수 없습니다.')) {
-            axios.delete("/article/read?id=" + articleTable.dataset.id)
+            axios.delete(`/article/read?id=${articleTable.dataset.id}`)
                 .then(res => {
                     if (res.data === 'SUCCESS') {
                         alert('게시글이 삭제 되었습니다');
-                        location.href = '/board/list?code=' + articleTable.dataset.code;
+                        location.href = `/board/list?code=${articleTable.dataset.code}`;
                     }
                 })
                 .catch(err => {
@@ -28,590 +29,312 @@ if (deleteBtn) {
 }
 
 const commentTable = document.getElementById('commentTable'); // 댓글 table
-const comments = commentTable.querySelectorAll('.comment:not(.sub)'); // 모든 댓글
 
-comments.forEach(comment => {
-        const reply = comment.querySelector('.reply'); // 답글 달기
-        const replyCancel = comment.querySelector('.reply-cancel'); // 답글 취소
-        const replyForm = comment.querySelector('.reply-form'); // 답글 form
+const comment = {};
 
-        // 답글 달기 click 함수
-        reply.onclick = function (e) {
-            e.preventDefault();
+// 전달 받은 commentId 댓글 좋아요 상태를 수정할 수 있는 함수.
+comment.alterLike = function (commentId, status) {
+    // status
+    //    - true : 좋아요
+    //    - false : 싫어요
+    //    - null/undefined : 중립
+    const formData = new FormData();
+    formData.append('commentId', commentId);
+    if (typeof status === 'boolean') {
+        formData.append('status', status);
+    }
 
-            if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
-                alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+    axios.put('/article/commentLike', formData)
+        .then(res => {
+            const commentEl = commentTable.querySelector(`.comment[data-index="${commentId}"]`);
+            const upVoteEl = commentEl.querySelector('.vote-up');
+            const downVoteEl = commentEl.querySelector('.vote-down');
+            upVoteEl.querySelector('.value').innerText = res.data.likeCount;
+            downVoteEl.querySelector('.value').innerText = res.data.dislikeCount;
+            switch (res.data.likeStatus) {
+                case 0:
+                    upVoteEl.classList.remove('selected');
+                    downVoteEl.classList.remove('selected');
+                    break;
+                case 1:
+                    upVoteEl.classList.add('selected');
+                    downVoteEl.classList.remove('selected');
+                    break;
+                case -1:
+                    upVoteEl.classList.remove('selected');
+                    downVoteEl.classList.add('selected');
+                    break;
+            }
+        })
+        .catch(err => {
+            alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
+        })
+}
+
+// allComments : 모든 댓글
+// targetComment : 타겟 댓글
+// 댓글 추가 함수
+comment.append = function (allComments, targetComment) {
+    const commentEl = new DOMParser().parseFromString(`
+        <div class="comment ${targetComment['isMine'] === true ? 'mine' : ''}
+                            ${typeof targetComment['commentId'] === 'number' ? 'sub' : ''}
+                            ${typeof targetComment['content'] === 'string' ? '' : 'deleted'}"
+                            data-index="${targetComment['id']}">
+            <div class="head">
+                <span class="nickname">${targetComment['nickname']}</span>
+                <span class="written-at">
+                      ${targetComment['at']}
+                      ${targetComment['isModified'] === true ? '(수정됨)' : ''}
+                </span>
+                <span class="flex-grow-1"></span>
+                ${typeof targetComment['content'] === 'string' && targetComment['isMine'] === true ? '<span class="pointer modify">수정</span>' : ''}
+                ${typeof targetComment['content'] === 'string' && targetComment['isMine'] === true ? '<span class="pointer delete">삭제</span>' : ''}
+                ${typeof targetComment['content'] === 'string' && targetComment['isMine'] === true ? '<span class="pointer modify-cancel">수정 취소</span>' : ''}
+                    </div>
+                        <div class="body">
+                            <p class="content">${typeof targetComment['content'] === 'string' ? targetComment['content'] : '삭제된 댓글입니다.'}</p>
+                            ${typeof targetComment['content'] === 'string' ? `
+                            <form class="modify-form">
+                                <textarea name="content" maxlength="1000" placeholder="댓글을 입력해 주세요."  class="common-input"></textarea>
+                                <button class="common-btn modify-comment-btn">댓글 수정</button>
+                            </form>` : ''}
+                        </div>
+                        ${typeof targetComment['content'] === 'string' ? `
+                        <div class="foot">
+                            <span class="vote vote-up ${targetComment['likeStatus'] === 1 ? 'selected' : ''}">
+                                <img alt="👍" class="icon" src="/images/comment/vote.up.png">
+                                <span class="value">${targetComment['likeCount']}</span>
+                            </span>
+                            <span class="vote vote-down ${targetComment['likeStatus'] === -1 ? 'selected' : ''}">
+                                <img alt="👎" class="icon" src="/images/comment/vote.down.png">
+                                <span class="value">${targetComment['dislikeCount']}</span>
+                            </span> 
+                            <span class="flex-grow-1"></span>
+                            <p class="pointer reply">답글 달기</p>
+                            <p class="pointer reply-cancel">답글 달기 취소</p>
+                        </div>
+                        <form class="reply-form">
+                            <label class="label">
+                                <textarea name="content" maxlength="1000" placeholder="답글을 입력해 주세요." data-regex="${commentForm['content'].getAttribute('data-regex')}" class="common-input"></textarea>
+                            </label>
+                            <button class="common-btn">답글 달기</button>
+                        </form>` : ''}
+                    </div>`, 'text/html').querySelector('.comment');
+
+    const replyForm = commentEl.querySelector('.reply-form');
+    if (replyForm) {
+        // 답글 달기 눌렀을 때
+        commentEl.querySelector('.reply').addEventListener('click', function () {
+            const userStatus = document.head.querySelector('meta[name="user-status"]').getAttribute('content');
+            if (userStatus !== 'true') {
+                alert('로그인 후 이용할 수 있습니다.');
                 return false;
             }
+            commentEl.classList.add('replying');
+            replyForm['content'].focus();
+        })
 
-            if (document.head.querySelector('[name="info-status"]') != null) {
-                if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-                    e.preventDefault();
-                    alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-                    return false;
-                }
-            }
+        // 답글 달기 취소 눌렀을 때
+        commentEl.querySelector('.reply-cancel').addEventListener('click', function () {
+            commentEl.classList.remove('replying');
+        })
 
-
-            comment.classList.add('replying');
-        }
-
-        // 답글 취소 click 함수
-        replyCancel.onclick = function (e) {
-            e.preventDefault();
-            comment.classList.remove('replying');
-        }
-
-        // 답글 form submit 함수
+        // 대댓글 창은 댓글마다 있기 때문에 for문 안에 onsubmit을 함께 구현해주어야 함.
         replyForm.onsubmit = function (e) {
             e.preventDefault();
-
             if (replyForm['content'].value === '') {
                 alert('답글을 입력해 주세요.');
                 return false;
             }
-
-            if (!new RegExp(replyForm['content'].dataset.regex).test(replyForm['content'].value.trim())) {
-                alert('1000자 이내로 입력해 주세요.');
+            if (!new RegExp(replyForm['content'].dataset.regex).test(replyForm['content'].value)) {
+                alert('올바른 답글을 입력해 주세요.');
                 return false;
             }
 
             const formData = new FormData();
+            formData.append('articleId', targetComment['articleId']);
+            formData.append('commentId', targetComment['id']); // 어느 댓글의 대댓글인가에 대한 인덱스
+            formData.append('content', replyForm['content'].value);
 
-            formData.append("content", replyForm['content'].value.trim());
-            formData.append("commentId", comment.dataset.id);
-
-            axios.post('/article/subComment', formData)
+            loading.show();
+            axios.post('/article/comment', formData)
                 .then(res => {
-                    location.reload();
+                    loading.hide();
+                    comment.load();
                 })
                 .catch(err => {
+                    loading.hide();
                     alert('알 수 없는 이유로 답글을 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
                 })
         }
+    }
 
-        const modify = comment.querySelector('.modify'); // 댓글 수정
-        const modifyCancel = comment.querySelector('.modify-cancel'); // 댓글 수정 취소
-        const modifyForm = comment.querySelector('.modify-form'); // 댓글 수정 form
-
-        modifyForm.querySelector('textarea').value = comment.querySelector('.content').innerText;
-
-        if (modify) {
-            // 댓글 수정 click 함수
-            modify.onclick = function (e) {
-                e.preventDefault();
-                comment.classList.add('modifying');
+    const voteUp = commentEl.querySelector('.vote-up');
+    const voteDown = commentEl.querySelector('.vote-down');
+    if (voteUp && voteDown) {
+        // voteUp 눌렀을 때
+        voteUp.addEventListener('click', function () {
+            const userStatus = document.head.querySelector('meta[name="user-status"]').getAttribute('content');
+            if (userStatus !== 'true') {
+                alert('로그인 후 이용할 수 있습니다.');
+                return false;
             }
-
-            // 댓글 수정 취소 click 함수
-            modifyCancel.onclick = function (e) {
-                e.preventDefault();
-                comment.classList.remove('modifying');
+            if (voteUp.classList.contains('selected')) { // 이미 voteUp가 눌러져 있을 때
+                comment.alterLike(targetComment['id'], null);
+            } else {
+                comment.alterLike(targetComment['id'], true);
             }
+        })
 
-            // 댓글 수정 form submit 함수
-            modifyForm.onsubmit = function (e) {
-                e.preventDefault();
-
-                if (modifyForm['content'].value === '') {
-                    alert('댓글을 입력해 주세요.');
-                    return false;
-                }
-
-                if (!new RegExp(modifyForm['content'].dataset.regex).test(modifyForm['content'].value.trim())) {
-                    alert('1000자 이내로 입력해 주세요.');
-                    return false;
-                }
-
-                if (modifyForm.querySelector('textarea').value === comment.querySelector('.content').innerText) {
-                    alert('기존 댓글과 동일합니다.');
-                    return false;
-                }
-
-                const formData = new FormData();
-
-                formData.append("content", modifyForm['content'].value.trim());
-                formData.append("id", comment.dataset.id);
-
-                axios.patch('/article/comment', formData)
+        // voteDown 눌렀을 때
+        voteDown.addEventListener('click', function () {
+            const userStatus = document.head.querySelector('meta[name="user-status"]').getAttribute('content');
+            if (userStatus !== 'true') {
+                alert('로그인 후 이용할 수 있습니다.');
+                return false;
+            }
+            if (voteDown.classList.contains('selected')) { // 이미 voteDown가 눌러져 있을 때
+                comment.alterLike(targetComment['id'], null);
+            } else {
+                comment.alterLike(targetComment['id'], false);
+            }
+        })
+    }
+    const deleteEl = commentEl.querySelector('.delete');
+    if (deleteEl) {
+        // 댓글 삭제 버튼 눌렀을 때
+        deleteEl.addEventListener('click', function () {
+            if (confirm('정말로 댓글을 삭제 하시겠습니까?')) {
+                loading.show();
+                axios.delete(`/article/comment?id=${targetComment['id']}`)
                     .then(res => {
-                        location.reload();
+                        loading.hide();
+                        comment.load();
                     })
                     .catch(err => {
-                        alert('알 수 없는 이유로 댓글을 수정하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
+                        loading.hide();
+                        alert('알 수 없는 이유로 답글을 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
                     })
             }
-        }
+        })
+    }
 
-        const Delete = comment.querySelector('.delete'); // 댓글 삭제
+    const modifyEl = commentEl.querySelector('.modify');
+    const modifyCancelEl = commentEl.querySelector('.modify-cancel');
+    if (modifyEl && modifyCancelEl) {
+        const modifyForm = commentEl.querySelector('.modify-form');
+        // 댓글 수정 버튼 눌렀을 때
+        modifyEl.addEventListener('click', function () {
+            commentEl.classList.add('modifying');
+            modifyForm['content'].value = commentEl.querySelector('.content').innerText;
+            modifyForm['content'].focus();
+        })
+        // 댓글 수정 취소 버튼 눌렀을 때
+        modifyCancelEl.addEventListener('click', function () {
+            commentEl.classList.remove('modifying');
+        })
 
-        if (Delete) {
-            // 댓글 삭제 click 함수
-            Delete.onclick = function (e) {
-                e.preventDefault();
-
-                if (confirm('정말로 댓글을 삭제 할까요? 댓글을 삭제 할 시 답글도 함께 삭제 됩니다.')) {
-                    axios.delete("/article/comment?id=" + comment.dataset.id)
-                        .then(res => {
-                            if (res.data === 'SUCCESS') {
-                                location.reload();
-                            }
-                        })
-                        .catch(err => {
-                            alert('알 수 없는 이유로 댓글을 삭제하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                        })
-                } else {
-                    return false;
-                }
+        modifyForm.onsubmit = function (e) {
+            e.preventDefault();
+            if (modifyForm['content'].value === '') {
+                alert('댓글을 입력해 주세요.');
+                return false;
             }
-        }
-
-        const voteUp = comment.querySelector('.vote-up'); // 댓글 좋아요
-        const voteDown = comment.querySelector('.vote-down'); // 댓글 싫어요
-        if (comment.querySelector('.is-like') != null) {
-            const isLike = comment.querySelector('.is-like').value;
-
-            if (isLike === 'true') {
-                voteUp.classList.add('selected');
+            if (!new RegExp(modifyForm['content'].dataset.regex).test(modifyForm['content'].value)) {
+                alert('올바른 댓글을 입력해 주세요.');
+                return false;
             }
 
-            if (isLike === 'false') {
-                voteDown.classList.add('selected');
-            }
-        }
+            const formData = new FormData();
+            formData.append('id', targetComment['id']);
+            formData.append('content', modifyForm['content'].value);
 
-        // 댓글 좋아요 click 함수
-        voteUp.onclick = function (e) {
-            if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
-                e.preventDefault();
+            loading.show();
+            axios.patch('/article/comment', formData)
+                .then(res => {
+                    loading.hide();
+                    commentEl.querySelector('.content').innerText = modifyForm['content'].value;
+                    commentEl.classList.remove('modifying');
+                })
+                .catch(err => {
+                    loading.hide();
+                    alert('알 수 없는 이유로 댓글을 수정하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
+                })
 
-                if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
-                    alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
-                    return false;
-                }
-
-                if (document.head.querySelector('[name="info-status"]') != null) {
-                    if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-                        e.preventDefault();
-                        alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-                        return false;
-                    }
-                }
-
-                const value = voteUp.querySelector('.value');
-
-                const formData = new FormData();
-
-                formData.append('commentId', comment.dataset.id);
-                formData.append('isLike', 'true');
-
-                axios.post('/article/commentLike', formData)
-                    .then(res => {
-                        voteUp.classList.add('selected');
-                        value.innerText = parseInt(value.innerText, 10) + 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteDown.classList.contains('selected')) {
-                const upValue = voteUp.querySelector('.value');
-                const downValue = voteDown.querySelector('.value');
-
-                e.preventDefault();
-
-                const formData = new FormData();
-
-                formData.append('commentId', comment.dataset.id);
-                formData.append('isLike', 'true');
-
-                axios.patch('/article/commentLike', formData)
-                    .then(res => {
-                        voteDown.classList.remove('selected');
-                        voteUp.classList.add('selected');
-                        upValue.innerText = parseInt(upValue.innerText, 10) + 1;
-                        downValue.innerText = parseInt(downValue.innerText, 10) - 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteUp.classList.contains('selected')) {
-                e.preventDefault();
-
-                const value = voteUp.querySelector('.value');
-
-                axios.delete(`/article/commentLike?commentId=${comment.dataset.id}`)
-                    .then(res => {
-                        voteUp.classList.remove('selected');
-                        value.innerText = parseInt(value.innerText, 10) - 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-        }
-
-        // 댓글 싫어요 click 함수
-        voteDown.onclick = function (e) {
-            if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
-
-                if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
-                    alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
-                    return false;
-                }
-
-                if (document.head.querySelector('[name="info-status"]') != null) {
-                    if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-                        e.preventDefault();
-                        alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-                        return false;
-                    }
-                }
-
-                e.preventDefault();
-                const value = voteDown.querySelector('.value');
-
-                const formData = new FormData();
-
-                formData.append('commentId', comment.dataset.id);
-                formData.append('isLike', 'false');
-
-                axios.post('/article/commentLike', formData)
-                    .then(res => {
-                        voteDown.classList.add('selected');
-                        value.innerText = parseInt(value.innerText, 10) + 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteUp.classList.contains('selected')) {
-                e.preventDefault();
-
-                const upValue = voteUp.querySelector('.value');
-                const downValue = voteDown.querySelector('.value');
-
-                const formData = new FormData();
-
-                formData.append('commentId', comment.dataset.id);
-                formData.append('isLike', 'false');
-
-                axios.patch('/article/commentLike', formData)
-                    .then(res => {
-                        voteUp.classList.remove('selected');
-                        voteDown.classList.add('selected');
-                        upValue.innerText = parseInt(upValue.innerText, 10) - 1;
-                        downValue.innerText = parseInt(downValue.innerText, 10) + 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteDown.classList.contains('selected')) {
-                e.preventDefault();
-
-                const value = voteDown.querySelector('.value');
-
-                axios.delete(`/article/commentLike?commentId=${comment.dataset.id}`)
-                    .then(res => {
-                        voteDown.classList.remove('selected');
-                        value.innerText = parseInt(value.innerText, 10) - 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
         }
     }
-)
 
+    const tbody = commentTable.querySelector('tbody')
+    // 댓글 불러오기를 했을 때 초기화 후 comments에서 댓글을 가져오기 위해서(안 그럼 같은 댓글이 밑에 추가로 계속 생김)
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.append(commentEl);
+    tr.append(td);
+    tbody.append(tr);
 
-const subComments = commentTable.querySelectorAll('.comment.sub'); // 모든 답글(대댓글)
-
-subComments.forEach(subComment => {
-        const modify = subComment.querySelector('.modify'); // 답글 수정
-        const modifyCancel = subComment.querySelector('.modify-cancel'); // 답글 수정 취소
-        const subCommentModifyForm = subComment.querySelector('.sub-comment-modify-form'); // 답글 수정 form
-
-        subCommentModifyForm.querySelector('textarea').value = subComment.querySelector('.content').innerText;
-
-        if (modify) {
-            // 답글 수정 click 함수
-            modify.onclick = function (e) {
-                e.preventDefault();
-                subComment.classList.add('modifying');
-            }
-
-            // 답글 수정 취소 click 함수
-            modifyCancel.onclick = function (e) {
-                e.preventDefault();
-                subComment.classList.remove('modifying');
-            }
-
-            // 답글 수정 form submit 함수
-            subCommentModifyForm.onsubmit = function (e) {
-                e.preventDefault();
-
-                if (subCommentModifyForm['content'].value === '') {
-                    alert('댓글을 입력해 주세요.');
-                    return false;
-                }
-
-                if (!new RegExp(subCommentModifyForm['content'].dataset.regex).test(subCommentModifyForm['content'].value.trim())) {
-                    alert('1000자 이내로 입력해 주세요.');
-                    return false;
-                }
-
-                if (subCommentModifyForm.querySelector('textarea').value === subComment.querySelector('.content').innerText) {
-                    alert('기존 댓글과 동일합니다.');
-                    return false;
-                }
-
-                const formData = new FormData();
-
-                formData.append("content", subCommentModifyForm['content'].value.trim());
-                formData.append("id", subComment.dataset.id);
-
-                axios.patch('/article/subComment', formData)
-                    .then(res => {
-                        location.reload();
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 답글을 수정하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-        }
-
-        const Delete = subComment.querySelector('.delete'); // 답글 삭제
-
-        if (Delete) {
-            // 답글 삭제 click 함수
-            Delete.onclick = function (e) {
-                e.preventDefault();
-
-                if (confirm('정말로 답글을 삭제 할까요?')) {
-                    axios.delete("/article/subComment?id=" + subComment.dataset.id)
-                        .then(res => {
-                            if (res.data === 'SUCCESS') {
-                                location.reload();
-                            }
-                        })
-                        .catch(err => {
-                            alert('알 수 없는 이유로 답글을 삭제하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                        })
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        const voteUp = subComment.querySelector('.vote-up'); // 답글 좋아요
-        const voteDown = subComment.querySelector('.vote-down'); // 답글 싫어요
-        if (subComment.querySelector('.is-like') != null) {
-            const isLike = subComment.querySelector('.is-like').value;
-
-            if (isLike === 'true') {
-                voteUp.classList.add('selected');
-            }
-
-            if (isLike === 'false') {
-                voteDown.classList.add('selected');
-            }
-        }
-
-        voteUp.onclick = function (e) {
-            if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
-                e.preventDefault();
-
-                if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
-                    alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
-                    return false;
-                }
-
-                if (document.head.querySelector('[name="info-status"]') != null) {
-                    if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-                        e.preventDefault();
-                        alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-                        return false;
-                    }
-                }
-
-                const value = voteUp.querySelector('.value');
-
-                const formData = new FormData();
-
-                formData.append('subCommentId', subComment.dataset.id);
-                formData.append('isLike', 'true');
-
-                axios.post('/article/subCommentLike', formData)
-                    .then(res => {
-                        voteUp.classList.add('selected');
-                        value.innerText = parseInt(value.innerText, 10) + 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteDown.classList.contains('selected')) {
-                e.preventDefault();
-                const upValue = voteUp.querySelector('.value');
-                const downValue = voteDown.querySelector('.value');
-
-                const formData = new FormData();
-
-                formData.append('subCommentId', subComment.dataset.id);
-                formData.append('isLike', 'true');
-
-                axios.patch('/article/subCommentLike', formData)
-                    .then(res => {
-                        voteDown.classList.remove('selected');
-                        voteUp.classList.add('selected');
-                        upValue.innerText = parseInt(upValue.innerText, 10) + 1;
-                        downValue.innerText = parseInt(downValue.innerText, 10) - 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteUp.classList.contains('selected')) {
-                e.preventDefault();
-
-                const value = voteUp.querySelector('.value');
-
-                axios.delete(`/article/subCommentLike?subCommentId=${subComment.dataset.id}`)
-                    .then(res => {
-                        voteUp.classList.remove('selected');
-                        value.innerText = parseInt(value.innerText, 10) - 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-        }
-
-        voteDown.onclick = function (e) {
-            if (!voteUp.classList.contains('selected') && !voteDown.classList.contains('selected')) {
-                e.preventDefault();
-
-                if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
-                    alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
-                    return false;
-                }
-
-                if (document.head.querySelector('[name="info-status"]') != null) {
-                    if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-                        e.preventDefault();
-                        alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-                        return false;
-                    }
-                }
-
-                const value = voteDown.querySelector('.value');
-
-                const formData = new FormData();
-
-                formData.append('subCommentId', subComment.dataset.id);
-                formData.append('isLike', 'false');
-
-                axios.post('/article/subCommentLike', formData)
-                    .then(res => {
-                        voteDown.classList.add('selected');
-                        value.innerText = parseInt(value.innerText, 10) + 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteUp.classList.contains('selected')) {
-                e.preventDefault();
-
-                const upValue = voteUp.querySelector('.value');
-                const downValue = voteDown.querySelector('.value');
-
-                const formData = new FormData();
-
-                formData.append('subCommentId', subComment.dataset.id);
-                formData.append('isLike', 'false');
-
-                axios.patch('/article/subCommentLike', formData)
-                    .then(res => {
-                        voteUp.classList.remove('selected');
-                        voteDown.classList.add('selected');
-                        upValue.innerText = parseInt(upValue.innerText, 10) - 1;
-                        downValue.innerText = parseInt(downValue.innerText, 10) + 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
-
-            if (voteDown.classList.contains('selected')) {
-                e.preventDefault();
-
-                const value = voteDown.querySelector('.value');
-
-
-                axios.delete(`/article/subCommentLike?subCommentId=${subComment.dataset.id}`)
-                    .then(res => {
-                        voteDown.classList.remove('selected');
-                        value.innerText = parseInt(value.innerText, 10) - 1;
-                    })
-                    .catch(err => {
-                        alert('알 수 없는 이유로 요청을 처리하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
-                    })
-            }
+    const subComments = allComments.filter(x => x['commentId'] === targetComment['id']); // 현재 댓글의 대댓글 배열
+    if (subComments.length > 0) {
+        for (const subComment of subComments) {
+            comment.append(allComments, subComment);
         }
     }
-)
+}
 
-// 댓글 form submit 함수
+// 댓글 불러오기
+// comment.load() 함수 생성
+comment.load = function () {
+    axios.get(`/article/comment?articleId=${commentForm['articleId'].value}`)
+        .then(res => {
+            const comments = res.data;
+            for (const commentObject of comments.filter(x => typeof x['commentId'] !== 'number')) { // 대댓글이 아닌 것만!
+                comment.append(comments, commentObject);
+            }
+            commentForm.querySelector('.count').innerText = comments.length;
+        })
+        .catch(err => {
+            alert('알 수 없는 이유로 댓글을 불러오지 못하였습니다.');
+        })
+
+    commentForm.querySelector('.count').innerText = '0';
+    // 댓글 불러오기를 했을 때, 이미 있는 댓글은 안 불러오고 remove
+    commentTable.querySelector('tbody').innerHTML = '';
+}
+
 if (commentForm) {
     commentForm.onsubmit = function (e) {
         e.preventDefault();
-
-        if (document.head.querySelector('[name="user-status"]').getAttribute('content') === 'false') {
-            alert('로그인 후에 이용 가능합니다. 로그인 후 이용 해주세요.');
+        const userStatus = document.head.querySelector('meta[name="user-status"]').getAttribute('content');
+        if (userStatus !== 'true') {
+            alert('로그인 후 이용할 수 있습니다.');
             return false;
         }
-
-        if (document.head.querySelector('[name="info-status"]') !== null) {
-            if (document.head.querySelector('[name="info-status"]').getAttribute('content') === 'false') {
-                e.preventDefault();
-                alert('마이페이지에서 개인정보를 모두 입력해 주세요.');
-                return false;
-            }
-        }
-
-
         if (commentForm['content'].value === '') {
             alert('댓글을 입력해 주세요.');
             return false;
         }
-
-        if (!new RegExp(commentForm['content'].dataset.regex).test(commentForm['content'].value.trim())) {
-            alert('1000자 이내로 입력해 주세요.');
+        if (!new RegExp(commentForm['content'].dataset.regex).test(commentForm['content'].value)) {
+            alert('올바른 댓글을 입력해 주세요.');
             return false;
         }
 
-        const formData = new FormData();
+        loading.show();
 
-        formData.append("articleId", articleTable.dataset.id);
-        formData.append("content", commentForm['content'].value.trim());
+        const formData = new FormData();
+        formData.append('articleId', commentForm['articleId'].value);
+        formData.append('content', commentForm['content'].value);
 
         axios.post('/article/comment', formData)
             .then(res => {
-                location.reload();
+                loading.hide();
+                commentForm['content'].value = '';
+                commentForm['content'].focus();
+                comment.load();
             })
             .catch(err => {
                 alert('알 수 없는 이유로 댓글을 작성하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
             })
     }
 }
+
+// 페이지 들어갈 때 댓글 바로 보이게
+comment.load();

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -14,9 +15,10 @@ import java.util.Date;
 public class CommentDto {
     private Long id;
     private Long articleId;
+    private Long commentId;
     private String username;
     private String content;
-    private Date writtenAt;
-    private Date modifiedAt;
-    private boolean isDeleted;
+    private LocalDateTime writtenAt;
+    private LocalDateTime  modifiedAt;
+    private Boolean isDeleted;
 }

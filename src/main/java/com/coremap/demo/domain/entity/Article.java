@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -30,7 +32,7 @@ public class Article {
     private String content;
     private int view;
     @Column(columnDefinition = "DATETIME(6) DEFAULT NOW()")
-    private Date writtenAt;
-    private Date modifiedAt;
+    private LocalDateTime writtenAt;
+    private LocalDateTime modifiedAt;
     private Long indexInBoard;
 }
