@@ -10,7 +10,7 @@ const commentForm = document.getElementById('commentForm'); // 댓글 form
 const deleteBtn = document.getElementById('deleteBtn');
 if (deleteBtn) {
     // 게시글 삭제 버튼 클릭 함수
-    deleteBtn.onclick = function (e) {
+    deleteBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
         if (confirm('정말로 게시글을 삭제할까요? 게시글에 작성된 댓글이 함께 삭제되며 이는 되돌릴 수 없습니다.')) {
@@ -25,7 +25,7 @@ if (deleteBtn) {
                     alert('알 수 없는 이유로 게시글을 삭제하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
                 })
         }
-    }
+    })
 }
 
 const commentTable = document.getElementById('commentTable'); // 댓글 table

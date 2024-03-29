@@ -2,7 +2,7 @@ const joinForm = document.getElementById('joinForm'); // 회원가입 form
 const addressFind = document.getElementById('addressFind');
 
 // 주소 찾기 버튼 클릭 함수
-joinForm['addressFindBtn'].onclick = function (e) {
+joinForm['addressFindBtn'].addEventListener('click', function(e) {
     e.preventDefault();
 
     new daum.Postcode({
@@ -17,15 +17,15 @@ joinForm['addressFindBtn'].onclick = function (e) {
         }
     }).embed(addressFind.querySelector(':scope > .modal'))
     addressFind.classList.add('visible');
-}
+})
 
-// 주소 찾기 창 close 클릭 함수
-addressFind.querySelector('[rel="close"]').onclick = function () {
+// 주소 찾기 닫기 click event
+addressFind.querySelector('[rel="close"]').addEventListener('click', function() {
     addressFind.classList.remove('visible');
-}
+})
 
-// 이메일 인증번호 발송 onclick 함수
-joinForm['emailSendBtn'].onclick = function (e) {
+// 이메일 인증번호 발송 click event
+joinForm['emailSendBtn'].addEventListener('click', function(e) {
     e.preventDefault();
 
     if (joinForm['email'].value === '') {
@@ -56,10 +56,10 @@ joinForm['emailSendBtn'].onclick = function (e) {
             loading.hide();
             alert('알 수 없는 이유로 인증번호를 전송하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
         });
-}
+})
 
-// 인증번호 확인 onclick 함수
-joinForm['emailVerifyBtn'].onclick = function () {
+// 인증번호 확인 click event
+joinForm['emailVerifyBtn'].addEventListener('click', function() {
     if (joinForm['emailCode'] === '') {
         alert('인증번호를 입력해 주세요.');
         return false;
@@ -98,10 +98,10 @@ joinForm['emailVerifyBtn'].onclick = function () {
         .catch(err => {
             alert('알 수 없는 이유로 인증번호를 확인하지 못하였습니다. 잠시 후 다시 시도해 주세요.');
         });
-}
+})
 
 // 닉네임 중복 확인 버튼 클릭 함수
-joinForm['confirmDuplicationBtn'].onclick = function (e) {
+joinForm['confirmDuplicationBtn'].addEventListener('click', function(e) {
     e.preventDefault();
 
     if (joinForm['nickname'].value === '') {
@@ -126,10 +126,12 @@ joinForm['confirmDuplicationBtn'].onclick = function (e) {
         .catch(err => {
             console.log(err);
         })
-}
+})
 
 
 const emailWarning = document.getElementById('emailWarning'); // 이메일 경고 문구
+
+// 이메일 입력란 blur event
 joinForm['email'].addEventListener('blur', function () {
     if (joinForm['email'].value === '') {
         emailWarning.innerText = "이메일을 입력해 주세요.";
@@ -145,6 +147,8 @@ joinForm['email'].addEventListener('blur', function () {
 })
 
 const passwordWarning = document.getElementById('passwordWarning'); // 비밀번호 경고 문구
+
+// password 입력란 input event
 joinForm['password'].addEventListener('input', function () {
     if (!new RegExp(joinForm['password'].dataset.regex).test(joinForm['password'].value)) {
         passwordWarning.innerText = "영문, 숫자, 특수문자를 포함한 8~15자를 입력해 주세요.";
@@ -166,6 +170,8 @@ joinForm['password'].addEventListener('input', function () {
 })
 
 const passwordCheckWarning = document.getElementById('passwordCheckWarning'); // 비밀번호 재입력 경고 문구
+
+// 비밀번호 재입력란 input event
 joinForm['passwordCheck'].addEventListener('input', function () {
     if (joinForm['passwordCheck'].value !== '') {
         if (joinForm['password'].value !== joinForm['passwordCheck'].value) {
@@ -179,6 +185,8 @@ joinForm['passwordCheck'].addEventListener('input', function () {
 })
 
 const nicknameWarning = document.getElementById('nicknameWarning'); // 닉네임 경고 문구
+
+// 닉네임 입력란 blur event
 joinForm['nickname'].addEventListener('blur', function () {
     if (joinForm['nickname'].value === '') {
         nicknameWarning.innerText = "닉네임을 입력해 주세요.";
@@ -194,6 +202,8 @@ joinForm['nickname'].addEventListener('blur', function () {
 })
 
 const nameWarning = document.getElementById('nameWarning'); // 이름 경고 문구
+
+// 이름 입력란 blur event
 joinForm['name'].addEventListener('blur', function () {
     if (joinForm['name'].value === '') {
         nameWarning.innerText = "이름을 입력해 주세요.";
@@ -210,6 +220,7 @@ joinForm['name'].addEventListener('blur', function () {
 
 const contactWarning = document.getElementById('contactWarning'); // 연락처 경고 문구
 
+// 통신사 선택란 blur event
 joinForm['contactCompany'].addEventListener('blur', function () {
     if (joinForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";
@@ -225,6 +236,8 @@ joinForm['contactCompany'].addEventListener('blur', function () {
     }
 })
 
+
+// 연락처 입력란 blur event
 joinForm['contact'].addEventListener('blur', function () {
     if (joinForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";
@@ -388,7 +401,7 @@ joinForm.onsubmit = function (e) {
         .then(res => {
             if (res.data === 'SUCCESS') {
                 alert('회원가입이 완료 되었습니다.');
-                location.href = "/user/login";
+                location.href = '/user/login';
             }
         })
         .catch(err => {

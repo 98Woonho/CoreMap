@@ -3,6 +3,8 @@ const resetPasswordStep2Form = document.getElementById('resetPasswordStep2Form')
 const passwordWarning = resetPasswordStep2Form.querySelector('.password-warning'); // 비밀번호 경고 문구
 const passwordCheckWarning = resetPasswordStep2Form.querySelector('.password-check-warning'); // 비밀번호 재입력 경고 문구
 
+
+// 비밀번호 입력란 input event
 resetPasswordStep2Form['password'].addEventListener('input', function () {
     if (!new RegExp(resetPasswordStep2Form['password'].dataset.regex).test(resetPasswordStep2Form['password'].value)) {
         passwordWarning.innerText = "영문, 숫자, 특수문자를 포함한 8~15자를 입력해 주세요.";
@@ -23,6 +25,7 @@ resetPasswordStep2Form['password'].addEventListener('input', function () {
     }
 })
 
+// 비밀번호 재입력란 input event
 resetPasswordStep2Form['passwordCheck'].addEventListener('input', function () {
     if (resetPasswordStep2Form['passwordCheck'].value !== '') {
         if (resetPasswordStep2Form['password'].value !== resetPasswordStep2Form['passwordCheck'].value) {

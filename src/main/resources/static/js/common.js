@@ -1,5 +1,6 @@
 const loading = document.getElementById('loading');
 
+// 커스텀 로딩 화면
 if (loading) {
     loading.hide = function() {
         loading.classList.remove('visible');
@@ -13,6 +14,7 @@ if (loading) {
 
 const dialog = document.getElementById('dialog');
 
+// 커스텀 버튼
 if (dialog) {
     dialog.createButton = function(text, onclick) {
         return {
