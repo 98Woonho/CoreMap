@@ -1,9 +1,9 @@
 const modifyForm = document.getElementById('modifyForm'); // 마이페이지 - 개인정보확인/수정 form
 const addressFind = document.getElementById('addressFind'); // 주소 찾기 창 close
 
-if(modifyForm) {
+if (modifyForm) {
     // 주소 찾기 버튼 클릭 함수
-    modifyForm['addressFind'].onclick = function () {
+    modifyForm['addressFind'].addEventListener('click', function () {
         // 다음 주소 API
         new daum.Postcode({
             width: '100%',
@@ -17,28 +17,28 @@ if(modifyForm) {
             }
         }).embed(addressFind.querySelector('.modal'))
         addressFind.classList.add('visible');
-    }
+    })
 
     // 주소 찾기 창 close 클릭 함수
-    addressFind.querySelector('[rel="close"]').onclick = function () {
+    addressFind.querySelector('[rel="close"]').addEventListener('click', function () {
         addressFind.classList.remove('visible');
-    }
+    })
 
     const modifyBtn = document.getElementById('modifyBtn'); // 수정 버튼
     const inputs = modifyForm.querySelectorAll('input');
 
-    modifyForm['contactCompany'].addEventListener('change', function() {
+    modifyForm['contactCompany'].addEventListener('change', function () {
         modifyBtn.removeAttribute('disabled');
     })
 
     inputs.forEach(input => {
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             modifyBtn.removeAttribute('disabled');
         })
     })
 
     // 닉네임 중복 확인 버튼 클릭 함수
-    modifyForm['confirmDuplicationBtn'].onclick = function (e) {
+    modifyForm['confirmDuplicationBtn'].addEventListener('click', function (e) {
         e.preventDefault();
 
         if (modifyForm['nickname'].value === '') {
@@ -51,7 +51,7 @@ if(modifyForm) {
             return false;
         }
 
-        axios.get("/user/confirmDuplication?nickname=" + modifyForm['nickname'].value)
+        axios.get(`/user/confirmDuplication?nickname=${modifyForm['nickname'].value}`)
             .then(res => {
                 if (res.data === 'FAILURE_DUPLICATED_NICKNAME') {
                     alert("이미 존재하는 닉네임 입니다. 다른 닉네임을 입력해 주세요.");
@@ -63,9 +63,10 @@ if(modifyForm) {
             .catch(err => {
                 console.log(err);
             })
-    }
+    })
 
-    modifyForm['nickname'].addEventListener('input', function() {
+    // 닉네임 입력란 input event
+    modifyForm['nickname'].addEventListener('input', function () {
         if (modifyForm['nickname'].value === modifyForm['currentNickname'].value) {
             modifyForm['confirmDuplication'].setAttribute('disabled', '');
         } else {
@@ -75,6 +76,8 @@ if(modifyForm) {
 
 
     const nicknameWarning = document.getElementById('nicknameWarning'); // 닉네임 경고 문구
+
+    // 닉네임 입력란 blur event
     modifyForm['nickname'].addEventListener('blur', function () {
         if (modifyForm['nickname'].value === '') {
             nicknameWarning.innerText = "닉네임을 입력해 주세요.";
@@ -91,6 +94,8 @@ if(modifyForm) {
 
 
     const nameWarning = document.getElementById('nameWarning'); // 이름 경고 문구
+
+    // 이름 입력란 blur event
     modifyForm['name'].addEventListener('blur', function () {
         if (modifyForm['name'].value === '') {
             nameWarning.innerText = "이름을 입력해 주세요.";
@@ -107,6 +112,7 @@ if(modifyForm) {
 
     const contactWarning = document.getElementById('contactWarning'); // 연락처 경고 문구
 
+    // 통신사 선택란 blur event
     modifyForm['contactCompany'].addEventListener('blur', function () {
         if (modifyForm['contactCompany'].value === '-1') {
             contactWarning.innerText = "통신사를 선택해 주세요.";
@@ -122,6 +128,7 @@ if(modifyForm) {
         }
     })
 
+    // 연락처 입력란 blur event
     modifyForm['contact'].addEventListener('blur', function () {
         if (modifyForm['contactCompany'].value === '-1') {
             contactWarning.innerText = "통신사를 선택해 주세요.";
@@ -136,9 +143,9 @@ if(modifyForm) {
             contactWarning.innerText = "";
         }
     })
-    
+
     // 개인 정보 수정 submit 함수
-    modifyForm.onsubmit = function(e) {
+    modifyForm.onsubmit = function (e) {
         e.preventDefault();
 
         if (modifyForm['nickname'].value === "") {
@@ -240,9 +247,9 @@ if(modifyForm) {
 
 const secessionForm = document.getElementById('secessionForm'); // 회원 탈퇴 form
 
-if(secessionForm) {
+if (secessionForm) {
     // 회원 탈퇴 submit 함수
-    secessionForm.onsubmit = function(e) {
+    secessionForm.onsubmit = function (e) {
         e.preventDefault();
 
         dialog.show({
@@ -250,7 +257,7 @@ if(secessionForm) {
             content: '정말로 회원탈퇴를 하시겠습니까?',
             buttons: [
                 dialog.createButton('취소', dialog.hide),
-                dialog.createButton('확인', function() {
+                dialog.createButton('확인', function () {
                     dialog.hide();
                     secessionFunc();
                 })
@@ -261,7 +268,7 @@ if(secessionForm) {
     function secessionFunc() {
         axios.delete('/user/myPage')
             .then(res => {
-                location.href='/user/secessionCompletion';
+                location.href = '/user/secessionCompletion';
             })
             .catch(err => {
                 alert('알 수 없는 이유로 회원 탈퇴에 실패 하였습니다. 잠시 후 다시 시도해 주세요.');

@@ -29,17 +29,19 @@ const items = modifyForm.querySelectorAll('.item'); // 모든 첨부파일
 
 items.forEach(item => {
     const deleteBtn = item.querySelector('.delete-btn'); // 첨부파일 삭제 버튼
-    deleteBtn.onclick = function() {
+    deleteBtn.addEventListener('click', function() {
         item.remove();
-    }
+    })
 })
 
-modifyForm['fileAdd'].onclick = function(e) {
+// 파일 첨부 버튼 클릭 함수
+modifyForm['fileAdd'].addEventListener('click', function(e) {
     e.preventDefault();
 
     modifyForm['file'].click();
-}
+})
 
+// 파일 선택 후 동작 함수
 modifyForm['file'].onchange = function () {
     const file = modifyForm['file'].files[0];
     if (!file) {
@@ -73,7 +75,6 @@ modifyForm['file'].onchange = function () {
     fileList.scrollLeft = fileList.scrollWidth; // 파일이 추가 되면 스크롤을 오른쪽 끝으로 알아서 당겨줌.
     modifyForm['file'].value = '';
 }
-
 
 modifyForm.onsubmit = function(e) {
     e.preventDefault();
@@ -115,7 +116,7 @@ modifyForm.onsubmit = function(e) {
     axios.post('/article/modify', formData)
         .then(res => {
             alert('게시글 수정이 완료 되었습니다.');
-            location.href = '/article/read?index=' + modifyForm['indexInBoard'].value + "&code=" + modifyForm['code'].value;
+            location.href = `/article/read?index=${modifyForm['indexInBoard'].value}&code=${modifyForm['code'].value}`;
         })
         .catch(err => {
             alert('알 수 없는 이유로 게시글 수정에 실패하였습니다. 잠시 후 다시 시도해 주세요.');

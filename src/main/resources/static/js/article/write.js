@@ -16,14 +16,14 @@ ClassicEditor.create(writeForm['content'], {
     });
 
 // 첨부파일 추가 click 함수
-writeForm['fileAdd'].onclick = function(e) {
+writeForm['fileAdd'].addEventListener('click', function(e) {
     e.preventDefault();
 
     writeForm['file'].click();
-}
+})
 
 const fileList = document.getElementById('fileList');
-// 첨부파일이 추가 되었을 때의 함수
+// 파일 선택 후 동작 함수
 writeForm['file'].onchange = function () {
     const file = writeForm['file'].files[0];
     if (!file) {
@@ -96,7 +96,7 @@ writeForm.onsubmit = function(e) {
     axios.post('/article/write', formData)
         .then(res => {
             alert('게시글 작성이 완료 되었습니다.');
-            location.href = '/article/read?index=' + res.data.index + "&code=" + writeForm['code'].value;
+            location.href = `/article/read?index=${res.data.index}&code=${writeForm['code'].value}`;
         })
         .catch(err => {
             alert('알 수 없는 이유로 게시글 작성에 실패하였습니다. 잠시 후 다시 시도해 주세요.');

@@ -17,6 +17,8 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 // UserDetails : 사용자의 정보를 담는 인터페이스
+// 로그인 인증 완료 후, 사용자 정보를 return 해주는 메서드를 작성하면 @AuthenticationPrincipal PrincipalDetails principalDetails 을 이용하여 로그인 한 사용자의 정보를 가져올 수 있음.
+// html에서도 #authentication.principal.role 방식으로 사용 가능.
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private boolean isEmailAuth;

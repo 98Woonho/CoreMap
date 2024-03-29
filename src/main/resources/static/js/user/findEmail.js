@@ -1,6 +1,8 @@
 const findEmailForm = document.getElementById('findEmailForm'); // 이메일 찾기 form
 
 const nameWarning = document.getElementById('nameWarning'); // 이름 경고 문구
+
+// 이름 입력란 blur event
 findEmailForm['name'].addEventListener('blur', function () {
     if (findEmailForm['name'].value === '') {
         nameWarning.innerText = "이름을 입력해 주세요.";
@@ -15,6 +17,7 @@ findEmailForm['name'].addEventListener('blur', function () {
     }
 })
 
+// 통신사 입력란 blur event
 findEmailForm['contactCompany'].addEventListener('blur', function () {
     if (findEmailForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";
@@ -30,6 +33,7 @@ findEmailForm['contactCompany'].addEventListener('blur', function () {
     }
 })
 
+// 연락처 입력란 blur event
 findEmailForm['contact'].addEventListener('blur', function () {
     if (findEmailForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";

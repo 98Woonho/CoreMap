@@ -20,12 +20,12 @@ additionalInfoForm['addressFindBtn'].addEventListener('click', function (e) {
 })
 
 // 주소 찾기 창 close 클릭 함수
-addressFind.querySelector('[rel="close"]').onclick = function () {
+addressFind.querySelector('[rel="close"]').addEventListener('click', function() {
     addressFind.classList.remove('visible');
-}
+})
 
 // 닉네임 중복 확인 버튼 클릭 함수
-additionalInfoForm['confirmDuplicationBtn'].onclick = function (e) {
+additionalInfoForm['confirmDuplicationBtn'].addEventListener('click', function(e) {
     e.preventDefault();
 
     if (additionalInfoForm['nickname'].value === '') {
@@ -50,9 +50,11 @@ additionalInfoForm['confirmDuplicationBtn'].onclick = function (e) {
         .catch(err => {
             console.log(err);
         })
-}
+})
 
 const nicknameWarning = document.getElementById('nicknameWarning'); // 닉네임 경고 문구
+
+// 닉네임 입력란 blur event
 additionalInfoForm['nickname'].addEventListener('blur', function () {
     if (additionalInfoForm['nickname'].value === '') {
         nicknameWarning.innerText = "닉네임을 입력해 주세요.";
@@ -68,6 +70,8 @@ additionalInfoForm['nickname'].addEventListener('blur', function () {
 })
 
 const nameWarning = document.getElementById('nameWarning'); // 이름 경고 문구
+
+// 이름 입력란 blur event
 additionalInfoForm['name'].addEventListener('blur', function () {
     if (additionalInfoForm['name'].value === '') {
         nameWarning.innerText = "이름을 입력해 주세요.";
@@ -83,6 +87,8 @@ additionalInfoForm['name'].addEventListener('blur', function () {
 })
 
 const contactWarning = document.getElementById('contactWarning'); // 연락처 경고 문구
+
+// 통신사 선택란 blur event
 additionalInfoForm['contactCompany'].addEventListener('blur', function () {
     if (additionalInfoForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";
@@ -98,6 +104,7 @@ additionalInfoForm['contactCompany'].addEventListener('blur', function () {
     }
 })
 
+// 연락처 입력란 blur event
 additionalInfoForm['contact'].addEventListener('blur', function () {
     if (additionalInfoForm['contactCompany'].value === '-1') {
         contactWarning.innerText = "통신사를 선택해 주세요.";
