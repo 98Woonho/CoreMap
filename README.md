@@ -64,3 +64,279 @@ https://www.youtube.com/watch?v=AOuMxil_MPQ
 ##### 게시판, 비동기 댓글
 ##### 사용자/관리자 페이지
 ##### 운동 자세 설명
+
+📃: File Tree
+---
+```
+Coremap
+
+C:.
+└─ src
+   ├─ main
+   │  ├─ java
+   │  │  └─ com
+   │  │     └─ coremap
+   │  │        └─ demo
+   │  │           ├─ config
+   │  │           │  ├─ auth
+   │  │           │  │  ├─ exceptionHandler
+   │  │           │  │  │  ├─ CustomAccessDeniedHandler.java
+   │  │           │  │  │  └─ CustomAuthenticationEntryPoint.java
+   │  │           │  │  ├─ jwt
+   │  │           │  │  │  ├─ JwtAuthenticationFilter.java
+   │  │           │  │  │  ├─ JwtAuthorizationFilter.java
+   │  │           │  │  │  ├─ JwtProperties.java
+   │  │           │  │  │  ├─ JwtTokenProvider.java
+   │  │           │  │  │  ├─ KeyGenerator.java
+   │  │           │  │  │  └─ TokenInfo.java
+   │  │           │  │  ├─ loginHandler
+   │  │           │  │  │  ├─ CustomAuthenticationFailureHandler.java
+   │  │           │  │  │  ├─ CustomLoginSuccessHandler.java
+   │  │           │  │  │  └─ Oauth2JwtLoginSuccessHandler.java
+   │  │           │  │  ├─ logoutHandler
+   │  │           │  │  │  ├─ CustomLogoutHandler.java
+   │  │           │  │  │  └─ CustomLogoutSuccessHandler.java
+   │  │           │  │  ├─ PrincipalDetails.java
+   │  │           │  │  ├─ PrincipalDetailsOAuth2Service.java
+   │  │           │  │  ├─ PrincipalDetailsService.java
+   │  │           │  │  └─ provider
+   │  │           │  │     ├─ GoogleUserInfo.java
+   │  │           │  │     ├─ KakaoUserInfo.java
+   │  │           │  │     ├─ NaverUserInfo.java
+   │  │           │  │     └─ OAuth2UserInfo.java
+   │  │           │  ├─ DataSourceConfig.java
+   │  │           │  ├─ MultipartConfig.java
+   │  │           │  ├─ SecurityConfig.java
+   │  │           │  ├─ TxConfig.java
+   │  │           │  └─ WebMvcConfig.java
+   │  │           ├─ controller
+   │  │           │  ├─ adminController.java
+   │  │           │  ├─ ArticleController.java
+   │  │           │  ├─ BoardController.java
+   │  │           │  ├─ ControllerAdvice.java
+   │  │           │  ├─ HomeController.java
+   │  │           │  ├─ PolicyContainer.java
+   │  │           │  └─ UserController.java
+   │  │           ├─ DemoApplication.java
+   │  │           ├─ domain
+   │  │           │  ├─ dto
+   │  │           │  │  ├─ ArticleDto.java
+   │  │           │  │  ├─ CertificationDto.java
+   │  │           │  │  ├─ CommentDto.java
+   │  │           │  │  ├─ CommentLikeDto.java
+   │  │           │  │  ├─ EmailAuthDto.java
+   │  │           │  │  ├─ FileDto.java
+   │  │           │  │  ├─ ImageDto.java
+   │  │           │  │  └─ UserDto.java
+   │  │           │  ├─ entity
+   │  │           │  │  ├─ Article.java
+   │  │           │  │  ├─ Board.java
+   │  │           │  │  ├─ Comment.java
+   │  │           │  │  ├─ CommentLike.java
+   │  │           │  │  ├─ CommentLikeId.java
+   │  │           │  │  ├─ ContactCompany.java
+   │  │           │  │  ├─ EmailAuth.java
+   │  │           │  │  ├─ EmailAuthId.java
+   │  │           │  │  ├─ Exercise.java
+   │  │           │  │  ├─ File.java
+   │  │           │  │  ├─ Image.java
+   │  │           │  │  ├─ Signature.java
+   │  │           │  │  └─ User.java
+   │  │           │  ├─ repository
+   │  │           │  │  ├─ ArticleRepository.java
+   │  │           │  │  ├─ BoardRepository.java
+   │  │           │  │  ├─ CommentLikeRepository.java
+   │  │           │  │  ├─ CommentRepository.java
+   │  │           │  │  ├─ ContactCompanyRepository.java
+   │  │           │  │  ├─ EmailAuthRepository.java
+   │  │           │  │  ├─ ExerciseRepository.java
+   │  │           │  │  ├─ FileRepository.java
+   │  │           │  │  ├─ ImageRepository.java
+   │  │           │  │  └─ UserRepository.java
+   │  │           │  └─ vo
+   │  │           │     ├─ PageVo.java
+   │  │           │     └─ SearchVo.java
+   │  │           ├─ properties
+   │  │           │  └─ EmailAuthProperties.java
+   │  │           ├─ regexes
+   │  │           │  ├─ CommentRegex.java
+   │  │           │  ├─ EmailAuthRegex.java
+   │  │           │  ├─ Regex.java
+   │  │           │  └─ UserRegex.java
+   │  │           ├─ service
+   │  │           │  ├─ ArticleService.java
+   │  │           │  ├─ BoardService.java
+   │  │           │  ├─ HomeService.java
+   │  │           │  └─ UserService.java
+   │  │           └─ utils
+   │  │              └─ CryptoUtil.java
+   │  └─ resources
+   │     ├─ application.properties
+   │     ├─ static
+   │     │  ├─ css
+   │     │  │  ├─ admin
+   │     │  │  │  └─ adminPage.css
+   │     │  │  ├─ article
+   │     │  │  │  ├─ ckeditor.css
+   │     │  │  │  ├─ modify.css
+   │     │  │  │  ├─ read.css
+   │     │  │  │  └─ write.css
+   │     │  │  ├─ board
+   │     │  │  │  └─ list.css
+   │     │  │  ├─ common.css
+   │     │  │  ├─ exerciseGuide.css
+   │     │  │  ├─ index.css
+   │     │  │  ├─ policy
+   │     │  │  │  ├─ privacyPolicy.css
+   │     │  │  │  └─ terms.css
+   │     │  │  └─ user
+   │     │  │     ├─ additionalInfo.css
+   │     │  │     ├─ findEmail.css
+   │     │  │     ├─ findEmailResult.css
+   │     │  │     ├─ join.css
+   │     │  │     ├─ login.css
+   │     │  │     ├─ myPage.css
+   │     │  │     ├─ resetPasswordStep1.css
+   │     │  │     ├─ resetPasswordStep2.css
+   │     │  │     └─ secessionCompletion.css
+   │     │  ├─ images
+   │     │  │  ├─ article
+   │     │  │  │  └─ read.file.icon.png
+   │     │  │  ├─ comment
+   │     │  │  │  ├─ vote.down.png
+   │     │  │  │  └─ vote.up.png
+   │     │  │  ├─ login
+   │     │  │  │  ├─ google.png
+   │     │  │  │  ├─ kakao.png
+   │     │  │  │  └─ naver.png
+   │     │  │  ├─ mainSection1Background.jpg
+   │     │  │  ├─ mainSection2Image1.png
+   │     │  │  └─ mainSection3Image1.png
+   │     │  └─ js
+   │     │     ├─ article
+   │     │     │  ├─ ckeditor
+   │     │     │  │  ├─ ckeditor.js
+   │     │     │  │  ├─ ckeditor.js.map
+   │     │     │  │  └─ translations
+   │     │     │  │     ├─ af.js
+   │     │     │  │     ├─ ar.js
+   │     │     │  │     ├─ ast.js
+   │     │     │  │     ├─ az.js
+   │     │     │  │     ├─ bg.js
+   │     │     │  │     ├─ bn.js
+   │     │     │  │     ├─ bs.js
+   │     │     │  │     ├─ ca.js
+   │     │     │  │     ├─ cs.js
+   │     │     │  │     ├─ da.js
+   │     │     │  │     ├─ de-ch.js
+   │     │     │  │     ├─ de.js
+   │     │     │  │     ├─ el.js
+   │     │     │  │     ├─ en-au.js
+   │     │     │  │     ├─ en-gb.js
+   │     │     │  │     ├─ en.js
+   │     │     │  │     ├─ eo.js
+   │     │     │  │     ├─ es-co.js
+   │     │     │  │     ├─ es.js
+   │     │     │  │     ├─ et.js
+   │     │     │  │     ├─ eu.js
+   │     │     │  │     ├─ fa.js
+   │     │     │  │     ├─ fi.js
+   │     │     │  │     ├─ fr.js
+   │     │     │  │     ├─ gl.js
+   │     │     │  │     ├─ gu.js
+   │     │     │  │     ├─ he.js
+   │     │     │  │     ├─ hi.js
+   │     │     │  │     ├─ hr.js
+   │     │     │  │     ├─ hu.js
+   │     │     │  │     ├─ hy.js
+   │     │     │  │     ├─ id.js
+   │     │     │  │     ├─ it.js
+   │     │     │  │     ├─ ja.js
+   │     │     │  │     ├─ jv.js
+   │     │     │  │     ├─ km.js
+   │     │     │  │     ├─ kn.js
+   │     │     │  │     ├─ ku.js
+   │     │     │  │     ├─ lt.js
+   │     │     │  │     ├─ lv.js
+   │     │     │  │     ├─ ms.js
+   │     │     │  │     ├─ nb.js
+   │     │     │  │     ├─ ne.js
+   │     │     │  │     ├─ nl.js
+   │     │     │  │     ├─ no.js
+   │     │     │  │     ├─ oc.js
+   │     │     │  │     ├─ pl.js
+   │     │     │  │     ├─ pt-br.js
+   │     │     │  │     ├─ pt.js
+   │     │     │  │     ├─ ro.js
+   │     │     │  │     ├─ ru.js
+   │     │     │  │     ├─ si.js
+   │     │     │  │     ├─ sk.js
+   │     │     │  │     ├─ sl.js
+   │     │     │  │     ├─ sq.js
+   │     │     │  │     ├─ sr-latn.js
+   │     │     │  │     ├─ sr.js
+   │     │     │  │     ├─ sv.js
+   │     │     │  │     ├─ th.js
+   │     │     │  │     ├─ tk.js
+   │     │     │  │     ├─ tr.js
+   │     │     │  │     ├─ tt.js
+   │     │     │  │     ├─ ug.js
+   │     │     │  │     ├─ uk.js
+   │     │     │  │     ├─ ur.js
+   │     │     │  │     ├─ uz.js
+   │     │     │  │     ├─ vi.js
+   │     │     │  │     ├─ zh-cn.js
+   │     │     │  │     └─ zh.js
+   │     │     │  ├─ modify.js
+   │     │     │  ├─ read.js
+   │     │     │  └─ write.js
+   │     │     ├─ board
+   │     │     │  └─ list.js
+   │     │     ├─ common.js
+   │     │     ├─ index.js
+   │     │     ├─ policy
+   │     │     │  ├─ privacyPolicy.js
+   │     │     │  └─ terms.js
+   │     │     └─ user
+   │     │        ├─ additionalInfo.js
+   │     │        ├─ findEmail.js
+   │     │        ├─ join.js
+   │     │        ├─ myPage.js
+   │     │        ├─ resetPasswordStep1.js
+   │     │        └─ resetPasswordStep2.js
+   │     └─ templates
+   │        ├─ admin
+   │        │  └─ adminPage.html
+   │        ├─ article
+   │        │  ├─ modify.html
+   │        │  ├─ read.html
+   │        │  └─ write.html
+   │        ├─ board
+   │        │  └─ list.html
+   │        ├─ exerciseGuide.html
+   │        ├─ fragments
+   │        │  └─ fragments.html
+   │        ├─ index.html
+   │        ├─ policy
+   │        │  ├─ privacyPolicy.html
+   │        │  └─ terms.html
+   │        └─ user
+   │           ├─ additionalInfo.html
+   │           ├─ findEmail.html
+   │           ├─ findEmailResult.html
+   │           ├─ join.html
+   │           ├─ joinEmail.html
+   │           ├─ login.html
+   │           ├─ myPage.html
+   │           ├─ resetPasswordEmail.html
+   │           ├─ resetPasswordStep1.html
+   │           ├─ resetPasswordStep2.html
+   │           └─ secessionCompletion.html
+   └─ test
+      └─ java
+         └─ com
+            └─ coremap
+               └─ demo
+                  └─ DemoApplicationTests.java
+
+```
